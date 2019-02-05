@@ -1,11 +1,14 @@
 package ca.gkelly.culminating.vessels;
 
 public class Vessel {
-	int[][] mountPoints;
 	
-	public Texture texture;
+	public MountPoint[] mountPoints;
+	public String name;
 	
-	public Vessel(int[][] mountPoints) {
+	public Vessel(String name, MountPoint[] mountPoints) {
+		this.name = name;
 		this.mountPoints = mountPoints;
+		
 	}
+	
 }
