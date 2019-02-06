@@ -12,6 +12,8 @@ public class Test {
 		MountPoint[] mountPoints = {new MountPoint(0,0,MountPoint.Type.LIGHT)};
 		
 		
+		
+		
 		Vessel ptBoat = new Vessel("Battleship", mountPoints);
 	}
 
