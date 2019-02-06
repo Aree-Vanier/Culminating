@@ -1,4 +1,4 @@
-package ca.gkelly.culminating.vessels;
+package ca.gkelly.culminating.loader;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,7 +12,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-public class VesselLoader {
+public class Loader {
 	public static ArrayList<Vessel> vessels = new ArrayList<Vessel>();
 	public static ArrayList<Mount> mounts = new ArrayList<Mount>();
 	
