@@ -15,13 +15,13 @@ import org.json.simple.parser.JSONParser;
 public class Loader {
 	public static ArrayList<Vessel> vessels = new ArrayList<Vessel>();
 	public static ArrayList<Mount> mounts = new ArrayList<Mount>();
-	private static final String directory = "assets/gameData/";
+	private static final String directory = "C:\\Users\\Greg\\Documents\\Workspaces\\Eclipse\\Culminating\\core\\assets\\gameData";
 	
 	
 	public static void load() {
+		System.out.println("Loading");
 		File[] files = new File(directory).listFiles();
 		
-
 		
 		BufferedReader reader;
 		for(File f : files) {
@@ -78,7 +78,7 @@ public class Loader {
 			e.printStackTrace();
 		}
 		
-//		System.out.println(text);
+		System.out.println(text);
 		
 		JSONObject rootJSON;
 		
@@ -90,6 +90,9 @@ public class Loader {
 		}
 		
 		String name = (String) rootJSON.get("name");
+		
+		String texture = file.getParentFile().getPath().split("assets")[1].replace("\\", "")+"\\"+(String) rootJSON.get("texture");
+		
 		JSONArray mountArray = ((JSONArray) rootJSON.get("mountPoints"));
 		
 		MountPoint[] mounts = new MountPoint[mountArray.size()];
@@ -119,7 +122,7 @@ public class Loader {
 			mounts[i] = new MountPoint(x, y, t);
 		}
 		
-		Vessel v = new Vessel(name, mounts);
+		Vessel v = new Vessel(name, mounts, texture);
 		
 		vessels.add(v);
 	}

@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import ca.gkelly.culminating.loader.Loader;
+
 public class Main extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
@@ -14,6 +16,11 @@ public class Main extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
+		
+		
+		Loader.load();
+		
+		
 	}
 
 	@Override
@@ -22,6 +29,7 @@ public class Main extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(img, 0, 0);
+		batch.draw(Loader.vessels.get(0).texture, 0, 0);
 		batch.end();
 	}
 	

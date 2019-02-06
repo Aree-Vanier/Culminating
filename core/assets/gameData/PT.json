@@ -1,6 +1,7 @@
 //DOCTYPE vessel
 {
 	"name":"PT boat",
+	"texture":"PT.png",
 	"mountPoints":[
 		{
 			"x":0,
