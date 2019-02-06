@@ -15,12 +15,51 @@ import org.json.simple.parser.JSONParser;
 public class Loader {
 	public static ArrayList<Vessel> vessels = new ArrayList<Vessel>();
 	public static ArrayList<Mount> mounts = new ArrayList<Mount>();
+	private static final String directory = "assets/gameData/";
+	
 	
 	public static void load() {
-		File foo = new File("assets/vessels/PT.json");
+		File[] files = new File(directory).listFiles();
+		
+
+		
+		BufferedReader reader;
+		for(File f : files) {
+			System.out.println(f.getName());
+			//We only want the JSON files
+			if(!f.getName().endsWith(".json")) {
+				continue;
+			}
+			
+			try {
+				reader = new BufferedReader(new FileReader(f));
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				continue;
+			}
+			
+			String declaration = "";
+			
+			try {
+				declaration = reader.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			if(declaration.contains("vessel")) {
+				loadVessel(f);
+			}
+			
+			
+		}
+		
+		System.out.println("Loaded");
+	}
+	
+	private static void loadVessel(File file) {
 		FileReader fr;
 		try {
-			fr = new FileReader(foo);
+			fr = new FileReader(file);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return;
@@ -31,14 +70,15 @@ public class Loader {
 		String line;
 		try {
 			while((line=br.readLine()) != null) {
+				//Ignore declaration line
+				if(line.contains("//DOCTYPE")) continue;
 				text += line;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		System.out.println(text);
+//		System.out.println(text);
 		
 		JSONObject rootJSON;
 		
@@ -82,6 +122,9 @@ public class Loader {
 		Vessel v = new Vessel(name, mounts);
 		
 		vessels.add(v);
-		System.out.println("Loaded");
+	}
+	
+	private static void loadMounts() {
+		
 	}
 }
