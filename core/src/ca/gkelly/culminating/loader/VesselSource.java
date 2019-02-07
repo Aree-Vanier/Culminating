@@ -5,7 +5,9 @@ import org.json.simple.JSONObject;
 
 import com.badlogic.gdx.graphics.Texture;
 
+import ca.gkelly.culminating.entities.Mount;
 import ca.gkelly.culminating.entities.Ship;
+import ca.gkelly.culminating.entities.Weapon;
 
 public class VesselSource {
 	
@@ -37,7 +39,15 @@ public class VesselSource {
 	
 	public Ship build(MountSource[] mounts) {
 		
-		return null;
+		Mount[] m = new Mount[mounts.length];
+		for(int i=0; i<mounts.length; i++) {
+			switch(mounts[i].getClass().getName()) {
+			case "WeaponSource":
+				m[i] = new Weapon(mounts[i], mountPoints[i].x, mountPoints[i].y);
+			}
+		}
+		
+		return new Ship(this, 0, 0, m);
 	}
 	
 }
