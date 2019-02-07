@@ -20,11 +20,11 @@ public abstract class Mount {
 		this.MAX_HEALTH = health;
 		this.x = x;
 		this.y = y;
+		this.texture = m.texture;
 	}
 	
 	public void render(SpriteBatch b) {
 		b.draw(texture, x, y);
-		
 	}
 	
 	

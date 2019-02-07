@@ -9,11 +9,6 @@ public class Weapon extends Mount{
 	}
 	
 	@Override
-	public void render() {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
 	public void onReload() {
 		// TODO Auto-generated method stub
 		

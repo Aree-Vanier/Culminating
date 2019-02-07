@@ -1,6 +1,7 @@
 package ca.gkelly.culminating.entities;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class Entity {
 	
@@ -15,7 +16,7 @@ public abstract class Entity {
 		texture = t;
 	}
 
-	public abstract void render();
+	public abstract void render(SpriteBatch b);
 	public abstract void update();
 	
 }
