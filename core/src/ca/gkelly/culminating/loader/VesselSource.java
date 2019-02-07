@@ -15,11 +15,15 @@ public class VesselSource {
 	public String name;
 	public Texture texture;
 	
+	public int health;
+	
 	
 	public VesselSource(String texturePath, JSONObject json) {
 		name = (String) json.get("name");
 		
 		texture = new Texture(texturePath);
+		
+		health = Math.toIntExact((long) json.get("health"));
 		
 		JSONArray mountArray = ((JSONArray) json.get("mountPoints"));
 		
