@@ -2,7 +2,7 @@ package ca.gkelly.culminating.loader;
 
 import org.json.simple.JSONObject;
 
-public class Weapon extends Mount {
+public class WeaponSource extends MountSource {
 
 	public int damage;
 	public int ammo;
@@ -10,7 +10,7 @@ public class Weapon extends Mount {
 	public int accHit;
 	public int accMiss;
 	
-	public Weapon(String texturePath, JSONObject json) {
+	public WeaponSource(String texturePath, JSONObject json) {
 		super(texturePath, json);
 
 		damage = Math.toIntExact((long) json.get("damage"));

@@ -4,7 +4,7 @@ import org.json.simple.JSONObject;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class Mount {
+public class MountSource {
 	public int x;
 	public int y;
 	
@@ -19,7 +19,7 @@ public class Mount {
 	
 	public String name;
 	
-	public Mount(String texturePath, JSONObject json){
+	public MountSource(String texturePath, JSONObject json){
 		name = (String) json.get("name");
 
 		texture = new Texture(texturePath);

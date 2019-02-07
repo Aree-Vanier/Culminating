@@ -5,14 +5,16 @@ import org.json.simple.JSONObject;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class Vessel {
+import ca.gkelly.culminating.entities.Ship;
+
+public class VesselSource {
 	
 	public MountPoint[] mountPoints;
 	public String name;
 	public Texture texture;
 	
 	
-	public Vessel(String texturePath, JSONObject json) {
+	public VesselSource(String texturePath, JSONObject json) {
 		name = (String) json.get("name");
 		
 		texture = new Texture(texturePath);
@@ -31,6 +33,11 @@ public class Vessel {
 			mountPoints[i] = new MountPoint(x, y, t);
 		}
 		
+	}
+	
+	public Ship build(MountSource[] mounts) {
+		
+		return null;
 	}
 	
 }

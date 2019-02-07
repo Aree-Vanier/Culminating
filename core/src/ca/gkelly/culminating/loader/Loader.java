@@ -13,8 +13,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 public class Loader {
-	public static ArrayList<Vessel> vessels = new ArrayList<Vessel>();
-	public static ArrayList<Mount> mounts = new ArrayList<Mount>();
+	public static ArrayList<VesselSource> vessels = new ArrayList<VesselSource>();
+	public static ArrayList<MountSource> mounts = new ArrayList<MountSource>();
 	private static final String directory = "C:\\Users\\Greg\\Documents\\Workspaces\\Eclipse\\Culminating\\core\\assets\\gameData";
 	
 	public enum ResourceType{
@@ -89,15 +89,15 @@ public class Loader {
 		
 		switch(t) {
 		case VESSEL:
-			Vessel v = new Vessel(texture, rootJSON);
+			VesselSource v = new VesselSource(texture, rootJSON);
 			vessels.add(v);
 			break;
 		case MOUNT:
-			Mount m = new Mount(texture, rootJSON);
+			MountSource m = new MountSource(texture, rootJSON);
 			mounts.add(m);
 			break;
 		case WEAPON:
-			Weapon w = new Weapon(texture, rootJSON);
+			WeaponSource w = new WeaponSource(texture, rootJSON);
 			mounts.add(w);
 			break;
 		
