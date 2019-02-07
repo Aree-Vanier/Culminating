@@ -26,6 +26,7 @@ public abstract class Mount {
 	}
 	
 	public void render(SpriteBatch b) {
+		System.out.println(x+"\t"+y);
 		b.draw(texture, x, y);
 		requestRender = false;
 	}

@@ -26,7 +26,7 @@ public class Main extends ApplicationAdapter {
 		
 		MountSource m = Loader.mounts.get(0);
 		
-		MountSource[] mounts = {m,m};
+		MountSource[] mounts = {m,m,m};
 		
 		test = Loader.vessels.get(0).build(mounts);
 		

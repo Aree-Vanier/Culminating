@@ -42,7 +42,7 @@ public class VesselSource {
 		Mount[] m = new Mount[mounts.length];
 		for(int i=0; i<mounts.length; i++) {
 			if(mounts[i] instanceof WeaponSource) {
-				m[i] = new Weapon(mounts[i], mountPoints[i].x, mountPoints[i].y);
+				m[i] = new Weapon(mounts[i], mountPoints[i].x-mounts[i].x, mountPoints[i].y-mounts[i].y);
 			}
 		}
 		

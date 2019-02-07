@@ -6,7 +6,7 @@
 	"cost":100,
 	"mountPoint":{
 		"x":4,
-		"y":7
+		"y":0
 	},
 	"maxHealth":250,
 	"damage":15,
