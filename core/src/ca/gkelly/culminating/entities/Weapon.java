@@ -1,7 +1,5 @@
 package ca.gkelly.culminating.entities;
 
-import com.badlogic.gdx.graphics.Texture;
-
 import ca.gkelly.culminating.loader.MountSource;
 
 public class Weapon extends Mount{

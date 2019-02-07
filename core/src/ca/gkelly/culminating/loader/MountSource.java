@@ -23,7 +23,7 @@ public class MountSource {
 		name = (String) json.get("name");
 
 		texture = new Texture(texturePath);
-
+		
 		JSONObject mountPoint = ((JSONObject) json.get("mountPoint"));
 		x = Math.toIntExact((long) mountPoint.get("x"));
 		y = Math.toIntExact((long) mountPoint.get("y"));

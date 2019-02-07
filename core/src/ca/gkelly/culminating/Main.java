@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import ca.gkelly.culminating.loader.Loader;
+import ca.gkelly.culminating.loader.MountSource;
 
 public class Main extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -20,6 +21,11 @@ public class Main extends ApplicationAdapter {
 		
 		Loader.load();
 		
+		MountSource m = Loader.mounts.get(0);
+		
+		MountSource[] mounts = {m,m};
+		
+		Loader.vessels.get(0).build(mounts);
 		
 	}
 
@@ -29,8 +35,6 @@ public class Main extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(img, 0, 0);
-		batch.draw(Loader.vessels.get(0).texture, 256, 256);
-		batch.draw(Loader.mounts.get(0).texture, 350, 350);
 		batch.end();
 	}
 	

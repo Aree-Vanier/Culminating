@@ -1,6 +1,7 @@
 package ca.gkelly.culminating.entities;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import ca.gkelly.culminating.loader.MountSource;
 
@@ -21,8 +22,8 @@ public abstract class Mount {
 		this.y = y;
 	}
 	
-	public void render() {
-		
+	public void render(SpriteBatch b) {
+		b.draw(texture, x, y);
 		
 	}
 	
