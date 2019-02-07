@@ -5,17 +5,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
 public class Loader {
 	public static ArrayList<VesselSource> vessels = new ArrayList<VesselSource>();
 	public static ArrayList<MountSource> mounts = new ArrayList<MountSource>();
-	private static final String directory = "C:\\Users\\Greg\\Documents\\Workspaces\\Eclipse\\Culminating\\core\\assets\\gameData";
+	public static ArrayList<TiledMap> maps = new ArrayList<TiledMap>();
+	
+	private static final String directory = "C:\\Users\\Greg\\Documents\\Workspaces\\Eclipse\\Culminating\\core\\assets";
 	
 	public enum ResourceType{
 		VESSEL,
@@ -25,7 +28,7 @@ public class Loader {
 	
 	public static void load() {
 		System.out.println("Loading");
-		File[] files = new File(directory).listFiles();
+		File[] files = new File(directory+"\\gameData").listFiles();
 		
 		
 		BufferedReader reader;
@@ -64,6 +67,16 @@ public class Loader {
 			
 		}
 		
+		
+		files = new File(directory+"\\maps").listFiles();
+		
+		for(File f : files) {
+			//Only read map files
+			if(f.getName().endsWith(".tmx")) {
+				maps.add(new TmxMapLoader().load(getResourcePath(f.getPath())));
+			}
+		}
+		
 		System.out.println("Loaded");
 	}
 	
@@ -85,7 +98,7 @@ public class Loader {
 		JSONObject rootJSON;
 		rootJSON = (JSONObject) new JSONParser().parse(text);
 		
-		String texture = file.getParentFile().getPath().split("assets")[1].replace("\\", "")+"\\"+(String) rootJSON.get("texture");
+		String texture = getResourcePath(file.getParentFile().getPath())+"\\"+(String) rootJSON.get("texture");
 		
 		switch(t) {
 		case VESSEL:
@@ -102,6 +115,22 @@ public class Loader {
 			break;
 		
 		}
+	}
+	
+	private static String getResourcePath(String s) {
+		System.out.println(s);
+		s = s.split("assets")[1];
+		if(s.startsWith("\\")) {
+			s = s.substring(1);
+		}
+		return s;
+	}
+	
+	//Dispose of assets
+	public static void dispose() {
+		for(VesselSource v : vessels) v.texture.dispose();
+		for(MountSource m : mounts) m.texture.dispose();
+		for(TiledMap m : maps) m.dispose();
 	}
 	
 }
