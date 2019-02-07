@@ -30,7 +30,7 @@ public class VesselSource {
 			int x = Math.toIntExact((long) mountJSON.get("x"));
 			int y = Math.toIntExact((long) mountJSON.get("y"));
 			
-			MountPoint.Type t = MountPoint.Type.valueOf(((String) json.get("type")).toUpperCase());
+			MountPoint.Type t = MountPoint.Type.valueOf(((String) mountJSON.get("type")).toUpperCase());
 			
 			mountPoints[i] = new MountPoint(x, y, t);
 		}
@@ -41,8 +41,7 @@ public class VesselSource {
 		
 		Mount[] m = new Mount[mounts.length];
 		for(int i=0; i<mounts.length; i++) {
-			switch(mounts[i].getClass().getName()) {
-			case "WeaponSource":
+			if(mounts[i] instanceof WeaponSource) {
 				m[i] = new Weapon(mounts[i], mountPoints[i].x, mountPoints[i].y);
 			}
 		}
