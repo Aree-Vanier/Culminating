@@ -34,7 +34,7 @@ public class Ship extends Entity{
 	private void reRender() {
 		
 		SpriteBatch b = new SpriteBatch();
-		FrameBuffer fbo = new FrameBuffer(Format.RGBA8888, 256*4,128*4,false);
+		FrameBuffer fbo = new FrameBuffer(Format.RGBA8888, 64,32,false);
 		
 		fbo.begin();
         Gdx.gl.glClearColor(0, 0, 0, 0);

@@ -7,11 +7,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 
 import ca.gkelly.culminating.entities.Ship;
 import ca.gkelly.culminating.loader.Loader;
@@ -36,6 +36,7 @@ public class Main extends ApplicationAdapter {
 		
 		camera = new OrthographicCamera(WIDTH, HEIGHT);
 		camera.setToOrtho(false, WIDTH, HEIGHT);
+		camera.update();
 		
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
@@ -48,10 +49,9 @@ public class Main extends ApplicationAdapter {
 		
 		test = Loader.vessels.get(0).build(mounts);
 		
-		map = new TmxMapLoader().load("maps\\test.tmx"); //Loader.maps.get(0);
+		map = Loader.maps.get(0);
 		
 		mapRenderer = new OrthogonalTiledMapRenderer(map);
-		
 	}
 
 	@Override
@@ -67,7 +67,6 @@ public class Main extends ApplicationAdapter {
 		
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		batch.draw(img, 0, 0);
 		
 		test.render(batch);
 		
