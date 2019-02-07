@@ -59,6 +59,7 @@ public class Main extends ApplicationAdapter {
 		
 		int cameraX = 0;
 		int cameraY = 0;
+		float cameraZoom = 0;
 		
 		if(getKey(Input.Keys.LEFT) || getKey(Input.Keys.A))
 			cameraX --;
@@ -68,8 +69,14 @@ public class Main extends ApplicationAdapter {
 			cameraY ++;
 		if(getKey(Input.Keys.DOWN) || getKey(Input.Keys.S))
 			cameraY --;
+		if(getKey(Input.Keys.PAGE_UP) || getKey(Input.Keys.Q))
+			cameraZoom +=0.01;
+		if(getKey(Input.Keys.PAGE_DOWN) || getKey(Input.Keys.E))
+			cameraZoom -=0.01;
 		
-		camera.translate(cameraX, cameraY);
+		camera.translate(cameraX*camera.zoom, cameraY*camera.zoom);
+		camera.zoom += cameraZoom;
+		if(camera.zoom < 0.5) camera.zoom = 0.5f;
 		camera.update();
 	}
 	
