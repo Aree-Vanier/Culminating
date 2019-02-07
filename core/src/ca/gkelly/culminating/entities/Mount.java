@@ -13,6 +13,8 @@ public abstract class Mount {
 	int health;
 	final int MAX_HEALTH;
 	
+	boolean requestRender = true;
+	
 	Texture texture;
 	
 	public Mount(MountSource m, int x, int y) {
@@ -25,8 +27,12 @@ public abstract class Mount {
 	
 	public void render(SpriteBatch b) {
 		b.draw(texture, x, y);
+		requestRender = false;
 	}
 	
+	public boolean getRenderRequest() {
+		return requestRender;
+	}
 	
 	public abstract void onReload();
 	public abstract void onFire();

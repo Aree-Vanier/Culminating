@@ -23,7 +23,11 @@ public class Ship extends Entity{
 	@Override
 	public void render(SpriteBatch b) {
 		if(sprite == null) reRender();
-		
+		for(Mount m : mounts) {
+			if(m.getRenderRequest()) {
+				reRender();
+			}
+		}
 		b.draw(sprite, x, y);
 	}
 	
@@ -51,7 +55,8 @@ public class Ship extends Entity{
 
 	@Override
 	public void update() {
-		
+		x++;
+		y++;
 	}
 
 }
