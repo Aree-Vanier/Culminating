@@ -1,5 +1,7 @@
 package ca.gkelly.culminating.loader;
 
+import org.json.simple.JSONObject;
+
 import com.badlogic.gdx.graphics.Texture;
 
 public class Mount {
@@ -11,16 +13,37 @@ public class Mount {
 	public int health;
 	public final int MAX_HEALTH;
 	
-	public final int COST;
+	public final int BASE_COST;
 	
 	public MountPoint.Type type;
 	
-	public Mount(String name, int x, int y, String texturePath, int maxHealth, int cost, MountPoint.Type t){
-		this.x = x;
-		this.y = y;
+	public String name;
+	
+	public Mount(String texturePath, JSONObject json){
+		name = (String) json.get("name");
+
 		texture = new Texture(texturePath);
-		MAX_HEALTH = maxHealth;
-		COST = cost;
-		type = t;
+
+		JSONObject mountPoint = ((JSONObject) json.get("mountPoint"));
+		x = Math.toIntExact((long) mountPoint.get("x"));
+		y = Math.toIntExact((long) mountPoint.get("y"));
+		
+		MAX_HEALTH = Math.toIntExact((long) json.get("maxHealth"));
+		BASE_COST = Math.toIntExact((long) json.get("cost"));
+		
+		
+		switch((String) json.get("type")) {
+		case "light":
+			type=MountPoint.Type.LIGHT;
+			break;
+
+		case "medium":
+			type=MountPoint.Type.MEDIUM;
+			break;
+
+		case "heavy":
+			type=MountPoint.Type.HEAVY;
+			break;
+		}
 	}
 }

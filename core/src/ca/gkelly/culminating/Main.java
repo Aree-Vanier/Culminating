@@ -30,6 +30,7 @@ public class Main extends ApplicationAdapter {
 		batch.begin();
 		batch.draw(img, 0, 0);
 		batch.draw(Loader.vessels.get(0).texture, 256, 256);
+		batch.draw(Loader.mounts.get(0).texture, 350, 350);
 		batch.end();
 	}
 	
