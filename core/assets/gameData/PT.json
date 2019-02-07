@@ -4,8 +4,13 @@
 	"texture":"PT.png",
 	"mountPoints":[
 		{
-			"x":0,
-			"y":0,
+			"x":27,
+			"y":56,
+			"type":"light"
+		},
+		{
+			"x":228,
+			"y":56,
 			"type":"light"
 		}
 	]

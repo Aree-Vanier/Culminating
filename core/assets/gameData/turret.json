@@ -1,0 +1,12 @@
+//DOCTYPE mount
+{
+	"name":"turret",
+	"texture":"turret.png",
+	"type":"light",
+	"cost":100,
+	"mountPoint":{
+		"x":4,
+		"y":7
+	},
+	"maxHealth":250
+}
