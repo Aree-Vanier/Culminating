@@ -26,22 +26,7 @@ public class Vessel {
 			int x = Math.toIntExact((long) mountJSON.get("x"));
 			int y = Math.toIntExact((long) mountJSON.get("y"));
 			
-			MountPoint.Type t = null;
-			
-			switch((String) mountJSON.get("type")) {
-			case "light":
-				t=MountPoint.Type.LIGHT;
-				break;
-
-			case "medium":
-				t=MountPoint.Type.MEDIUM;
-				break;
-
-			case "heavy":
-				t=MountPoint.Type.HEAVY;
-				break;
-			
-			}
+			MountPoint.Type t = MountPoint.Type.valueOf(((String) json.get("type")).toUpperCase());
 			
 			mountPoints[i] = new MountPoint(x, y, t);
 		}

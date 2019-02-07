@@ -32,18 +32,6 @@ public class Mount {
 		BASE_COST = Math.toIntExact((long) json.get("cost"));
 		
 		
-		switch((String) json.get("type")) {
-		case "light":
-			type=MountPoint.Type.LIGHT;
-			break;
-
-		case "medium":
-			type=MountPoint.Type.MEDIUM;
-			break;
-
-		case "heavy":
-			type=MountPoint.Type.HEAVY;
-			break;
-		}
+		type = MountPoint.Type.valueOf(((String) json.get("type")).toUpperCase());
 	}
 }
