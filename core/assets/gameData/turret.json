@@ -1,4 +1,4 @@
-//DOCTYPE mount
+//DOCTYPE WEAPON
 {
 	"name":"turret",
 	"texture":"turret.png",
@@ -8,5 +8,12 @@
 		"x":4,
 		"y":7
 	},
-	"maxHealth":250
+	"maxHealth":250,
+	"damage":15,
+	"ammo":150,
+	"fireRate":5,
+	"accuracy":{
+		"hit":4,
+		"miss":1
+	}
 }

@@ -17,6 +17,11 @@ public class Loader {
 	public static ArrayList<Mount> mounts = new ArrayList<Mount>();
 	private static final String directory = "C:\\Users\\Greg\\Documents\\Workspaces\\Eclipse\\Culminating\\core\\assets\\gameData";
 	
+	public enum ResourceType{
+		VESSEL,
+		MOUNT,
+		WEAPON
+	}
 	
 	public static void load() {
 		System.out.println("Loading");
@@ -46,19 +51,14 @@ public class Loader {
 				e.printStackTrace();
 			}
 			
-			if(declaration.contains("vessel")) {
-				try {
-					loadVessel(f);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			if(declaration.contains("mount")) {
-				try {
-					loadMount(f);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			//Get the type from the declaration
+			ResourceType t = ResourceType.valueOf(declaration.split(" ")[1]);
+			System.out.println(t);
+			
+			try {
+				loadResource(f, t);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			
 			
@@ -67,7 +67,7 @@ public class Loader {
 		System.out.println("Loaded");
 	}
 	
-	private static void loadVessel(File file) throws Exception {
+	private static void loadResource(File file, ResourceType t) throws Exception {
 		FileReader fr;
 		fr = new FileReader(file);
 		BufferedReader br = new BufferedReader(fr);
@@ -80,44 +80,28 @@ public class Loader {
 			text += line;
 		}
 		
-		System.out.println(text);
+//		System.out.println(text);
 		
 		JSONObject rootJSON;
 		rootJSON = (JSONObject) new JSONParser().parse(text);
 		
 		String texture = file.getParentFile().getPath().split("assets")[1].replace("\\", "")+"\\"+(String) rootJSON.get("texture");
 		
+		switch(t) {
+		case VESSEL:
+			Vessel v = new Vessel(texture, rootJSON);
+			vessels.add(v);
+			break;
+		case MOUNT:
+			Mount m = new Mount(texture, rootJSON);
+			mounts.add(m);
+			break;
+		case WEAPON:
+			Weapon w = new Weapon(texture, rootJSON);
+			mounts.add(w);
+			break;
 		
-		Vessel v = new Vessel(texture, rootJSON);
-		
-		vessels.add(v);
+		}
 	}
 	
-	private static void loadMount(File file) throws Exception {
-		FileReader fr;
-		fr = new FileReader(file);
-		
-		BufferedReader br = new BufferedReader(fr);
-	 
-		String text = "";
-		String line;
-		while((line=br.readLine()) != null) {
-			//Ignore declaration line
-			if(line.contains("//DOCTYPE")) continue;
-			text += line;
-		}
-		
-		System.out.println(text);
-		
-		JSONObject rootJSON;
-		rootJSON = (JSONObject) new JSONParser().parse(text);
-		
-		String texture = file.getParentFile().getPath().split("assets")[1].replace("\\", "")+"\\"+(String) rootJSON.get("texture");
-		
-		
-		Mount m = new Mount(texture, rootJSON);
-		
-		mounts.add(m);
-		
-	}
 }

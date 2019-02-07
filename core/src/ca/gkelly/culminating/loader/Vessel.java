@@ -12,8 +12,10 @@ public class Vessel {
 	public Texture texture;
 	
 	
-	public Vessel(String name, JSONObject json) {
+	public Vessel(String texturePath, JSONObject json) {
 		name = (String) json.get("name");
+		
+		texture = new Texture(texturePath);
 		
 		JSONArray mountArray = ((JSONArray) json.get("mountPoints"));
 		
