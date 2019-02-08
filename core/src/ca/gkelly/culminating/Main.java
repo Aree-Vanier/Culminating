@@ -4,10 +4,13 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
@@ -34,8 +37,12 @@ public class Main extends ApplicationAdapter implements InputProcessor{
 	TiledMap map;
 	TiledMapRenderer mapRenderer;
 	
+	ShapeRenderer sr; 
+	
 	public static final int WIDTH = 1280;
 	public static final int HEIGHT = 720;
+	
+	boolean showRect = false;
 	
 	@Override
 	public void create () {
@@ -60,6 +67,8 @@ public class Main extends ApplicationAdapter implements InputProcessor{
 		mapRenderer = new OrthogonalTiledMapRenderer(map);
 		
 		Gdx.input.setInputProcessor(this);
+		
+		sr = new ShapeRenderer();
 	}
 
 	@Override
@@ -76,7 +85,19 @@ public class Main extends ApplicationAdapter implements InputProcessor{
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		
+		if(showRect) {
+			sr.begin(ShapeType.Filled);
+			sr.setColor(1,0,0,0.1f);
+			
+			Vector3 pos = camera.project(new Vector3(test.rect.x, test.rect.y, 0));
+			
+			sr.rect(pos.x, pos.y, test.rect.getWidth(), test.rect.getHeight());
+			sr.end();
+
+			System.out.println(test.rect.getWidth() +"\t"+ test.rect.getHeight());
+		}
 		test.render(batch);
+
 		
 		batch.end();
 		
@@ -99,7 +120,7 @@ public class Main extends ApplicationAdapter implements InputProcessor{
 		
 		camera.translate(cameraX*camera.zoom, cameraY*camera.zoom);
 		camera.zoom += cameraZoom;
-		if(camera.zoom < 0.5) camera.zoom = 0.5f;
+		if(camera.zoom < 0.1) camera.zoom = 0.1f;
 		
 	}
 	
@@ -116,7 +137,10 @@ public class Main extends ApplicationAdapter implements InputProcessor{
 	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
+		Vector2 mousePos = new Vector2(camera.unproject(new Vector3(screenX, screenY, 0)).x, camera.unproject(new Vector3(screenX, screenY, 0)).y);
+		System.out.println(mousePos);
+		
+		System.out.println(test.isClicked(mousePos));
 		return false;
 	}
 
@@ -128,16 +152,7 @@ public class Main extends ApplicationAdapter implements InputProcessor{
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
-//		System.out.println(mousePos);
-		
-		
-		MapObjects l = map.getLayers().get("land").getObjects();
-		for(PolygonMapObject p : l.getByType(PolygonMapObject.class)) {
-			System.out.println(p.getPolygon().contains(new Vector2(mousePos.x, mousePos.y)));
-		}
-		
-		
+
 		return false;
 	}
 
@@ -149,7 +164,7 @@ public class Main extends ApplicationAdapter implements InputProcessor{
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
+		showRect = !showRect;
 		return false;
 	}
 

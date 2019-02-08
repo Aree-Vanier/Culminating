@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import ca.gkelly.culminating.loader.VesselSource;
@@ -54,12 +55,14 @@ public class Ship extends Entity{
 		
 		sprite = new Sprite(fbo.getColorBufferTexture());
 		sprite.flip(false,  true);
+		
+		rect = new Rectangle(x, y, sprite.getWidth(), sprite.getHeight());
+		System.out.println("SPRITE:"+sprite.getWidth() +"\t"+ sprite.getHeight());
 	}
 
 	@Override
 	public void update() {
-		x++;
-		y++;
+		rect.setPosition(new Vector2(x,y));
 	}
 	
 	public void move(int x, int y, MapObjects terrain) {
@@ -71,5 +74,5 @@ public class Ship extends Entity{
 		}
 		
 	}
-
+	
 }
