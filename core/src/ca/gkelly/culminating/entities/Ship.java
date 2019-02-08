@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.PolygonMapObject;
+import com.badlogic.gdx.math.Vector2;
 
 import ca.gkelly.culminating.loader.VesselSource;
 
@@ -57,6 +60,16 @@ public class Ship extends Entity{
 	public void update() {
 		x++;
 		y++;
+	}
+	
+	public void move(int x, int y, MapObjects terrain) {
+		boolean canMove = true;
+		for(PolygonMapObject p : terrain.getByType(PolygonMapObject.class)) {
+			if(p.getPolygon().contains(new Vector2(x, y))) {
+				canMove = false;
+			}
+		}
+		
 	}
 
 }

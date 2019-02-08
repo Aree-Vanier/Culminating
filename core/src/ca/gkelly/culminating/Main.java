@@ -3,21 +3,27 @@ package ca.gkelly.culminating;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Shape2D;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 import ca.gkelly.culminating.entities.Ship;
 import ca.gkelly.culminating.loader.Loader;
 import ca.gkelly.culminating.loader.MountSource;
 
-public class Main extends ApplicationAdapter {
+public class Main extends ApplicationAdapter implements InputProcessor{
 	SpriteBatch batch;
 	Texture img;
 	
@@ -52,6 +58,8 @@ public class Main extends ApplicationAdapter {
 		map = Loader.maps.get(0);
 		
 		mapRenderer = new OrthogonalTiledMapRenderer(map);
+		
+		Gdx.input.setInputProcessor(this);
 	}
 
 	@Override
@@ -92,6 +100,7 @@ public class Main extends ApplicationAdapter {
 		camera.translate(cameraX*camera.zoom, cameraY*camera.zoom);
 		camera.zoom += cameraZoom;
 		if(camera.zoom < 0.5) camera.zoom = 0.5f;
+		
 	}
 	
 	@Override
@@ -103,5 +112,62 @@ public class Main extends ApplicationAdapter {
 	
 	boolean getKey(int key) {
 		return(Gdx.input.isKeyPressed(key));
+	}
+	
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		Vector3 mousePos = camera.unproject(new Vector3(screenX, screenY, 0));
+//		System.out.println(mousePos);
+		
+		
+		MapObjects l = map.getLayers().get("land").getObjects();
+		for(PolygonMapObject p : l.getByType(PolygonMapObject.class)) {
+			System.out.println(p.getPolygon().contains(new Vector2(mousePos.x, mousePos.y)));
+		}
+		
+		
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
