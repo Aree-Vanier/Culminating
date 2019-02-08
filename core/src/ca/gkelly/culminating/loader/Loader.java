@@ -18,7 +18,7 @@ public class Loader {
 	public static ArrayList<MountSource> mounts = new ArrayList<MountSource>();
 	public static ArrayList<TiledMap> maps = new ArrayList<TiledMap>();
 	
-	private static final String directory = "C:\\Users\\Greg\\Documents\\Workspaces\\Eclipse\\Culminating\\core\\assets";
+	private static final String directory = "M:\\ICS4U\\_Culminating\\core\\assets";
 	
 	public enum ResourceType{
 		VESSEL,

@@ -23,7 +23,7 @@ public class VesselSource {
 		
 		texture = new Texture(texturePath);
 		
-		health = Math.toIntExact((long) json.get("health"));
+		health = Math.toIntExact((Long) json.get("health"));
 		
 		JSONArray mountArray = ((JSONArray) json.get("mountPoints"));
 		
@@ -31,8 +31,8 @@ public class VesselSource {
 		for(int i = 0; i<mountArray.size(); i++) {
 			JSONObject mountJSON =  (JSONObject) mountArray.get(i);
 			
-			int x = Math.toIntExact((long) mountJSON.get("x"));
-			int y = Math.toIntExact((long) mountJSON.get("y"));
+			int x = Math.toIntExact((Long) mountJSON.get("x"));
+			int y = Math.toIntExact((Long) mountJSON.get("y"));
 			
 			MountPoint.Type t = MountPoint.Type.valueOf(((String) mountJSON.get("type")).toUpperCase());
 			
