@@ -32,19 +32,20 @@ public class Ship extends Entity{
 				reRender();
 			}
 		}
-		b.draw(sprite, x, y);
+		b.draw(sprite, x, y);		
 	}
 	
 	private void reRender() {
 		
 		SpriteBatch b = new SpriteBatch();
-		FrameBuffer fbo = new FrameBuffer(Format.RGBA8888, 64,32,false);
+		FrameBuffer fbo = new FrameBuffer(Format.RGBA8888, 256,128,false);
 		
 		fbo.begin();
-        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClearColor(0, 1, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         b.begin();
+        b.setColor(1, 1, 1, 1);
 		b.draw(texture, 0,0);
 		for(Mount m : mounts) {
 			m.render(b);
@@ -56,7 +57,9 @@ public class Ship extends Entity{
 		sprite = new Sprite(fbo.getColorBufferTexture());
 		sprite.flip(false,  true);
 		
-		rect = new Rectangle(x, y, sprite.getWidth(), sprite.getHeight());
+		//TODO: Find proper fix to bounding box
+		rect = new Rectangle(x, y, sprite.getWidth()/2, sprite.getHeight()/3);
+		
 		System.out.println("SPRITE:"+sprite.getWidth() +"\t"+ sprite.getHeight());
 	}
 

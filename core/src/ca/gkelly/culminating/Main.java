@@ -4,21 +4,15 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -89,9 +83,9 @@ public class Main extends ApplicationAdapter implements InputProcessor{
 			sr.begin(ShapeType.Filled);
 			sr.setColor(1,0,0,0.1f);
 			
-			Vector3 pos = camera.project(new Vector3(test.rect.x, test.rect.y, 0));
+			sr.rect(test.x, test.y, test.rect.getWidth(), test.rect.getHeight());
 			
-			sr.rect(pos.x, pos.y, test.rect.getWidth(), test.rect.getHeight());
+			sr.setProjectionMatrix(camera.combined);
 			sr.end();
 
 			System.out.println(test.rect.getWidth() +"\t"+ test.rect.getHeight());
