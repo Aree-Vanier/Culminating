@@ -1,9 +1,9 @@
 package ca.gkelly.culminating.loader;
 
+import java.awt.image.BufferedImage;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-import com.badlogic.gdx.graphics.Texture;
 
 import ca.gkelly.culminating.entities.Mount;
 import ca.gkelly.culminating.entities.Ship;
@@ -13,7 +13,7 @@ public class VesselSource {
 	
 	public MountPoint[] mountPoints;
 	public String name;
-	public Texture texture;
+	public BufferedImage texture;
 	
 	public int health;
 	
@@ -21,7 +21,7 @@ public class VesselSource {
 	public VesselSource(String texturePath, JSONObject json) {
 		name = (String) json.get("name");
 		
-		texture = new Texture(texturePath);
+		//TODO:Texture loading
 		
 		health = Math.toIntExact((Long) json.get("health"));
 		

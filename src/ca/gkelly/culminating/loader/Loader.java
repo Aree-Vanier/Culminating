@@ -1,5 +1,6 @@
 package ca.gkelly.culminating.loader;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,13 +11,11 @@ import java.util.ArrayList;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-
 public class Loader {
 	public static ArrayList<VesselSource> vessels = new ArrayList<VesselSource>();
 	public static ArrayList<MountSource> mounts = new ArrayList<MountSource>();
-	public static ArrayList<TiledMap> maps = new ArrayList<TiledMap>();
+//	public static ArrayList<TiledMap> maps = new ArrayList<TiledMap>();
+	
 	
 	private static final String directory = "M:\\ICS4U\\_Culminating\\core\\assets";
 	
@@ -70,12 +69,13 @@ public class Loader {
 		
 		files = new File(directory+"\\maps").listFiles();
 		
-		for(File f : files) {
-			//Only read map files
-			if(f.getName().endsWith(".tmx")) {
-				maps.add(new TmxMapLoader().load(getResourcePath(f.getPath())));
-			}
-		}
+		//TODO: Figure out maps
+//		for(File f : files) {
+//			//Only read map files
+//			if(f.getName().endsWith(".tmx")) {
+//				maps.add(new TmxMapLoader().load(getResourcePath(f.getPath())));
+//			}
+//		}
 		
 		System.out.println("Loaded");
 	}
@@ -126,11 +126,8 @@ public class Loader {
 		return s;
 	}
 	
-	//Dispose of assets
+	//TODO:Dispose of assets
 	public static void dispose() {
-		for(VesselSource v : vessels) v.texture.dispose();
-		for(MountSource m : mounts) m.texture.dispose();
-		for(TiledMap m : maps) m.dispose();
 	}
 	
 }

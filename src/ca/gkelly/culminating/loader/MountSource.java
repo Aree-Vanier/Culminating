@@ -1,14 +1,14 @@
 package ca.gkelly.culminating.loader;
 
-import org.json.simple.JSONObject;
+import java.awt.image.BufferedImage;
 
-import com.badlogic.gdx.graphics.Texture;
+import org.json.simple.JSONObject;
 
 public class MountSource {
 	public int x;
 	public int y;
 	
-	public Texture texture;
+	public BufferedImage texture;
 	
 	public int health;
 	public final int MAX_HEALTH;
@@ -22,7 +22,7 @@ public class MountSource {
 	public MountSource(String texturePath, JSONObject json){
 		name = (String) json.get("name");
 
-		texture = new Texture(texturePath);
+		//TODO:Texture loading
 		
 		JSONObject mountPoint = ((JSONObject) json.get("mountPoint"));
 		x = Math.toIntExact((Long) mountPoint.get("x"));
