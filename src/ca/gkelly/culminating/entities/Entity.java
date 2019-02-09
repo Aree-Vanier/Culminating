@@ -10,14 +10,14 @@ public abstract class Entity {
 	public int x;
 	public int y;
 	
-	public BufferedImage texture;
+	public BufferedImage baseTexture;
 	public Rectangle rect;
 	
 	public Entity(int x, int y, BufferedImage t) {
 		this.x = x;
 		this.y = y;
-		texture = t;
-		rect = new Rectangle(x,y,texture.getWidth(), texture.getHeight());
+		baseTexture = t;
+		rect = new Rectangle(x,y,baseTexture.getWidth(), baseTexture.getHeight());
 	}
 	
 	public boolean isClicked(Point mouse) {
