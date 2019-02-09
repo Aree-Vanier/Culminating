@@ -18,10 +18,10 @@ public class VesselSource {
 	public int health;
 	
 	
-	public VesselSource(String texturePath, JSONObject json) {
+	public VesselSource(BufferedImage image, JSONObject json) {
 		name = (String) json.get("name");
 		
-		//TODO:Texture loading
+		texture = image;
 		
 		health = Math.toIntExact((Long) json.get("health"));
 		

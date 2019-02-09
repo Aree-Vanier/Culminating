@@ -19,10 +19,11 @@ public class MountSource {
 	
 	public String name;
 	
-	public MountSource(String texturePath, JSONObject json){
+	public MountSource(BufferedImage image, JSONObject json){
 		name = (String) json.get("name");
+		
+		texture = image;
 
-		//TODO:Texture loading
 		
 		JSONObject mountPoint = ((JSONObject) json.get("mountPoint"));
 		x = Math.toIntExact((Long) mountPoint.get("x"));

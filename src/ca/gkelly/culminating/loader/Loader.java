@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -17,7 +19,7 @@ public class Loader {
 //	public static ArrayList<TiledMap> maps = new ArrayList<TiledMap>();
 	
 	
-	private static final String directory = "M:\\ICS4U\\_Culminating\\core\\assets";
+	public static String directory;
 	
 	public enum ResourceType{
 		VESSEL,
@@ -98,32 +100,26 @@ public class Loader {
 		JSONObject rootJSON;
 		rootJSON = (JSONObject) new JSONParser().parse(text);
 		
-		String texture = getResourcePath(file.getParentFile().getPath())+"\\"+(String) rootJSON.get("texture");
+		String imagePath = (file.getParentFile().getPath())+"\\"+(String) rootJSON.get("texture");
+		
+		System.out.println(imagePath);
+		BufferedImage image  = ImageIO.read(new File(imagePath));
 		
 		switch(t) {
 		case VESSEL:
-			VesselSource v = new VesselSource(texture, rootJSON);
+			VesselSource v = new VesselSource(image, rootJSON);
 			vessels.add(v);
 			break;
 		case MOUNT:
-			MountSource m = new MountSource(texture, rootJSON);
+			MountSource m = new MountSource(image, rootJSON);
 			mounts.add(m);
 			break;
 		case WEAPON:
-			WeaponSource w = new WeaponSource(texture, rootJSON);
+			WeaponSource w = new WeaponSource(image, rootJSON);
 			mounts.add(w);
 			break;
 		
 		}
-	}
-	
-	private static String getResourcePath(String s) {
-		System.out.println(s);
-		s = s.split("assets")[1];
-		if(s.startsWith("\\")) {
-			s = s.substring(1);
-		}
-		return s;
 	}
 	
 	//TODO:Dispose of assets

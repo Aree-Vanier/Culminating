@@ -1,5 +1,7 @@
 package ca.gkelly.culminating.loader;
 
+import java.awt.image.BufferedImage;
+
 import org.json.simple.JSONObject;
 
 public class WeaponSource extends MountSource {
@@ -10,8 +12,8 @@ public class WeaponSource extends MountSource {
 	public int accHit;
 	public int accMiss;
 	
-	public WeaponSource(String texturePath, JSONObject json) {
-		super(texturePath, json);
+	public WeaponSource(BufferedImage image, JSONObject json) {
+		super(image, json);
 
 		damage = Math.toIntExact((Long) json.get("damage"));
 		ammo = Math.toIntExact((Long) json.get("ammo"));
