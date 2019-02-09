@@ -1,7 +1,7 @@
 package ca.gkelly.culminating.entities;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 import ca.gkelly.culminating.loader.MountSource;
 
@@ -15,7 +15,7 @@ public abstract class Mount {
 	
 	boolean requestRender = true;
 	
-	Texture texture;
+	BufferedImage texture;
 	
 	public Mount(MountSource m, int x, int y) {
 		this.health = m.MAX_HEALTH;
@@ -25,9 +25,9 @@ public abstract class Mount {
 		this.texture = m.texture;
 	}
 	
-	public void render(SpriteBatch b) {
+	public void render(Graphics g) {
 		System.out.println(x+"\t"+y);
-		b.draw(texture, x, y);
+		g.drawImage(texture, x, y, null);
 		requestRender = false;
 	}
 	
