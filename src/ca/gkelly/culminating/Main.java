@@ -8,29 +8,29 @@ import javax.swing.JPanel;
 
 import ca.gkelly.culminating.loader.Loader;
 
-public class Main extends JFrame{
+public class Main extends JPanel{
 
-	public static JPanel panel;
+	public static JFrame window;
 	final String NAME = "FLEET";
 	
 	
 	public Main() {
+		window = new JFrame();
+		window.setName(NAME);
+		window.setSize(1280,720);
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		setName(NAME);
-		setSize(1280,720);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setContentPane(this);
 		
-		panel = new JPanel();
-		setContentPane(panel);
-		
-		setVisible(true);
+		window.setVisible(true);
 	}
 	
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, getWidth(), getHeight());
-		
+		g.setColor(Color.RED);
+		g.fillRect(5,5,100,100);
 	}
 	
 	public static void main(String[] args) {
