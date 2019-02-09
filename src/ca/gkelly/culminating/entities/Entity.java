@@ -1,30 +1,30 @@
 package ca.gkelly.culminating.entities;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 public abstract class Entity {
 	
 	public int x;
 	public int y;
 	
-	public Texture texture;
+	public BufferedImage texture;
 	public Rectangle rect;
 	
-	public Entity(int x, int y, Texture t) {
+	public Entity(int x, int y, BufferedImage t) {
 		this.x = x;
 		this.y = y;
 		texture = t;
 		rect = new Rectangle(x,y,texture.getWidth(), texture.getHeight());
 	}
 	
-	public boolean isClicked(Vector2 mouse) {
+	public boolean isClicked(Point mouse) {
 		return rect.contains(mouse);
 	}
 
-	public abstract void render(SpriteBatch b);
+	public abstract void render(Graphics g);
 	public abstract void update();
 	
 }
