@@ -18,10 +18,11 @@ public class TiledMap {
 	BufferedImage[] tiles;
 	String src;
 	
+	String map;
+	
 	public Document doc;
 	
-	public Tileset t;
-
+	public Tileset tileset;
 	
 	public TiledMap(String src) {
 		this.src = src;
@@ -48,10 +49,14 @@ public class TiledMap {
 		
 		doc.getDocumentElement().normalize();
 		
-		Element tileElement = (Element) doc.getElementsByTagName("tileset").item(0);
+		Element tilesetElement = (Element) doc.getElementsByTagName("tileset").item(0);
+		Element mapData = (Element) doc.getElementsByTagName("data").item(0);
+		
+		map = mapData.getTextContent();
+		
 		
 		try {
-			t = new Tileset(tileElement, src);
+			tileset = new Tileset(tilesetElement, src);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -66,7 +71,7 @@ public class TiledMap {
 	}
 	
 	public BufferedImage getTile(int ID) {
-		return(t.getImage(ID));
+		return(tileset.getImage(ID));
 	}
 	
 }

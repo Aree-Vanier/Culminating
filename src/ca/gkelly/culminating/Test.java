@@ -29,7 +29,8 @@ public class Test extends JFrame{
 	
 	@Override
 	public void paint(Graphics g) {
-		if(m.t == null) return;
+		if(m==null)return;
+		if(m.tileset == null) return;
 		g.drawImage(m.getTile(1), 10,10,null);
 	}
 
