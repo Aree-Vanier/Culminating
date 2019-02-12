@@ -1,5 +1,6 @@
 package ca.gkelly.culminating.graphics;
 
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class TiledMap {
 	BufferedImage[] tiles;
 	String src;
 	
-	String map;
+	int [][] map;
 	
 	public Document doc;
 	
@@ -52,7 +53,22 @@ public class TiledMap {
 		Element tilesetElement = (Element) doc.getElementsByTagName("tileset").item(0);
 		Element mapData = (Element) doc.getElementsByTagName("data").item(0);
 		
-		map = mapData.getTextContent();
+		String mapString = mapData.getTextContent().replaceFirst("\n", "");
+		mapString = mapString.substring(0, mapString.length()-1);
+		String[] rows = mapString.split(",\n");
+		System.out.println(mapString);
+		
+		map = new int[rows[0].split(",").length][rows.length];
+		
+		for(int y=0; y<rows.length; y++) {
+			String[] tiles = rows[y].split(",");
+			for(int x=0; x<tiles.length; x++) {
+				System.out.print(tiles[x]);
+				map[x][y] = Integer.parseInt(tiles[x]);
+			}
+			System.out.println();
+		}
+		
 		
 		
 		try {
@@ -66,8 +82,12 @@ public class TiledMap {
 		return true;
 	}
 	
-	public void render(int x, int y, int distance) {
-		
+	public void render(int centreX, int centreY, int distance, Graphics g) {
+		for(int x=0; x<map.length; x++) {
+			for(int y=0; y<map[0].length; y++) {
+				g.drawImage(tileset.getImage(map[x][y]), x*tileset.tWidth, y*tileset.tHeight, null);
+			}
+		}
 	}
 	
 	public BufferedImage getTile(int ID) {
@@ -78,8 +98,8 @@ public class TiledMap {
 
 class Tileset {
 	
-	private int tWidth;
-	private int tHeight;
+	int tWidth;
+	int tHeight;
 	private int tCount;
 	private int columns;
 	
@@ -105,12 +125,8 @@ class Tileset {
 		
 	}
 	
-	BufferedImage getImage(String ID) {
-		return null;
-	}
-	
 	BufferedImage getImage(int ID) {
-		return tiles[ID];
+		return tiles[ID-1];
 	}
 	
 	
