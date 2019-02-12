@@ -25,6 +25,10 @@ public class TiledMap {
 	
 	public Tileset tileset;
 	
+	BufferedImage render;
+	int lastX;
+	int lastY;
+	
 	public TiledMap(String src) {
 		this.src = src;
 	}
@@ -82,12 +86,32 @@ public class TiledMap {
 		return true;
 	}
 	
-	public void render(int centreX, int centreY, int distance, Graphics g) {
-		for(int x=0; x<map.length; x++) {
-			for(int y=0; y<map[0].length; y++) {
-				g.drawImage(tileset.getImage(map[x][y]), x*tileset.tWidth, y*tileset.tHeight, null);
+	public BufferedImage render(int centreX, int centreY, int distance) {
+		//Re-render map if the camera has moved TODO:take distance into account to reduce render frequency
+		if(!(lastX==centreX && lastY==centreY))
+			reRender(centreX, centreY, distance);
+		//Update last position
+		lastX = centreX;
+		lastY = centreY;
+		
+		return render;
+	}
+	
+	public void reRender(int centreX, int centreY, int distance) {
+		render = new BufferedImage(distance*2*tileset.tWidth, distance*2*tileset.tHeight, BufferedImage.TYPE_3BYTE_BGR);
+		Graphics g = render.getGraphics();
+		for(int x=centreX-distance; x<centreX+distance; x++) {
+			for(int y=centreY-distance; y<centreY+distance; y++) {
+				try {
+					g.drawImage(tileset.getImage(map[x][y]), (x-(centreX-distance))*tileset.tWidth, (y-(centreY-distance))*tileset.tHeight, null);
+				} catch(IndexOutOfBoundsException e) {
+					continue;
+				}
+				System.out.print(map[x][y]);
 			}
+			System.out.println();
 		}
+		System.out.println("\n-----\n");
 	}
 	
 	public BufferedImage getTile(int ID) {

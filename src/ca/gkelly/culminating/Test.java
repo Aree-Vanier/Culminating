@@ -1,14 +1,19 @@
 package ca.gkelly.culminating;
 
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
 import ca.gkelly.culminating.graphics.TiledMap;
+import sun.security.krb5.internal.ktab.KeyTabConstants;
 
 //This is a class used for quick console tests that don't need the graphics
-public class Test extends JFrame{
+public class Test extends JFrame implements KeyListener{
 	TiledMap m;
+	int x = 15;
+	int y = 15;
 	
 	public Test(String[] args) {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -18,7 +23,7 @@ public class Test extends JFrame{
 		System.out.println(m.load());
 		
 		System.out.println(m.doc.getDocumentElement().getNodeName());
-		
+		this.addKeyListener(this);
 	}
 	
 	public static void main(String[] args) {
@@ -31,7 +36,30 @@ public class Test extends JFrame{
 	public void paint(Graphics g) {
 		if(m==null)return;
 		if(m.tileset == null) return;
-		m.render(0, 0, 0, g);
+		g.drawImage(m.render(x, y, 10), 0, 0, null);
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_W) y++;
+		if(e.getKeyCode() == KeyEvent.VK_S) y--;
+		if(e.getKeyCode() == KeyEvent.VK_A) x--;
+		if(e.getKeyCode() == KeyEvent.VK_D) x++;
+		
+		repaint();
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
