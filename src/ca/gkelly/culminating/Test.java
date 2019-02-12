@@ -12,8 +12,8 @@ import sun.security.krb5.internal.ktab.KeyTabConstants;
 //This is a class used for quick console tests that don't need the graphics
 public class Test extends JFrame implements KeyListener{
 	TiledMap m;
-	int x = 15;
-	int y = 15;
+	int x = 256;
+	int y = 256;
 	
 	public Test(String[] args) {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -36,7 +36,7 @@ public class Test extends JFrame implements KeyListener{
 	public void paint(Graphics g) {
 		if(m==null)return;
 		if(m.tileset == null) return;
-		g.drawImage(m.render(x, y, 10), 0, 0, null);
+		g.drawImage(m.render(x, y, getWidth(), getHeight(), 10), 0, 0, null);
 	}
 
 	@Override
@@ -59,7 +59,6 @@ public class Test extends JFrame implements KeyListener{
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 }
