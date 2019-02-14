@@ -2,10 +2,12 @@ package ca.gkelly.culminating.graphics;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageTypeSpecifier;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,7 +27,9 @@ public class TiledMap {
 	
 	public Tileset tileset;
 	
-	BufferedImage render;
+	BufferedImage image;
+	BufferedImage cameraRender;
+	
 	int lastX;
 	int lastY;
 	
@@ -83,35 +87,56 @@ public class TiledMap {
 		
 
 		System.out.println("------\n");
+		
+		image = new BufferedImage(map.length*tileset.tWidth, map[0].length*tileset.tHeight,BufferedImage.TYPE_3BYTE_BGR);
+		Graphics g = image.getGraphics();
+		for(int x=0; x<map.length; x++) {
+			for(int y=0; y<map[0].length; y++) {
+				try {
+					g.drawImage(tileset.getImage(map[x][y]), x*tileset.tWidth, y*tileset.tHeight, null);
+				} catch (IndexOutOfBoundsException e) {
+					
+				}
+			}
+			System.out.println();
+		}
 		return true;
 	}
 	
-	public BufferedImage render(int centreX, int centreY, int width, int height, int distance) {
-		//Re-render map if the camera has moved TODO:take distance into account to reduce render frequency
-		if(!(lastX==centreX && lastY==centreY))
-			reRender(centreX, centreY, width, height, distance);
-		//Update last position
+	public BufferedImage render(int centreX, int centreY, int width, int height) {
+		if(centreX != lastX || centreY != lastY) reRender(centreX, centreY, width, height);
+		
 		lastX = centreX;
 		lastY = centreY;
 		
-		return render;
+		return cameraRender;
 	}
 	
-	public void reRender(int centreX, int centreY, int width, int height, int distance) {
-		distance*=tileset.tWidth;
-		render = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
-		Graphics g = render.getGraphics();
-		for(int x=centreX-distance; x<centreX+distance; x++) {
-			if(x%tileset.tWidth != 0) continue;
-			for(int y=centreY-distance; y<centreY+distance; y++) {
-				if(y%tileset.tHeight != 0) continue;
-				try {
-					g.drawImage(tileset.getImage(map[(int)(x/tileset.tWidth)][(int)(y/tileset.tHeight)]), (x-(centreX-distance))-tileset.tWidth, (y-(centreY-distance))-tileset.tHeight, null);
-				} catch(IndexOutOfBoundsException e) {
-					continue;
-				}
-			}
+	public void reRender(int centreX, int centreY, int width, int height) {
+		cameraRender = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+		Graphics g = cameraRender.getGraphics();
+		
+		int x = centreX-width/2;
+		int y = centreY-height/2;
+		int offsetX = 0;
+		int offsetY = 0;
+		
+		if(x < 0) {
+			offsetX = Math.abs(x);
+			x = 0;
 		}
+		if(y < 0) {
+			offsetY = Math.abs(y);
+			y=0;
+		}
+		if(width > image.getWidth()) {
+			width=image.getWidth();
+		}
+		if(height > image.getHeight()) {
+			height = image.getHeight();
+		}
+		
+		g.drawImage(image.getSubimage(x, y, width, height), offsetX, offsetY, null);
 	}
 	
 	public BufferedImage getTile(int ID) {
