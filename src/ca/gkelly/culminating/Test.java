@@ -36,7 +36,7 @@ public class Test extends JFrame implements KeyListener{
 	public void paint(Graphics g) {
 		if(m==null)return;
 		if(m.tileset == null) return;
-		g.drawImage(m.render(x, y, getWidth(), getHeight(), 10), 0, 0, null);
+		g.drawImage(m.render(x, y, getWidth(), getHeight(), 0), 0, 0, null);
 	}
 
 	@Override
@@ -47,8 +47,8 @@ public class Test extends JFrame implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_W) y++;
-		if(e.getKeyCode() == KeyEvent.VK_S) y--;
+		if(e.getKeyCode() == KeyEvent.VK_W) y--;
+		if(e.getKeyCode() == KeyEvent.VK_S) y++;
 		if(e.getKeyCode() == KeyEvent.VK_A) x--;
 		if(e.getKeyCode() == KeyEvent.VK_D) x++;
 		
