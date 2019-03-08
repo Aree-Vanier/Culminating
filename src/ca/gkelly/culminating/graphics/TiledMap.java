@@ -28,23 +28,38 @@ public class TiledMap {
 
 	public Tileset tileset;
 
+	/** Complete render of the map, rendered on load then saved */
 	BufferedImage image;
+	/** Chunk removed from <code>image</code> used for rendering */
 	BufferedImage cameraRender;
 
+	/** Last X position of camera, used to check need for re-render */
 	int lastX;
+	/** Last Y position of camera, used to check need for re-render */
 	int lastY;
 
+	/** Polygon colliders used on map, each inner list is a separate layer */
 	Polygon[][] colliders;
 
+	/**
+	 * Prepare a new tiled map
+	 * 
+	 * @param src The path to the <code>.tmx</code> file
+	 */
 	public TiledMap(String src) {
 		this.src = src;
 	}
 
+	/**
+	 * Load the tiled map, and all associate resources, into memory This can be used
+	 * to create many maps on startup, but only load them as needed
+	 */
 	public boolean load() {
 		File file = new File(src);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder;
 
+		// Load the file, if it fails, return false
 		try {
 			dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(file);
@@ -59,11 +74,14 @@ public class TiledMap {
 			return false;
 		}
 
+		// Prepare document
 		doc.getDocumentElement().normalize();
 
+		// Get important elements from map
 		Element tilesetElement = (Element) doc.getElementsByTagName("tileset").item(0);
 		Element mapData = (Element) doc.getElementsByTagName("data").item(0);
 
+		// Prepare the string that contains the map details
 		String mapString = mapData.getTextContent().replaceFirst("\n", "");
 		mapString = mapString.substring(0, mapString.length() - 1);
 		String[] rows = mapString.split(",\n");
@@ -71,6 +89,7 @@ public class TiledMap {
 
 		map = new int[rows[0].split(",").length][rows.length];
 
+		// Get integers values for each tile
 		for (int y = 0; y < rows.length; y++) {
 			String[] tiles = rows[y].split(",");
 			for (int x = 0; x < tiles.length; x++) {
@@ -80,6 +99,7 @@ public class TiledMap {
 			System.out.println();
 		}
 
+		// Load the tileset
 		try {
 			tileset = new Tileset(tilesetElement, src);
 		} catch (IOException e) {
@@ -88,6 +108,7 @@ public class TiledMap {
 
 		System.out.println("------\n");
 
+		// Create full render image
 		image = new BufferedImage(map.length * tileset.tWidth, map[0].length * tileset.tHeight,
 				BufferedImage.TYPE_3BYTE_BGR);
 		Graphics g = image.getGraphics();
@@ -102,6 +123,7 @@ public class TiledMap {
 			System.out.println();
 		}
 
+		// Get collider elements
 		NodeList colliderLayers = (NodeList) doc.getElementsByTagName("objectgroup");
 		this.colliders = new Polygon[colliderLayers.getLength()][];
 
@@ -109,17 +131,18 @@ public class TiledMap {
 			Element e = (Element) colliderLayers.item(i);
 			NodeList polyNodes = (NodeList) e.getElementsByTagName("Polygon");
 			Polygon[] polyLayer = new Polygon[polyNodes.getLength()];
+
 			for (int j = 0; j < polyNodes.getLength(); j++) {
 				Element poly = (Element) polyNodes.item(j);
 				String[] points = poly.getAttribute("points").split(" ");
-
+				// Create int[]s for x and y points
 				int[] x = new int[points.length];
 				int[] y = new int[points.length];
 				for (int s = 0; s < points.length; s++) {
 					x[s] = (Integer.parseInt(points[s].split(",")[0]));
 					y[s] = (Integer.parseInt(points[s].split(",")[1]));
 				}
-
+				// Create the corresponding polygon
 				polyLayer[j] = new Polygon(x, y, x.length);
 			}
 			colliders[i] = polyLayer;
@@ -128,7 +151,17 @@ public class TiledMap {
 		return true;
 	}
 
+	/**
+	 * Get a buffered image of the map to display
+	 * 
+	 * @param centreX X value at centre of screen
+	 * @param centreY Y value at centre of screen
+	 * @param width   Render width
+	 * @param height  Render height
+	 * @return An image of the map to render
+	 */
 	public BufferedImage render(int centreX, int centreY, int width, int height) {
+		// If the camera has moved, re-render
 		if (centreX != lastX || centreY != lastY)
 			reRender(centreX, centreY, width, height);
 
@@ -138,7 +171,16 @@ public class TiledMap {
 		return cameraRender;
 	}
 
+	/**
+	 * Get a new render of the map to display
+	 * 
+	 * @param centreX X value at centre of screen
+	 * @param centreY Y value at centre of screen
+	 * @param width   Render width
+	 * @param height  Render height
+	 */
 	public void reRender(int centreX, int centreY, int width, int height) {
+		// Reinstantiate the image
 		cameraRender = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
 		Graphics g = cameraRender.getGraphics();
 
@@ -165,32 +207,50 @@ public class TiledMap {
 		g.drawImage(image.getSubimage(x, y, width, height), offsetX, offsetY, null);
 	}
 
+	/**
+	 * Get the image associate with a specific tile ID
+	 * 
+	 * @param ID The ID of the tile
+	 * @return The image associated with the selected tile
+	 */
 	public BufferedImage getTile(int ID) {
 		return (tileset.getImage(ID));
 	}
 
 }
 
+/** A class used to handle loading and management of a tileset */
 class Tileset {
-
+	/** Width of a tile */
 	int tWidth;
+	/** Height of a tile */
 	int tHeight;
+	/** Number of tiles in the set */
 	private int tCount;
+	/** Number of columns in the source */
 	private int columns;
 
 	private BufferedImage[] tiles;
 
+	/**
+	 * Load a tileset
+	 * 
+	 * @param e    The tileset xml element
+	 * @param path The path to the tileset image
+	 */
 	Tileset(Element e, String path) throws IOException {
+		// Get attributes from xml
 		tWidth = Integer.parseInt(e.getAttribute("tilewidth"));
 		tHeight = Integer.parseInt(e.getAttribute("tileheight"));
 		tCount = Integer.parseInt(e.getAttribute("tilecount"));
 		columns = Integer.parseInt(e.getAttribute("columns"));
 //		String subPath = ((Element) e.getFirstChild()).getAttribute("source");
-		String subPath = "tileset.png";
+		String subPath = "tileset.png"; // TODO: Why?
 
 		tiles = new BufferedImage[tCount];
 		BufferedImage sheet = ImageIO.read(new File(path.substring(0, path.lastIndexOf("\\")) + "\\" + subPath));
 
+		// Load tiles from image
 		for (int y = 0; y < sheet.getHeight() / tHeight; y++) {
 			for (int x = 0; x < columns; x++) {
 				System.out.println(x * tWidth + "\t" + y * tHeight + "\t" + (x + (columns * y)));
@@ -200,6 +260,12 @@ class Tileset {
 
 	}
 
+	/**
+	 * Get the image associate with a specific tile ID
+	 * 
+	 * @param ID The ID of the tile
+	 * @return The image associated with the selected tile
+	 */
 	BufferedImage getImage(int ID) {
 		return tiles[ID - 1];
 	}
