@@ -14,6 +14,7 @@ public class Test extends JFrame implements KeyListener{
 	TiledMap m;
 	int x = 256;
 	int y = 256;
+	double zoom = 1;
 	
 	public Test(String[] args) {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -51,6 +52,9 @@ public class Test extends JFrame implements KeyListener{
 		if(e.getKeyCode() == KeyEvent.VK_S) y--;
 		if(e.getKeyCode() == KeyEvent.VK_A) x++;
 		if(e.getKeyCode() == KeyEvent.VK_D) x--;
+		
+		if(e.getKeyCode() == KeyEvent.VK_E) zoom += 0.1;
+		if(e.getKeyCode() == KeyEvent.VK_Q) zoom -= 0.1;
 		
 		repaint();
 		

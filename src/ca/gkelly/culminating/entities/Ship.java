@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageTypeSpecifier;
 
+import ca.gkelly.culminating.graphics.Camera;
 import ca.gkelly.culminating.loader.VesselSource;
 
 public class Ship extends Entity{
@@ -22,14 +23,14 @@ public class Ship extends Entity{
 	}
 
 	@Override
-	public void render(Graphics g) {
+	public void render(Camera c) {
 		if(texture == null) reRender();
 		for(Mount m : mounts) {
 			if(m.getRenderRequest()) {
 				reRender();
 			}
 		}
-		g.drawImage(texture, x, y, null);		
+		c.render(texture, x, y);		
 	}
 	
 	private void reRender() {

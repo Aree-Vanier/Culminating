@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import ca.gkelly.culminating.entities.Ship;
+import ca.gkelly.culminating.graphics.Camera;
 import ca.gkelly.culminating.loader.Loader;
 import ca.gkelly.culminating.loader.MountSource;
 
@@ -15,6 +16,7 @@ public class Main extends JPanel{
 	public static JFrame window;
 	final String NAME = "FLEET";
 	Ship s;
+	Camera c;
 	
 	public Main() {
 		window = new JFrame();
@@ -37,9 +39,6 @@ public class Main extends JPanel{
 	public void paint(Graphics g) {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, getWidth(), getHeight());
-		g.setColor(Color.RED);
-		g.fillRect(5,5,100,100);
-		s.render(g);
 	}
 	
 	public static void main(String[] args) {

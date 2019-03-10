@@ -5,6 +5,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import ca.gkelly.culminating.graphics.Camera;
+
 public abstract class Entity {
 	
 	public int x;
@@ -24,7 +26,7 @@ public abstract class Entity {
 		return rect.contains(mouse);
 	}
 
-	public abstract void render(Graphics g);
+	public abstract void render(Camera c);
 	public abstract void update();
 	
 }
