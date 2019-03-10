@@ -1,5 +1,6 @@
 package ca.gkelly.culminating;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -27,7 +28,7 @@ public class Test extends JFrame implements KeyListener{
 		System.out.println(m.doc.getDocumentElement().getNodeName());
 		this.addKeyListener(this);
 		
-		cam = new Camera(getContentPane());
+		cam = new Camera(getContentPane(), m);
 	}
 	
 	public static void main(String[] args) {
@@ -40,8 +41,10 @@ public class Test extends JFrame implements KeyListener{
 	public void paint(Graphics g) {
 		if(m==null)return;
 		if(m.tileset == null) return;
+		g.setColor(Color.black);
+		g.fillRect(0, 0, getWidth(), getHeight());
+		
 		cam.begin();
-		m.render(cam);
 		cam.finish(g);
 	}
 

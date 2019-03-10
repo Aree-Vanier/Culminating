@@ -17,14 +17,20 @@ public class Camera {
 	BufferedImage buffer;
 	Graphics2D g;
 	Container window;
+	TiledMap map;
 	
 	int maxX, maxY, minX, minY;
 	
-	public Camera(Container window){
+	/**Create a new Camera
+	 * @param window The container that will hold the camera
+	 * @param map The {@link TiledMap} that will be used as the background*/
+	public Camera(Container window, TiledMap map){
 		this.window = window;
+		this.map = map;
 	}
 	
-	/**First step in rendering process, prepares buffer, graphics and min/max values*/
+	/**First step in rendering process, prepares buffer, graphics and min/max values<br/>
+	 * Draws map to buffer*/
 	public void begin() {
 		buffer = new BufferedImage(window.getWidth(), window.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
 		g = (Graphics2D) buffer.getGraphics();
@@ -34,6 +40,8 @@ public class Camera {
 
 		minY = (int) (y-(window.getHeight()*(renderDist-0.5)));
 		maxY = (int) (y+(window.getHeight()*(renderDist-0.5)));
+		
+		map.render(this);
 	}
 	
 	/**Render an image to the camera
