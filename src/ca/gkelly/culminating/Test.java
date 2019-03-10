@@ -6,8 +6,8 @@ import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
+import ca.gkelly.culminating.graphics.Camera;
 import ca.gkelly.culminating.graphics.TiledMap;
-import sun.security.krb5.internal.ktab.KeyTabConstants;
 
 //This is a class used for quick console tests that don't need the graphics
 public class Test extends JFrame implements KeyListener{
@@ -15,6 +15,7 @@ public class Test extends JFrame implements KeyListener{
 	int x = 256;
 	int y = 256;
 	double zoom = 1;
+	Camera cam;
 	
 	public Test(String[] args) {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -25,6 +26,8 @@ public class Test extends JFrame implements KeyListener{
 		
 		System.out.println(m.doc.getDocumentElement().getNodeName());
 		this.addKeyListener(this);
+		
+		cam = new Camera(getContentPane());
 	}
 	
 	public static void main(String[] args) {
@@ -37,7 +40,9 @@ public class Test extends JFrame implements KeyListener{
 	public void paint(Graphics g) {
 		if(m==null)return;
 		if(m.tileset == null) return;
-		g.drawImage(m.render(x, y, getWidth(), getHeight()), 0, 0, null);
+		cam.begin();
+		m.render(cam);
+		cam.finish(g);
 	}
 
 	@Override
@@ -55,6 +60,8 @@ public class Test extends JFrame implements KeyListener{
 		
 		if(e.getKeyCode() == KeyEvent.VK_E) zoom += 0.1;
 		if(e.getKeyCode() == KeyEvent.VK_Q) zoom -= 0.1;
+		
+		cam.setPosition(x, y, zoom);
 		
 		repaint();
 		

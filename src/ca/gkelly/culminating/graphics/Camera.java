@@ -1,8 +1,8 @@
 package ca.gkelly.culminating.graphics;
 
+import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
@@ -10,17 +10,17 @@ import javax.swing.JPanel;
 public class Camera {
 	
 	double zoom;
-	double x;
-	double y;
+	int x;
+	int y;
 	
 	double renderDist = 1.1;
 	BufferedImage buffer;
 	Graphics2D g;
-	JPanel window;
+	Container window;
 	
 	int maxX, maxY, minX, minY;
 	
-	public Camera(JPanel window){
+	public Camera(Container window){
 		this.window = window;
 	}
 	
@@ -68,8 +68,24 @@ public class Camera {
 		return null;
 	}
 	
+	/**Get the width of the camera buffer*/
+	public int getWidth() {
+		return(buffer.getWidth());
+	}
+	
+	/**Get the height of the camera buffer*/
+	public int getHeight() {
+		return(buffer.getHeight());
+	}
+	
 	public void translate(double x, double y) {
 		x+=x;
 		y+=y;
+	}
+	
+	public void setPosition(int x, int y, double zoom) {
+		this.x = x;
+		this.y = y;
+		this.zoom = zoom;
 	}
 }

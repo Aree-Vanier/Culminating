@@ -37,6 +37,8 @@ public class TiledMap {
 	int lastX;
 	/** Last Y position of camera, used to check need for re-render */
 	int lastY;
+	/** Last zoom level of camera, used to check need for re-render */
+	double lastZoom;
 
 	/** Polygon colliders used on map, each inner list is a separate layer */
 	Polygon[][] colliders;
@@ -154,21 +156,18 @@ public class TiledMap {
 	/**
 	 * Get a buffered image of the map to display
 	 * 
-	 * @param centreX X value at centre of screen
-	 * @param centreY Y value at centre of screen
-	 * @param width   Render width
-	 * @param height  Render height
-	 * @return An image of the map to render
+	 * @param cam The camera to be rendered to
 	 */
-	public BufferedImage render(int centreX, int centreY, int width, int height) {
+	public void render(Camera cam) {
 		// If the camera has moved, re-render
-		if (centreX != lastX || centreY != lastY)
-			reRender(centreX, centreY, width, height);
+		if (cam.x != lastX || cam.y != lastY || cam.zoom != lastZoom)
+			reRender(cam.x, cam.y, cam.getWidth(), cam.getHeight());
 
-		lastX = centreX;
-		lastY = centreY;
+		lastX = cam.x;
+		lastY = cam.y;
+		lastZoom = cam.zoom;
 
-		return cameraRender;
+		cam.render(image, 0, 0);;
 	}
 
 	/**
