@@ -44,7 +44,7 @@ public class Camera {
 		minY = (int) ((y - (window.getHeight() * (renderDist - 0.5))) * zoom);
 		maxY = (int) ((y + (window.getHeight() * (renderDist - 0.5))) * zoom);
 
-		buffer = new BufferedImage(maxX-minX, maxY-minY, BufferedImage.TYPE_3BYTE_BGR);
+		buffer = new BufferedImage(window.getWidth(), window.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
 		g = (Graphics2D) buffer.getGraphics();
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
@@ -60,7 +60,8 @@ public class Camera {
 	 */
 	public void render(BufferedImage image, int x, int y) {
 		if (onScreen(x, y, image.getWidth(), image.getHeight())) {
-			g.drawImage(image, x, y, null);
+			int[] pos = unProject(x, y);
+			g.drawImage(image.getScaledInstance((int)(image.getWidth()*zoom), (int)(image.getHeight()*zoom), Image.SCALE_FAST), pos[0], pos[1], null);
 		}
 	}
 
@@ -68,7 +69,8 @@ public class Camera {
 	public void drawRect(int x, int y, int width, int height, Color c) {
 		if (onScreen(x, y, width, height)) {
 			g.setColor(c);
-			g.drawRect(x, y, width, height);
+			int[] pos = unProject(x,y);
+			g.drawRect(pos[0], pos[1], (int)(width*zoom), (int)(height*zoom));
 		}
 	}
 
@@ -79,8 +81,7 @@ public class Camera {
 	 * @param g The graphics to draw the buffer to
 	 */
 	public void finish(Graphics g) {
-		g.drawImage(buffer.getScaledInstance(window.getWidth(), window.getHeight(),
-				Image.SCALE_FAST), (int) (x-window.getWidth()/2), (int) (y-window.getHeight()/2), null);
+		g.drawImage(buffer, 0, 0, null);
 	}
 
 	/**
