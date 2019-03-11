@@ -7,8 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JPanel;
-
 public class Camera {
 
 	public double zoom;
@@ -37,20 +35,19 @@ public class Camera {
 	/**
 	 * First step in rendering process, prepares buffer, graphics and min/max
 	 * values<br/>
-	 * Draws map to buffer
+	 * TODO: Draws map to buffer
 	 */
 	public void begin() {
-		buffer = new BufferedImage(window.getWidth(), window.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+		minX = (int) ((x - (window.getWidth() * (renderDist - 0.5))) * zoom);
+		maxX = (int) ((x + (window.getWidth() * (renderDist - 0.5))) * zoom);
+
+		minY = (int) ((y - (window.getHeight() * (renderDist - 0.5))) * zoom);
+		maxY = (int) ((y + (window.getHeight() * (renderDist - 0.5))) * zoom);
+
+		buffer = new BufferedImage(maxX-minX, maxY-minY, BufferedImage.TYPE_3BYTE_BGR);
 		g = (Graphics2D) buffer.getGraphics();
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
-
-		minX = (int) (x - (window.getWidth() * (renderDist - 0.5)));
-		maxX = (int) (x + (window.getWidth() * (renderDist - 0.5)));
-
-		minY = (int) (y - (window.getHeight() * (renderDist - 0.5)));
-		maxY = (int) (y + (window.getHeight() * (renderDist - 0.5)));
-
 //		map.render(this);
 	}
 
@@ -82,8 +79,8 @@ public class Camera {
 	 * @param g The graphics to draw the buffer to
 	 */
 	public void finish(Graphics g) {
-		g.drawImage(buffer.getScaledInstance((int) (buffer.getWidth() * zoom), (int) (buffer.getHeight() * zoom),
-				Image.SCALE_FAST), (int) x, (int) y, null);
+		g.drawImage(buffer.getScaledInstance(window.getWidth(), window.getHeight(),
+				Image.SCALE_FAST), (int) (x-window.getWidth()/2), (int) (y-window.getHeight()/2), null);
 	}
 
 	/**
@@ -107,8 +104,7 @@ public class Camera {
 	 * @return Whether the point is on the screen
 	 */
 	private boolean onScreen(int x, int y) {
-		int[] pos = unProject(x, y);
-		return pos[0] > 0 || pos[0] < window.getWidth() || pos[1] > 0 || pos[1] < window.getHeight();
+		return x > minX || x < maxX || y > minY || y < minY;
 	}
 
 	/**
@@ -157,6 +153,6 @@ public class Camera {
 	public void setPosition(int x, int y, double zoom) {
 		this.x = x;
 		this.y = y;
-		this.zoom = zoom;
+		this.zoom = zoom > 0 ? zoom : 0.1;
 	}
 }
