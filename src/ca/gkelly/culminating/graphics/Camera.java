@@ -48,7 +48,7 @@ public class Camera {
 		g = (Graphics2D) buffer.getGraphics();
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
-//		map.render(this);
+		map.render(this);
 	}
 
 	/**
