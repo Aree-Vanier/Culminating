@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 public class Camera {
 	
-	double zoom;
+	public double zoom;
 	int x;
 	int y;
 	
@@ -58,6 +58,11 @@ public class Camera {
 		}
 	}
 	
+	public void drawRect(int x, int y, int width, int height, Color c) {
+		g.setColor(c);
+		g.drawRect(x, y, width, height);
+	}
+	
 	/**The final step in rendering, draws the buffer to the graphics, offset for camera position
 	 * @param g The graphics to draw buffer to*/
 	public void finish(Graphics g) {
@@ -69,7 +74,10 @@ public class Camera {
 	 * @param y The y coordinate, in screen space
 	 * @return The coordinates, in world space*/
 	public int[] project(int x, int y) {
-		return null;
+		int newX = (int) ((x-this.x)/zoom);
+		int newY = (int) ((y-this.y)/zoom);
+		
+		return new int[] {newX, newY};
 	}
 
 	/**Unproject a pair of coordinates to window space
@@ -77,7 +85,10 @@ public class Camera {
 	 * @param y The y coordinate, in world space
 	 * @return The coordinates, in screen space*/
 	public int[] unProject(int x, int y) {
-		return null;
+		int newX = (int) (x*zoom)+this.x;
+		int newY = (int) (y*zoom)+this.y;
+		
+		return new int[] {newX, newY};
 	}
 	
 	/**Get the width of the camera buffer*/
