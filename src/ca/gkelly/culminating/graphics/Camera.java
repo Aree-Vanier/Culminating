@@ -10,102 +10,150 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 public class Camera {
-	
+
 	public double zoom;
 	int x;
 	int y;
-	
+
 	double renderDist = 1.1;
 	BufferedImage buffer;
 	Graphics2D g;
 	Container window;
 	TiledMap map;
-	
+
 	int maxX, maxY, minX, minY;
-	
-	/**Create a new Camera
+
+	/**
+	 * Create a new Camera
+	 * 
 	 * @param window The container that will hold the camera
-	 * @param map The {@link TiledMap} that will be used as the background*/
-	public Camera(Container window, TiledMap map){
+	 * @param map    The {@link TiledMap} that will be used as the background
+	 */
+	public Camera(Container window, TiledMap map) {
 		this.window = window;
 		this.map = map;
 	}
-	
-	/**First step in rendering process, prepares buffer, graphics and min/max values<br/>
-	 * Draws map to buffer*/
+
+	/**
+	 * First step in rendering process, prepares buffer, graphics and min/max
+	 * values<br/>
+	 * Draws map to buffer
+	 */
 	public void begin() {
 		buffer = new BufferedImage(window.getWidth(), window.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
 		g = (Graphics2D) buffer.getGraphics();
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
-		
-		minX = (int) (x-(window.getWidth()*(renderDist-0.5)));
-		maxX = (int) (x+(window.getWidth()*(renderDist-0.5)));
 
-		minY = (int) (y-(window.getHeight()*(renderDist-0.5)));
-		maxY = (int) (y+(window.getHeight()*(renderDist-0.5)));
-		
+		minX = (int) (x - (window.getWidth() * (renderDist - 0.5)));
+		maxX = (int) (x + (window.getWidth() * (renderDist - 0.5)));
+
+		minY = (int) (y - (window.getHeight() * (renderDist - 0.5)));
+		maxY = (int) (y + (window.getHeight() * (renderDist - 0.5)));
+
 //		map.render(this);
 	}
-	
-	/**Render an image to the camera
+
+	/**
+	 * Render an image to the camera
+	 * 
 	 * @param image The image to render
-	 * @param x The x position of the image
-	 * @param y The y position of the image*/
+	 * @param x     The x position of the image
+	 * @param y     The y position of the image
+	 */
 	public void render(BufferedImage image, int x, int y) {
-		if(x+image.getWidth() > minX && x < maxX && y+image.getHeight() > minY && y < maxY) {
+		if (onScreen(x, y, image.getWidth(), image.getHeight())) {
 			g.drawImage(image, x, y, null);
 		}
 	}
-	
+
+	/** Draw a rectangle to the world */
 	public void drawRect(int x, int y, int width, int height, Color c) {
-		g.setColor(c);
-		g.drawRect(x, y, width, height);
-	}
-	
-	/**The final step in rendering, draws the buffer to the graphics, offset for camera position
-	 * @param g The graphics to draw buffer to*/
-	public void finish(Graphics g) {
-		g.drawImage(buffer.getScaledInstance((int) (buffer.getWidth()*zoom), (int) (buffer.getHeight()*zoom), Image.SCALE_FAST), (int) x, (int) y, null);
-	}
-	
-	/**Project a pair of coordinates to World space
-	 * @param x The x coordinate, in screen space
-	 * @param y The y coordinate, in screen space
-	 * @return The coordinates, in world space*/
-	public int[] project(int x, int y) {
-		int newX = (int) ((x-this.x)/zoom);
-		int newY = (int) ((y-this.y)/zoom);
-		
-		return new int[] {newX, newY};
+		if (onScreen(x, y, width, height)) {
+			g.setColor(c);
+			g.drawRect(x, y, width, height);
+		}
 	}
 
-	/**Unproject a pair of coordinates to window space
+	/**
+	 * The final step in rendering, draws the buffer to the graphics, offset for
+	 * camera position
+	 * 
+	 * @param g The graphics to draw the buffer to
+	 */
+	public void finish(Graphics g) {
+		g.drawImage(buffer.getScaledInstance((int) (buffer.getWidth() * zoom), (int) (buffer.getHeight() * zoom),
+				Image.SCALE_FAST), (int) x, (int) y, null);
+	}
+
+	/**
+	 * Determines if a rectangle is on screen
+	 * 
+	 * @param x      Top-left corner
+	 * @param y      Bottom-left corner
+	 * @param width  Rectangle width
+	 * @param height Rectangle height
+	 * @return Whether the rectangle is on the screen
+	 */
+	private boolean onScreen(int x, int y, int width, int height) {
+		return onScreen(x, y) || onScreen(x + width, y) || onScreen(x, y + height) || onScreen(x + width, y + height);
+	}
+
+	/**
+	 * Determines if a point is on the screen
+	 * 
+	 * @param x X value of the point
+	 * @param y Y value of the point
+	 * @return Whether the point is on the screen
+	 */
+	private boolean onScreen(int x, int y) {
+		int[] pos = unProject(x, y);
+		return pos[0] > 0 || pos[0] < window.getWidth() || pos[1] > 0 || pos[1] < window.getHeight();
+	}
+
+	/**
+	 * Project a pair of coordinates to World space
+	 * 
+	 * @param x The x coordinate, in screen space
+	 * @param y The y coordinate, in screen space
+	 * @return The coordinates, in world space
+	 */
+	public int[] project(int x, int y) {
+		int newX = (int) ((x - this.x) / zoom);
+		int newY = (int) ((y - this.y) / zoom);
+
+		return new int[] { newX, newY };
+	}
+
+	/**
+	 * Unproject a pair of coordinates to window space
+	 * 
 	 * @param x The x coordinate, in world space
 	 * @param y The y coordinate, in world space
-	 * @return The coordinates, in screen space*/
+	 * @return The coordinates, in screen space
+	 */
 	public int[] unProject(int x, int y) {
-		int newX = (int) (x*zoom)+this.x;
-		int newY = (int) (y*zoom)+this.y;
-		
-		return new int[] {newX, newY};
+		int newX = (int) (x * zoom) + this.x;
+		int newY = (int) (y * zoom) + this.y;
+
+		return new int[] { newX, newY };
 	}
-	
-	/**Get the width of the camera buffer*/
+
+	/** Get the width of the camera buffer */
 	public int getWidth() {
-		return(buffer.getWidth());
+		return (buffer.getWidth());
 	}
-	
-	/**Get the height of the camera buffer*/
+
+	/** Get the height of the camera buffer */
 	public int getHeight() {
-		return(buffer.getHeight());
+		return (buffer.getHeight());
 	}
-	
+
 	public void translate(double x, double y) {
-		x+=x;
-		y+=y;
+		x += x;
+		y += y;
 	}
-	
+
 	public void setPosition(int x, int y, double zoom) {
 		this.x = x;
 		this.y = y;
