@@ -1,8 +1,10 @@
 package ca.gkelly.culminating.graphics;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
@@ -34,14 +36,16 @@ public class Camera {
 	public void begin() {
 		buffer = new BufferedImage(window.getWidth(), window.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
 		g = (Graphics2D) buffer.getGraphics();
-
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
+		
 		minX = (int) (x-(window.getWidth()*(renderDist-0.5)));
 		maxX = (int) (x+(window.getWidth()*(renderDist-0.5)));
 
 		minY = (int) (y-(window.getHeight()*(renderDist-0.5)));
 		maxY = (int) (y+(window.getHeight()*(renderDist-0.5)));
 		
-		map.render(this);
+//		map.render(this);
 	}
 	
 	/**Render an image to the camera
@@ -57,7 +61,7 @@ public class Camera {
 	/**The final step in rendering, draws the buffer to the graphics, offset for camera position
 	 * @param g The graphics to draw buffer to*/
 	public void finish(Graphics g) {
-		g.drawImage(buffer, (int) x, (int) y, null);
+		g.drawImage(buffer.getScaledInstance((int) (buffer.getWidth()*zoom), (int) (buffer.getHeight()*zoom), Image.SCALE_FAST), (int) x, (int) y, null);
 	}
 	
 	/**Project a pair of coordinates to World space

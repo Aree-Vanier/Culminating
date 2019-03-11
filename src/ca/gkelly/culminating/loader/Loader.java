@@ -27,12 +27,17 @@ public class Loader {
 		WEAPON
 	}
 	
+	public static void init(String dir) {
+		directory = dir;
+	}
+	
 	public static void load() {
 		System.out.println("Loading");
 		File[] files = new File(directory+"\\gameData").listFiles();
 		
 		
 		BufferedReader reader;
+		System.out.println(files);
 		for(File f : files) {
 			System.out.println(f.getName());
 			//We only want the JSON files

@@ -4,9 +4,6 @@ import ca.gkelly.culminating.loader.MountSource;
 
 public class Weapon extends Mount{
 	
-	
-	
-	
 	public Weapon(MountSource m, int x, int y) {
 		super(m, x, y);
 	}
