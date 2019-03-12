@@ -41,7 +41,7 @@ public class TiledMap {
 	/** Last zoom level of camera, used to check need for re-render */
 	double lastZoom;
 
-	/** Polygon colliders used on map, each inner list is a separate layer */
+	/** Polygon collider layers used on map */
 	ColliderLayer[] colliders;
 
 	/**
@@ -134,7 +134,7 @@ public class TiledMap {
 		for (int i = 0; i < layers.getLength(); i++) {
 			Element e = (Element) layers.item(i);
 			NodeList polyNodes = (NodeList) e.getElementsByTagName("object");
-			colliders[i] = new ColliderLayer(polyNodes);
+			colliders[i] = new ColliderLayer(polyNodes, e.getAttribute("name"));
 		}
 
 		return true;
@@ -155,10 +155,6 @@ public class TiledMap {
 		lastZoom = cam.zoom;
 
 		cam.render(image, 0, 0);
-
-		for (ColliderLayer layer : colliders) {
-			layer.render(cam, Color.RED);
-		}
 	}
 
 	/**
@@ -207,12 +203,33 @@ public class TiledMap {
 		return (tileset.getImage(ID));
 	}
 
+	/**
+	 * Get the polygon that contains the point, from the selected layer
+	 * 
+	 * @param x     The x value of the point
+	 * @param y     The y value of the point
+	 * @param layer The layer to search
+	 * @return The polygon that contains the point<br/>
+	 *         <strong>null</strong> if no polygon contains the point
+	 *         <strong>null</strong> if the layer doesn't exist
+	 */
+	public Polygon getPoly(int x, int y, String layer) {
+		for (ColliderLayer c : colliders) {
+			if (c.name.equals(layer)) {
+				return (c.getPoly(x, y));
+			}
+		}
+		return null;
+	}
+
 }
 
 class ColliderLayer {
 	Polygon[] polygons;
+	String name;
 
-	ColliderLayer(NodeList polys) {
+	ColliderLayer(NodeList polys, String name) {
+		this.name = name;
 		polygons = new Polygon[polys.getLength()];
 		for (int j = 0; j < polys.getLength(); j++) {
 			Element poly = (Element) polys.item(j);
@@ -250,8 +267,8 @@ class ColliderLayer {
 	 * 
 	 * @param x The x value of the point
 	 * @param y The y value of the point
-	 * @return The polygon that contains the point, null if no polygon contains the
-	 *         point
+	 * @return The polygon that contains the point<br/>
+	 *         <strong>null</strong> if no polygon contains the point
 	 */
 	public Polygon getPoly(int x, int y) {
 		for (Polygon p : polygons) {

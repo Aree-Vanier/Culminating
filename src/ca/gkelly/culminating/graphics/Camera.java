@@ -1,11 +1,13 @@
 package ca.gkelly.culminating.graphics;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 
 public class Camera {
@@ -90,7 +92,10 @@ public class Camera {
 			yPoints[i] = unProject(p.xpoints[i], p.ypoints[i])[1];
 		}
 		if(onScreen) {
+			g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 175));
+			g.fillPolygon(xPoints, yPoints, nPoints);
 			g.setColor(c);
+			g.setStroke(new BasicStroke(5));
 			g.drawPolygon(xPoints, yPoints, nPoints);
 		}
 	}

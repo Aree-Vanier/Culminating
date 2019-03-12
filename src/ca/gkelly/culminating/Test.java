@@ -2,8 +2,11 @@ package ca.gkelly.culminating;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Polygon;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
 
@@ -15,13 +18,14 @@ import ca.gkelly.culminating.graphics.TiledMap;
 import ca.gkelly.culminating.loader.Loader;
 
 //This is a class used for quick console tests that don't need the graphics
-public class Test extends JFrame implements KeyListener{
+public class Test extends JFrame implements KeyListener, MouseMotionListener{
 	TiledMap m;
 	int x = 256;
 	int y = 256;
 	double zoom = 1;
 	Camera cam;
 	Ship s;
+	Polygon selectedPoly = null;
 	
 	public Test(String[] args) {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -32,6 +36,7 @@ public class Test extends JFrame implements KeyListener{
 		
 		System.out.println(m.doc.getDocumentElement().getNodeName());
 		addKeyListener(this);
+		addMouseMotionListener(this);
 		
 		Loader.init(args[0]);
 		Loader.load();
@@ -57,6 +62,10 @@ public class Test extends JFrame implements KeyListener{
 		
 		s.render(cam);
 		cam.drawRect(0,0,10,10,Color.RED);
+
+		if(selectedPoly!=null) {
+			cam.drawPoly(selectedPoly, Color.RED);
+		}
 		
 		cam.finish(g);
 	}
@@ -86,6 +95,18 @@ public class Test extends JFrame implements KeyListener{
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		selectedPoly = m.getPoly(cam.project(e.getX(), 0)[0], cam.project(0, e.getY())[1], "land");
+		System.out.println(cam.project(e.getX(), e.getY())[0]+"\t"+cam.project(e.getX(), e.getY())[1]);
 	}
 
 }
