@@ -42,7 +42,7 @@ public class TiledMap {
 	double lastZoom;
 
 	/** Polygon colliders used on map, each inner list is a separate layer */
-	Polygon[][] colliders;
+	ColliderLayer[] colliders;
 
 	/**
 	 * Prepare a new tiled map
@@ -126,34 +126,15 @@ public class TiledMap {
 		}
 
 		// Get collider elements
-		NodeList colliderLayers = (NodeList) doc.getElementsByTagName("objectgroup");
-		this.colliders = new Polygon[colliderLayers.getLength()][];
+		NodeList layers = (NodeList) doc.getElementsByTagName("objectgroup");
+		colliders = new ColliderLayer[layers.getLength()];
 
-		System.out.println(colliderLayers.getLength());
-		
-		for (int i = 0; i < colliderLayers.getLength(); i++) {
-			Element e = (Element) colliderLayers.item(i);
+		System.out.println(layers.getLength());
+
+		for (int i = 0; i < layers.getLength(); i++) {
+			Element e = (Element) layers.item(i);
 			NodeList polyNodes = (NodeList) e.getElementsByTagName("object");
-			Polygon[] polyLayer = new Polygon[polyNodes.getLength()];
-			System.out.println(polyNodes.getLength());
-			for (int j = 0; j < polyNodes.getLength(); j++) {
-				Element poly = (Element) polyNodes.item(j);
-				int x = Integer.parseInt(poly.getAttribute("x"));
-				int y = Integer.parseInt(poly.getAttribute("y"));
-				
-				poly = (Element) poly.getElementsByTagName("polygon").item(0);
-				String[] points = poly.getAttribute("points").split(" ");
-				// Create int[]s for x and y points
-				int[] xPoints = new int[points.length];
-				int[] yPoints = new int[points.length];
-				for (int s = 0; s < points.length; s++) {
-					xPoints[s] = (Integer.parseInt(points[s].split(",")[0]))+x;
-					yPoints[s] = (Integer.parseInt(points[s].split(",")[1]))+y;
-				}
-				// Create the corresponding polygon
-				polyLayer[j] = new Polygon(xPoints, yPoints, xPoints.length);
-			}
-			colliders[i] = polyLayer;
+			colliders[i] = new ColliderLayer(polyNodes);
 		}
 
 		return true;
@@ -174,11 +155,9 @@ public class TiledMap {
 		lastZoom = cam.zoom;
 
 		cam.render(image, 0, 0);
-		
-		for(Polygon[] layer : colliders) {
-			for(Polygon collider:layer) {
-				cam.drawPoly(collider, Color.RED);
-			}
+
+		for (ColliderLayer layer : colliders) {
+			layer.render(cam, Color.RED);
 		}
 	}
 
@@ -228,6 +207,59 @@ public class TiledMap {
 		return (tileset.getImage(ID));
 	}
 
+}
+
+class ColliderLayer {
+	Polygon[] polygons;
+
+	ColliderLayer(NodeList polys) {
+		polygons = new Polygon[polys.getLength()];
+		for (int j = 0; j < polys.getLength(); j++) {
+			Element poly = (Element) polys.item(j);
+			int x = Integer.parseInt(poly.getAttribute("x"));
+			int y = Integer.parseInt(poly.getAttribute("y"));
+
+			poly = (Element) poly.getElementsByTagName("polygon").item(0);
+			String[] points = poly.getAttribute("points").split(" ");
+			// Create int[]s for x and y points
+			int[] xPoints = new int[points.length];
+			int[] yPoints = new int[points.length];
+			for (int s = 0; s < points.length; s++) {
+				xPoints[s] = (Integer.parseInt(points[s].split(",")[0])) + x;
+				yPoints[s] = (Integer.parseInt(points[s].split(",")[1])) + y;
+			}
+			// Create the corresponding polygon
+			polygons[j] = new Polygon(xPoints, yPoints, xPoints.length);
+		}
+	}
+
+	/**
+	 * Draw the polygons to the screen
+	 * 
+	 * @param cam The camera to use
+	 * @param c   The colour to use
+	 */
+	public void render(Camera cam, Color c) {
+		for (Polygon collider : polygons) {
+			cam.drawPoly(collider, c);
+		}
+	}
+
+	/**
+	 * Get the polygon that contains the point
+	 * 
+	 * @param x The x value of the point
+	 * @param y The y value of the point
+	 * @return The polygon that contains the point, null if no polygon contains the
+	 *         point
+	 */
+	public Polygon getPoly(int x, int y) {
+		for (Polygon p : polygons) {
+			if (p.contains(x, y))
+				return new Polygon(p.xpoints, p.ypoints, p.npoints);
+		}
+		return null;
+	}
 }
 
 /** A class used to handle loading and management of a tileset */
