@@ -5,6 +5,7 @@ import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 
 public class Camera {
@@ -61,7 +62,8 @@ public class Camera {
 	public void render(BufferedImage image, int x, int y) {
 		if (onScreen(x, y, image.getWidth(), image.getHeight())) {
 			int[] pos = unProject(x, y);
-			g.drawImage(image.getScaledInstance((int)(image.getWidth()*zoom), (int)(image.getHeight()*zoom), Image.SCALE_FAST), pos[0], pos[1], null);
+			g.drawImage(image.getScaledInstance((int) (image.getWidth() * zoom), (int) (image.getHeight() * zoom),
+					Image.SCALE_FAST), pos[0], pos[1], null);
 		}
 	}
 
@@ -69,8 +71,27 @@ public class Camera {
 	public void drawRect(int x, int y, int width, int height, Color c) {
 		if (onScreen(x, y, width, height)) {
 			g.setColor(c);
-			int[] pos = unProject(x,y);
-			g.drawRect(pos[0], pos[1], (int)(width*zoom), (int)(height*zoom));
+			int[] pos = unProject(x, y);
+			g.drawRect(pos[0], pos[1], (int) (width * zoom), (int) (height * zoom));
+		}
+	}
+
+	/** Draw a polygon to the world */
+	public void drawPoly(Polygon p, Color c) {
+		int[] xPoints = new int[p.xpoints.length];
+		int[] yPoints = new int[p.ypoints.length];
+		int nPoints = p.npoints;
+
+		boolean onScreen=false;
+		
+		for (int i = 0; i < nPoints; i++) {
+			if(onScreen(xPoints[i], yPoints[i])) onScreen = true;
+			xPoints[i] = unProject(p.xpoints[i], p.ypoints[i])[0];
+			yPoints[i] = unProject(p.xpoints[i], p.ypoints[i])[1];
+		}
+		if(onScreen) {
+			g.setColor(c);
+			g.drawPolygon(xPoints, yPoints, nPoints);
 		}
 	}
 

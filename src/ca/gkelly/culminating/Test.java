@@ -51,7 +51,7 @@ public class Test extends JFrame implements KeyListener{
 		if(m==null)return;
 		if(m.tileset == null) return;
 		g.setColor(Color.black);
-		g.fillRect(0, 0, getWidth(), getHeight());
+//		g.fillRect(0, 0, getWidth(), getHeight());
 		
 		cam.begin();
 		

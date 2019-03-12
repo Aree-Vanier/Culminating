@@ -1,5 +1,6 @@
 package ca.gkelly.culminating.graphics;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
@@ -122,30 +123,35 @@ public class TiledMap {
 
 				}
 			}
-			System.out.println();
 		}
 
 		// Get collider elements
 		NodeList colliderLayers = (NodeList) doc.getElementsByTagName("objectgroup");
 		this.colliders = new Polygon[colliderLayers.getLength()][];
 
+		System.out.println(colliderLayers.getLength());
+		
 		for (int i = 0; i < colliderLayers.getLength(); i++) {
 			Element e = (Element) colliderLayers.item(i);
-			NodeList polyNodes = (NodeList) e.getElementsByTagName("Polygon");
+			NodeList polyNodes = (NodeList) e.getElementsByTagName("object");
 			Polygon[] polyLayer = new Polygon[polyNodes.getLength()];
-
+			System.out.println(polyNodes.getLength());
 			for (int j = 0; j < polyNodes.getLength(); j++) {
 				Element poly = (Element) polyNodes.item(j);
+				int x = Integer.parseInt(poly.getAttribute("x"));
+				int y = Integer.parseInt(poly.getAttribute("y"));
+				
+				poly = (Element) poly.getElementsByTagName("polygon").item(0);
 				String[] points = poly.getAttribute("points").split(" ");
 				// Create int[]s for x and y points
-				int[] x = new int[points.length];
-				int[] y = new int[points.length];
+				int[] xPoints = new int[points.length];
+				int[] yPoints = new int[points.length];
 				for (int s = 0; s < points.length; s++) {
-					x[s] = (Integer.parseInt(points[s].split(",")[0]));
-					y[s] = (Integer.parseInt(points[s].split(",")[1]));
+					xPoints[s] = (Integer.parseInt(points[s].split(",")[0]))+x;
+					yPoints[s] = (Integer.parseInt(points[s].split(",")[1]))+y;
 				}
 				// Create the corresponding polygon
-				polyLayer[j] = new Polygon(x, y, x.length);
+				polyLayer[j] = new Polygon(xPoints, yPoints, xPoints.length);
 			}
 			colliders[i] = polyLayer;
 		}
@@ -167,7 +173,13 @@ public class TiledMap {
 		lastY = cam.y;
 		lastZoom = cam.zoom;
 
-		cam.render(image, 0, 0);;
+		cam.render(image, 0, 0);
+		
+		for(Polygon[] layer : colliders) {
+			for(Polygon collider:layer) {
+				cam.drawPoly(collider, Color.RED);
+			}
+		}
 	}
 
 	/**
