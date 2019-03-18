@@ -26,6 +26,11 @@ public class Test extends JFrame implements KeyListener, MouseMotionListener{
 	Camera cam;
 	Ship s;
 	Polygon selectedPoly = null;
+
+	public static void main(String[] args) {
+		System.out.println("TESTING");
+		new Test(args);
+	}
 	
 	public Test(String[] args) {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -44,11 +49,6 @@ public class Test extends JFrame implements KeyListener, MouseMotionListener{
 		cam = new Camera(getContentPane(), m);
 		Mount[] m = {new Weapon(Loader.mounts.get(0), 0,0), new Weapon(Loader.mounts.get(0), 20, 10)};
 		s = new Ship(Loader.vessels.get(0), 100, 100, m);
-	}
-	
-	public static void main(String[] args) {
-		System.out.println("TESTING");
-		new Test(args);
 	}
 	
 	@Override
