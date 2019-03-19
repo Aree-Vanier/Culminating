@@ -51,7 +51,10 @@ public class Camera {
 		g = (Graphics2D) buffer.getGraphics();
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
-		map.render(this);
+		
+		//Render the map
+//		g.drawImage(map.image, x, y, null);
+		render(map.image, 0, 0);
 	}
 	
 	/**
