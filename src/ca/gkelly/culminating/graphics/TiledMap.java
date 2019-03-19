@@ -146,15 +146,18 @@ public class TiledMap {
 	 * @param cam The camera to be rendered to
 	 */
 	public void render(Camera cam) {
+		long time = System.nanoTime();
 		// If the camera has moved, re-render
 		if (cam.x != lastX || cam.y != lastY || cam.zoom != lastZoom)
-			reRender(cam.x, cam.y, cam.getWidth(), cam.getHeight());
+			reRender(cam.x, cam.y, cam.window.getWidth(), cam.window.getHeight(), cam.zoom);
 
 		lastX = cam.x;
 		lastY = cam.y;
 		lastZoom = cam.zoom;
 
-		cam.render(image, 0, 0);
+		cam.render(cameraRender, cam.worldSpace(0, 0)[0], cam.worldSpace(0, 0)[1]);
+		
+		System.out.println(System.nanoTime()-time);
 	}
 
 	/**
@@ -165,22 +168,31 @@ public class TiledMap {
 	 * @param width   Render width
 	 * @param height  Render height
 	 */
-	public void reRender(int centreX, int centreY, int width, int height) {
+	public void reRender(int centreX, int centreY, int width, int height, double zoom) {
+		
+		height /= zoom;
+		width /= zoom;
+		if(width > image.getWidth()) height = image.getWidth();
+		if(height > image.getHeight()) height = image.getHeight();
 		// Reinstantiate the image
 		cameraRender = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
 		Graphics g = cameraRender.getGraphics();
+		g.setColor(Color.MAGENTA);
+		g.fillRect(0, 0, width, height);
 
+		System.out.println(centreX+","+ centreY+"\t"+width+","+height);
 		int x = centreX - width / 2;
 		int y = centreY - height / 2;
-		int offsetX = 0;
-		int offsetY = 0;
+		int offsetX = (int) (centreX/zoom);
+		int offsetY = (int) (centreY/zoom);
+		
+		System.out.println(x+"\t"+y);
+
 
 		if (x < 0) {
-			offsetX = Math.abs(x);
 			x = 0;
 		}
 		if (y < 0) {
-			offsetY = Math.abs(y);
 			y = 0;
 		}
 		if (width > image.getWidth()) {
@@ -189,8 +201,18 @@ public class TiledMap {
 		if (height > image.getHeight()) {
 			height = image.getHeight();
 		}
+		
+		System.out.println(offsetX+"\t"+offsetY);
+		
+//		System.out.println(width/32+"\t"+image.getWidth()/32);
+//		System.out.println(height/32+"\t"+image.getHeight()/32);
 
+		
 		g.drawImage(image.getSubimage(x, y, width, height), offsetX, offsetY, null);
+		g.setColor(Color.CYAN);
+		g.fillRect(offsetX, offsetY, 10, 10);
+		
+		g.dispose();
 	}
 
 	/**

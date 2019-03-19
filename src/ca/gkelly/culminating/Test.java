@@ -18,7 +18,7 @@ import ca.gkelly.culminating.graphics.TiledMap;
 import ca.gkelly.culminating.loader.Loader;
 
 //This is a class used for quick console tests that don't need the graphics
-public class Test extends JFrame implements KeyListener, MouseMotionListener{
+public class Test extends JFrame implements KeyListener, MouseMotionListener, Runnable{
 	TiledMap m;
 	int x = 256;
 	int y = 256;
@@ -26,6 +26,8 @@ public class Test extends JFrame implements KeyListener, MouseMotionListener{
 	Camera cam;
 	Ship s;
 	Polygon selectedPoly = null;
+	Thread t;
+	
 
 	public static void main(String[] args) {
 		System.out.println("TESTING");
@@ -49,6 +51,9 @@ public class Test extends JFrame implements KeyListener, MouseMotionListener{
 		cam = new Camera(getContentPane(), m);
 		Mount[] m = {new Weapon(Loader.mounts.get(0), 0,0), new Weapon(Loader.mounts.get(0), 20, 10)};
 		s = new Ship(Loader.vessels.get(0), 100, 100, m);
+		
+		t = new Thread(this);
+		t.start();
 	}
 	
 	@Override
@@ -78,10 +83,10 @@ public class Test extends JFrame implements KeyListener, MouseMotionListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_W) y++;
-		if(e.getKeyCode() == KeyEvent.VK_S) y--;
-		if(e.getKeyCode() == KeyEvent.VK_A) x++;
-		if(e.getKeyCode() == KeyEvent.VK_D) x--;
+		if(e.getKeyCode() == KeyEvent.VK_W) y--;
+		if(e.getKeyCode() == KeyEvent.VK_S) y++;
+		if(e.getKeyCode() == KeyEvent.VK_A) x--;
+		if(e.getKeyCode() == KeyEvent.VK_D) x++;
 		
 		if(e.getKeyCode() == KeyEvent.VK_E) zoom += 0.1;
 		if(e.getKeyCode() == KeyEvent.VK_Q) zoom -= 0.1;
@@ -89,7 +94,6 @@ public class Test extends JFrame implements KeyListener, MouseMotionListener{
 		cam.setPosition(x, y, zoom);
 		
 		repaint();
-		
 	}
 
 	@Override
@@ -105,8 +109,14 @@ public class Test extends JFrame implements KeyListener, MouseMotionListener{
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		selectedPoly = m.getPoly(cam.project(e.getX(), 0)[0], cam.project(0, e.getY())[1], "land");
-		System.out.println(cam.project(e.getX(), e.getY())[0]+"\t"+cam.project(e.getX(), e.getY())[1]);
+		selectedPoly = m.getPoly(cam.worldSpace(e.getX(), 0)[0], cam.worldSpace(0, e.getY())[1], "land");
+//		System.out.println(cam.worldSpace(e.getX(), e.getY())[0]+"\t"+cam.worldSpace(e.getX(), e.getY())[1]);
+	}
+
+	public void run() {
+		while(true) {
+//			repaint();
+		}
 	}
 
 }

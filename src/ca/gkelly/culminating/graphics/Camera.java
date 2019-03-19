@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 
 public class Camera {
 
-	public double zoom;
+	public double zoom = 1;
 	int x;
 	int y;
 
@@ -53,7 +53,7 @@ public class Camera {
 		g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
 		map.render(this);
 	}
-
+	
 	/**
 	 * Render an image to the camera
 	 * 
@@ -63,7 +63,8 @@ public class Camera {
 	 */
 	public void render(BufferedImage image, int x, int y) {
 		if (onScreen(x, y, image.getWidth(), image.getHeight())) {
-			int[] pos = unProject(x, y);
+			int[] pos = screenSpace(x, y);
+//			System.out.println("Drawing an image");
 			g.drawImage(image.getScaledInstance((int) (image.getWidth() * zoom), (int) (image.getHeight() * zoom),
 					Image.SCALE_FAST), pos[0], pos[1], null);
 		}
@@ -73,7 +74,7 @@ public class Camera {
 	public void drawRect(int x, int y, int width, int height, Color c) {
 		if (onScreen(x, y, width, height)) {
 			g.setColor(c);
-			int[] pos = unProject(x, y);
+			int[] pos = screenSpace(x, y);
 			g.drawRect(pos[0], pos[1], (int) (width * zoom), (int) (height * zoom));
 		}
 	}
@@ -88,8 +89,8 @@ public class Camera {
 		
 		for (int i = 0; i < nPoints; i++) {
 			if(onScreen(xPoints[i], yPoints[i])) onScreen = true;
-			xPoints[i] = unProject(p.xpoints[i], p.ypoints[i])[0];
-			yPoints[i] = unProject(p.xpoints[i], p.ypoints[i])[1];
+			xPoints[i] = screenSpace(p.xpoints[i], p.ypoints[i])[0];
+			yPoints[i] = screenSpace(p.xpoints[i], p.ypoints[i])[1];
 		}
 		if(onScreen) {
 			g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 175));
@@ -107,7 +108,7 @@ public class Camera {
 	 * @param g The graphics to draw the buffer to
 	 */
 	public void finish(Graphics g) {
-		g.drawImage(buffer, 0, 0, null);
+		g.drawImage(buffer.getSubimage(0,0,window.getWidth(), window.getHeight()), 0, 0, null);
 	}
 
 	/**
@@ -141,7 +142,7 @@ public class Camera {
 	 * @param y The y coordinate, in screen space
 	 * @return The coordinates, in world space
 	 */
-	public int[] project(int x, int y) {
+	public int[] worldSpace(int x, int y) {
 		int newX = (int) ((x - this.x) / zoom);
 		int newY = (int) ((y - this.y) / zoom);
 
@@ -155,7 +156,7 @@ public class Camera {
 	 * @param y The y coordinate, in world space
 	 * @return The coordinates, in screen space
 	 */
-	public int[] unProject(int x, int y) {
+	public int[] screenSpace(int x, int y) {
 		int newX = (int) (x * zoom) + this.x;
 		int newY = (int) (y * zoom) + this.y;
 
