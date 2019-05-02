@@ -13,6 +13,8 @@ import javax.imageio.ImageIO;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import ca.gkelly.culminating.util.Logger;
+
 public class Loader {
 	public static ArrayList<VesselSource> vessels = new ArrayList<VesselSource>();
 	public static ArrayList<MountSource> mounts = new ArrayList<MountSource>();
@@ -32,14 +34,13 @@ public class Loader {
 	}
 	
 	public static void load() {
-		System.out.println("Loading");
+		Logger.log(Logger.INFO, "Loading", Loader.class);
 		File[] files = new File(directory+"\\gameData").listFiles();
 		
 		
 		BufferedReader reader;
-		System.out.println(files);
 		for(File f : files) {
-			System.out.println(f.getName());
+			Logger.log(Logger.DEBUG, f.getName(), Loader.class);
 			//We only want the JSON files
 			if(!f.getName().endsWith(".json")) {
 				continue;
@@ -62,7 +63,7 @@ public class Loader {
 			
 			//Get the type from the declaration
 			ResourceType t = ResourceType.valueOf(declaration.split(" ")[1]);
-			System.out.println(t);
+			Logger.log(Logger.DEBUG, t, Loader.class);
 			
 			try {
 				loadResource(f, t);
@@ -84,7 +85,7 @@ public class Loader {
 //			}
 //		}
 		
-		System.out.println("Loaded");
+		Logger.log(Logger.INFO, "Loaded", Loader.class);
 	}
 	
 	private static void loadResource(File file, ResourceType t) throws Exception {
@@ -107,7 +108,7 @@ public class Loader {
 		
 		String imagePath = (file.getParentFile().getPath())+"\\"+(String) rootJSON.get("texture");
 		
-		System.out.println(imagePath);
+		Logger.log(Logger.DEBUG, imagePath, Loader.class);
 		BufferedImage image  = ImageIO.read(new File(imagePath));
 		
 		switch(t) {

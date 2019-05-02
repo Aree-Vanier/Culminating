@@ -16,6 +16,7 @@ import ca.gkelly.culminating.entities.Weapon;
 import ca.gkelly.culminating.graphics.Camera;
 import ca.gkelly.culminating.graphics.TiledMap;
 import ca.gkelly.culminating.loader.Loader;
+import ca.gkelly.culminating.util.Logger;
 
 //This is a class used for quick console tests that don't need the graphics
 public class Test extends JFrame implements KeyListener, MouseMotionListener, Runnable{
@@ -30,7 +31,7 @@ public class Test extends JFrame implements KeyListener, MouseMotionListener, Ru
 	
 
 	public static void main(String[] args) {
-		System.out.println("TESTING");
+		Logger.log(Logger.INFO, "TESTING", Test.class);
 		new Test(args);
 	}
 	
@@ -39,9 +40,9 @@ public class Test extends JFrame implements KeyListener, MouseMotionListener, Ru
 		setSize(640, 480);
 		setVisible(true);
 		m = new TiledMap(args[0]+"\\maps\\test.tmx");
-		System.out.println(m.load());
+		Logger.log(Logger.INFO, m.load(), Test.class);
 		
-		System.out.println(m.doc.getDocumentElement().getNodeName());
+		Logger.log(Logger.DEBUG, m.doc.getDocumentElement().getNodeName(), Test.class);
 		addKeyListener(this);
 		addMouseMotionListener(this);
 		

@@ -37,8 +37,7 @@ public class Camera {
 
 	/**
 	 * First step in rendering process, prepares buffer, graphics and min/max
-	 * values<br/>
-	 * TODO: Draws map to buffer
+	 * values
 	 */
 	public void begin() {
 		minX = (int) ((x - (window.getWidth() * (renderDist - 0.5))) * zoom);

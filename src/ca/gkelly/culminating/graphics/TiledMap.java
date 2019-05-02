@@ -18,6 +18,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import ca.gkelly.culminating.util.Logger;
+
 public class TiledMap {
 
 	BufferedImage[] tiles;
@@ -88,7 +90,7 @@ public class TiledMap {
 		String mapString = mapData.getTextContent().replaceFirst("\n", "");
 		mapString = mapString.substring(0, mapString.length() - 1);
 		String[] rows = mapString.split(",\n");
-		System.out.println(mapString);
+		Logger.log(Logger.DEBUG, mapString, this);
 
 		map = new int[rows[0].split(",").length][rows.length];
 
@@ -96,10 +98,10 @@ public class TiledMap {
 		for (int y = 0; y < rows.length; y++) {
 			String[] tiles = rows[y].split(",");
 			for (int x = 0; x < tiles.length; x++) {
-				System.out.print(tiles[x]);
+				Logger.log(Logger.DEBUG, tiles[x], this, "", true);
 				map[x][y] = Integer.parseInt(tiles[x]);
 			}
-			System.out.println();
+			Logger.newLine();
 		}
 
 		// Load the tileset
@@ -109,7 +111,8 @@ public class TiledMap {
 			e.printStackTrace();
 		}
 
-		System.out.println("------\n");
+		Logger.newLine();
+		Logger.newLine();
 
 		// Create full render image
 		image = new BufferedImage(map.length * tileset.tWidth, map[0].length * tileset.tHeight,
@@ -129,7 +132,7 @@ public class TiledMap {
 		NodeList layers = (NodeList) doc.getElementsByTagName("objectgroup");
 		colliders = new ColliderLayer[layers.getLength()];
 
-		System.out.println(layers.getLength());
+		Logger.log(Logger.DEBUG, layers.getLength(), this);
 
 		for (int i = 0; i < layers.getLength(); i++) {
 			Element e = (Element) layers.item(i);
@@ -260,7 +263,7 @@ class Tileset {
 		// Load tiles from image
 		for (int y = 0; y < sheet.getHeight() / tHeight; y++) {
 			for (int x = 0; x < columns; x++) {
-				System.out.println(x * tWidth + "\t" + y * tHeight + "\t" + (x + (columns * y)));
+				Logger.log(Logger.DEBUG, x * tWidth + "\t" + y * tHeight + "\t" + (x + (columns * y)), this);
 				tiles[x + (columns * y)] = sheet.getSubimage(x * tWidth, y * tHeight, tWidth, tHeight);
 			}
 		}
