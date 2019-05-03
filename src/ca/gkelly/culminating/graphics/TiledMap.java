@@ -90,7 +90,7 @@ public class TiledMap {
 		String mapString = mapData.getTextContent().replaceFirst("\n", "");
 		mapString = mapString.substring(0, mapString.length() - 1);
 		String[] rows = mapString.split(",\n");
-		Logger.log(Logger.DEBUG, mapString, this);
+		Logger.log(Logger.DEBUG, mapString);
 
 		map = new int[rows[0].split(",").length][rows.length];
 
@@ -98,10 +98,10 @@ public class TiledMap {
 		for (int y = 0; y < rows.length; y++) {
 			String[] tiles = rows[y].split(",");
 			for (int x = 0; x < tiles.length; x++) {
-				Logger.log(Logger.DEBUG, tiles[x], this, "", true);
+				Logger.log(Logger.DEBUG, tiles[x], "", true);
 				map[x][y] = Integer.parseInt(tiles[x]);
 			}
-			Logger.newLine();
+			Logger.newLine(Logger.DEBUG);
 		}
 
 		// Load the tileset
@@ -111,8 +111,8 @@ public class TiledMap {
 			e.printStackTrace();
 		}
 
-		Logger.newLine();
-		Logger.newLine();
+		Logger.newLine(Logger.DEBUG);
+		Logger.newLine(Logger.DEBUG);
 
 		// Create full render image
 		image = new BufferedImage(map.length * tileset.tWidth, map[0].length * tileset.tHeight,
@@ -132,7 +132,7 @@ public class TiledMap {
 		NodeList layers = (NodeList) doc.getElementsByTagName("objectgroup");
 		colliders = new ColliderLayer[layers.getLength()];
 
-		Logger.log(Logger.DEBUG, layers.getLength(), this);
+		Logger.log(Logger.DEBUG, layers.getLength());
 
 		for (int i = 0; i < layers.getLength(); i++) {
 			Element e = (Element) layers.item(i);
@@ -263,7 +263,7 @@ class Tileset {
 		// Load tiles from image
 		for (int y = 0; y < sheet.getHeight() / tHeight; y++) {
 			for (int x = 0; x < columns; x++) {
-				Logger.log(Logger.DEBUG, x * tWidth + "\t" + y * tHeight + "\t" + (x + (columns * y)), this);
+				Logger.log(Logger.DEBUG, x * tWidth + "\t" + y * tHeight + "\t" + (x + (columns * y)));
 				tiles[x + (columns * y)] = sheet.getSubimage(x * tWidth, y * tHeight, tWidth, tHeight);
 			}
 		}

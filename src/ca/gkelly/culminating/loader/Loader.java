@@ -34,13 +34,14 @@ public class Loader {
 	}
 	
 	public static void load() {
-		Logger.log(Logger.INFO, "Loading", Loader.class);
+		Logger.log(Logger.INFO, "Loading");
+		Logger.epoch("LOAD");
 		File[] files = new File(directory+"\\gameData").listFiles();
 		
 		
 		BufferedReader reader;
 		for(File f : files) {
-			Logger.log(Logger.DEBUG, f.getName(), Loader.class);
+			Logger.log(Logger.DEBUG, f.getName());
 			//We only want the JSON files
 			if(!f.getName().endsWith(".json")) {
 				continue;
@@ -63,7 +64,7 @@ public class Loader {
 			
 			//Get the type from the declaration
 			ResourceType t = ResourceType.valueOf(declaration.split(" ")[1]);
-			Logger.log(Logger.DEBUG, t, Loader.class);
+			Logger.log(Logger.DEBUG, t);
 			
 			try {
 				loadResource(f, t);
@@ -85,7 +86,8 @@ public class Loader {
 //			}
 //		}
 		
-		Logger.log(Logger.INFO, "Loaded", Loader.class);
+		Logger.log("Load complete in {LOAD}", "LOAD");
+		Logger.log(Logger.INFO, "Loaded");
 	}
 	
 	private static void loadResource(File file, ResourceType t) throws Exception {
@@ -108,7 +110,7 @@ public class Loader {
 		
 		String imagePath = (file.getParentFile().getPath())+"\\"+(String) rootJSON.get("texture");
 		
-		Logger.log(Logger.DEBUG, imagePath, Loader.class);
+		Logger.log(Logger.DEBUG, imagePath);
 		BufferedImage image  = ImageIO.read(new File(imagePath));
 		
 		switch(t) {

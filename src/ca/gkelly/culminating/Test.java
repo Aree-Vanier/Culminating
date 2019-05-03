@@ -31,7 +31,7 @@ public class Test extends JFrame implements KeyListener, MouseMotionListener, Ru
 	
 
 	public static void main(String[] args) {
-		Logger.log(Logger.INFO, "TESTING", Test.class);
+		Logger.log(Logger.INFO, "TESTING");
 		new Test(args);
 	}
 	
@@ -40,9 +40,9 @@ public class Test extends JFrame implements KeyListener, MouseMotionListener, Ru
 		setSize(640, 480);
 		setVisible(true);
 		m = new TiledMap(args[0]+"\\maps\\test.tmx");
-		Logger.log(Logger.INFO, m.load(), Test.class);
+		Logger.log(Logger.INFO, m.load());
 		
-		Logger.log(Logger.DEBUG, m.doc.getDocumentElement().getNodeName(), Test.class);
+		Logger.log(Logger.DEBUG, m.doc.getDocumentElement().getNodeName());
 		addKeyListener(this);
 		addMouseMotionListener(this);
 		

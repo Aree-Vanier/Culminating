@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import ca.gkelly.culminating.loader.MountSource;
+import ca.gkelly.culminating.util.Logger;
 
 public abstract class Mount {
 	
@@ -26,7 +27,7 @@ public abstract class Mount {
 	}
 	
 	public void render(Graphics g) {
-		System.out.println(x+"\t"+y);
+		Logger.log(x+"\t"+y);
 		g.drawImage(texture, x, y, null);
 		requestRender = false;
 	}

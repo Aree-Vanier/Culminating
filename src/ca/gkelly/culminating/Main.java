@@ -10,6 +10,7 @@ import ca.gkelly.culminating.entities.Ship;
 import ca.gkelly.culminating.graphics.Camera;
 import ca.gkelly.culminating.loader.Loader;
 import ca.gkelly.culminating.loader.MountSource;
+import ca.gkelly.culminating.util.Logger;
 
 public class Main extends JPanel{
 
@@ -44,11 +45,11 @@ public class Main extends JPanel{
 	public static void main(String[] args) {
 		Loader.directory = args[0];
 		
-		System.out.println(Loader.directory);
+		Logger.log(Logger.INFO, Loader.directory);
 		
 		Loader.load();
 		
-		System.out.println(Loader.vessels.get(0).name);
+		Logger.log(Loader.vessels.get(0).name);
 		
 		new Main();
 		
