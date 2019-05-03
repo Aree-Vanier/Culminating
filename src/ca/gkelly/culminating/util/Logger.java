@@ -87,6 +87,11 @@ public class Logger {
 			head += " ";
 
 		// Add head and message
+		if(message instanceof String) {
+			if(((String) message).contains("{")) {
+				message = insertTime((String) message);
+			}
+		}
 		String out = head + "| " + message + terminator;
 		if(discreete) {
 			out = message + terminator;
@@ -172,6 +177,17 @@ public class Logger {
 			return s;
 		}
 		return "Error";
+	}
+	
+	private static String insertTime(String message) {
+		String[] stamps = message.split("\\{");
+		for(int i = 0; i < stamps.length; i++) {
+			String stamp = stamps[i].split("}")[0];
+			String time = (System.currentTimeMillis()-epochs.get(stamp))+"ms";
+			stamps[i] = time;
+		}
+		
+		return message;
 	}
 
 	/** Output a blank line, when selected level is enabled */
