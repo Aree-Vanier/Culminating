@@ -7,8 +7,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
-import java.awt.Stroke;
 import java.awt.image.BufferedImage;
+
+import ca.gkelly.culminating.util.Logger;
 
 public class Camera {
 
@@ -51,9 +52,11 @@ public class Camera {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
 		
+		Logger.epoch("REND");
+		
 		//Render the map
-//		g.drawImage(map.image, x, y, null);
-		render(map.image, 0, 0);
+		render(map.render(worldSpace(0, 0), worldSpace(buffer.getWidth(), buffer.getHeight())), 0, 0);
+		Logger.log("Map rendered in {REND}");
 	}
 	
 	/**
@@ -111,6 +114,7 @@ public class Camera {
 	 */
 	public void finish(Graphics g) {
 		g.drawImage(buffer.getSubimage(0,0,window.getWidth(), window.getHeight()), 0, 0, null);
+		Logger.log("Rendered in {REND}");
 	}
 
 	/**

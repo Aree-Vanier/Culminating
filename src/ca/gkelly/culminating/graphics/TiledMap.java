@@ -19,6 +19,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import ca.gkelly.culminating.util.Logger;
+import ca.gkelly.culminating.util.Utils;
 
 public class TiledMap {
 
@@ -33,7 +34,9 @@ public class TiledMap {
 
 	/** Complete render of the map, rendered on load then saved */
 	BufferedImage image;
-	/** Chunk removed from <code>image</code> used for rendering */
+	/**
+	 * Chunk removed from <code>image</code> used for rendering
+	 */
 	BufferedImage cameraRender;
 
 	/** Last X position of camera, used to check need for re-render */
@@ -95,9 +98,9 @@ public class TiledMap {
 		map = new int[rows[0].split(",").length][rows.length];
 
 		// Get integers values for each tile
-		for (int y = 0; y < rows.length; y++) {
+		for(int y = 0;y < rows.length;y++) {
 			String[] tiles = rows[y].split(",");
-			for (int x = 0; x < tiles.length; x++) {
+			for(int x = 0;x < tiles.length;x++) {
 				Logger.log(Logger.DEBUG, tiles[x], "", true);
 				map[x][y] = Integer.parseInt(tiles[x]);
 			}
@@ -118,8 +121,8 @@ public class TiledMap {
 		image = new BufferedImage(map.length * tileset.tWidth, map[0].length * tileset.tHeight,
 				BufferedImage.TYPE_3BYTE_BGR);
 		Graphics g = image.getGraphics();
-		for (int x = 0; x < map.length; x++) {
-			for (int y = 0; y < map[0].length; y++) {
+		for(int x = 0;x < map.length;x++) {
+			for(int y = 0;y < map[0].length;y++) {
 				try {
 					g.drawImage(tileset.getImage(map[x][y]), x * tileset.tWidth, y * tileset.tHeight, null);
 				} catch (IndexOutOfBoundsException e) {
@@ -134,13 +137,33 @@ public class TiledMap {
 
 		Logger.log(Logger.DEBUG, layers.getLength());
 
-		for (int i = 0; i < layers.getLength(); i++) {
+		for(int i = 0;i < layers.getLength();i++) {
 			Element e = (Element) layers.item(i);
 			NodeList polyNodes = (NodeList) e.getElementsByTagName("object");
 			colliders[i] = new ColliderLayer(polyNodes, e.getAttribute("name"));
 		}
 
 		return true;
+	}
+
+	/**
+	 * Get a cropped version of the map
+	 * 
+	 * @param tl Top-left
+	 * @param br Bottom-right
+	 * 
+	 * @return Cropped BufferedImage
+	 */
+	public BufferedImage render(int[] tl, int[] br) {
+		int margin = 10;
+		tl[0] = Utils.minmax(tl[0], margin, image.getWidth() - margin);
+		br[0] = Utils.minmax(br[0], margin, image.getWidth() - margin);
+		tl[1] = Utils.minmax(tl[1], margin, image.getHeight() - margin);
+		br[1] = Utils.minmax(br[1], margin, image.getHeight() - margin);
+
+		// Todo: Only do if needed
+
+		return (image.getSubimage(tl[0]-margin, tl[1]-margin, br[0]-tl[0]+2*margin, br[1]-tl[1]+2*margin));
 	}
 
 	/**
@@ -164,8 +187,8 @@ public class TiledMap {
 	 *         <strong>null</strong> if the layer doesn't exist
 	 */
 	public Polygon getPoly(int x, int y, String layer) {
-		for (ColliderLayer c : colliders) {
-			if (c.name.equals(layer)) {
+		for(ColliderLayer c: colliders) {
+			if(c.name.equals(layer)) {
 				return (c.getPoly(x, y));
 			}
 		}
@@ -181,7 +204,7 @@ class ColliderLayer {
 	ColliderLayer(NodeList polys, String name) {
 		this.name = name;
 		polygons = new Polygon[polys.getLength()];
-		for (int j = 0; j < polys.getLength(); j++) {
+		for(int j = 0;j < polys.getLength();j++) {
 			Element poly = (Element) polys.item(j);
 			int x = Integer.parseInt(poly.getAttribute("x"));
 			int y = Integer.parseInt(poly.getAttribute("y"));
@@ -191,7 +214,7 @@ class ColliderLayer {
 			// Create int[]s for x and y points
 			int[] xPoints = new int[points.length];
 			int[] yPoints = new int[points.length];
-			for (int s = 0; s < points.length; s++) {
+			for(int s = 0;s < points.length;s++) {
 				xPoints[s] = (Integer.parseInt(points[s].split(",")[0])) + x;
 				yPoints[s] = (Integer.parseInt(points[s].split(",")[1])) + y;
 			}
@@ -207,7 +230,7 @@ class ColliderLayer {
 	 * @param c   The colour to use
 	 */
 	public void render(Camera cam, Color c) {
-		for (Polygon collider : polygons) {
+		for(Polygon collider: polygons) {
 			cam.drawPoly(collider, c);
 		}
 	}
@@ -221,8 +244,8 @@ class ColliderLayer {
 	 *         <strong>null</strong> if no polygon contains the point
 	 */
 	public Polygon getPoly(int x, int y) {
-		for (Polygon p : polygons) {
-			if (p.contains(x, y))
+		for(Polygon p: polygons) {
+			if(p.contains(x, y))
 				return new Polygon(p.xpoints, p.ypoints, p.npoints);
 		}
 		return null;
@@ -261,8 +284,8 @@ class Tileset {
 		BufferedImage sheet = ImageIO.read(new File(path.substring(0, path.lastIndexOf("\\")) + "\\" + subPath));
 
 		// Load tiles from image
-		for (int y = 0; y < sheet.getHeight() / tHeight; y++) {
-			for (int x = 0; x < columns; x++) {
+		for(int y = 0;y < sheet.getHeight() / tHeight;y++) {
+			for(int x = 0;x < columns;x++) {
 				Logger.log(Logger.DEBUG, x * tWidth + "\t" + y * tHeight + "\t" + (x + (columns * y)));
 				tiles[x + (columns * y)] = sheet.getSubimage(x * tWidth, y * tHeight, tWidth, tHeight);
 			}

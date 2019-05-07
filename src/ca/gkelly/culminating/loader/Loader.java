@@ -86,8 +86,7 @@ public class Loader {
 //			}
 //		}
 		
-		Logger.log("Load complete in {LOAD}", "LOAD");
-		Logger.log(Logger.INFO, "Loaded");
+		Logger.log(Logger.INFO, "Loaded in {LOAD}");
 	}
 	
 	private static void loadResource(File file, ResourceType t) throws Exception {

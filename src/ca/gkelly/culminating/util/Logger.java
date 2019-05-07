@@ -181,10 +181,15 @@ public class Logger {
 	
 	private static String insertTime(String message) {
 		String[] stamps = message.split("\\{");
+		message = "";
 		for(int i = 0; i < stamps.length; i++) {
+			if(!stamps[i].contains("}")) {
+				message+=stamps[i];
+				continue;
+			}
 			String stamp = stamps[i].split("}")[0];
 			String time = (System.currentTimeMillis()-epochs.get(stamp))+"ms";
-			stamps[i] = time;
+			message+=time;
 		}
 		
 		return message;
