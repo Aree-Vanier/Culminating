@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
@@ -17,6 +18,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.sun.javafx.iio.ImageStorage.ImageType;
 
 import ca.gkelly.culminating.util.Logger;
 import ca.gkelly.culminating.util.Utils;
@@ -39,12 +42,10 @@ public class TiledMap {
 	 */
 	BufferedImage cameraRender;
 
-	/** Last X position of camera, used to check need for re-render */
-	int lastX;
-	/** Last Y position of camera, used to check need for re-render */
-	int lastY;
-	/** Last zoom level of camera, used to check need for re-render */
-	double lastZoom;
+	/** Last Top-Left position of camera, used to check need for re-render */
+	int[] lastTL = { -1, -1 };
+	/** Last Bottom-Right position of camera, used to check need for re-render */
+	int[] lastBR = { -1, -1 };
 
 	/** Polygon collider layers used on map */
 	ColliderLayer[] colliders;
@@ -152,18 +153,30 @@ public class TiledMap {
 	 * @param tl Top-left
 	 * @param br Bottom-right
 	 * 
-	 * @return Cropped BufferedImage
+	 * @return Array containing:<br/>
+	 *         - <strong>[0]:</strong> {@link BufferedImage} Cropped Image<br/>
+	 *         - <strong>[1]:</strong> {@link int} X offset<br/>
+	 *         - <strong>[2]:</strong> {@link int} Y offset
 	 */
-	public BufferedImage render(int[] tl, int[] br) {
+	public Object[] render(int[] tl, int[] br) {
+
 		int margin = 10;
 		tl[0] = Utils.minmax(tl[0], margin, image.getWidth() - margin);
 		br[0] = Utils.minmax(br[0], margin, image.getWidth() - margin);
 		tl[1] = Utils.minmax(tl[1], margin, image.getHeight() - margin);
 		br[1] = Utils.minmax(br[1], margin, image.getHeight() - margin);
 
-		// Todo: Only do if needed
+		// If the values have changed, re-crop the image
+		// Otherwise just use existing
+		if(!(Arrays.equals(lastTL, tl) && Arrays.equals(lastBR, br))) {
+			lastTL = tl;
+			lastBR = br;
+			Logger.log("Re-render");
+			cameraRender = image.getSubimage(tl[0] - margin, tl[1] - margin, br[0] - tl[0] + 2 * margin,
+					br[1] - tl[1] + 2 * margin);
+		}
 
-		return (image.getSubimage(tl[0]-margin, tl[1]-margin, br[0]-tl[0]+2*margin, br[1]-tl[1]+2*margin));
+		return (new Object[] { cameraRender, tl[0] - margin, tl[1] - margin });
 	}
 
 	/**

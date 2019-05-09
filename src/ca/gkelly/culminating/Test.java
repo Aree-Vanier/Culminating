@@ -66,7 +66,9 @@ public class Test extends JFrame implements KeyListener, MouseMotionListener, Ru
 		
 		cam.begin();
 		
+		Logger.epoch("BOAT");
 		s.render(cam);
+		Logger.log("Ship drawn in {BOAT}");
 		cam.drawRect(0,0,10,10,Color.RED);
 
 		if(selectedPoly!=null) {
@@ -74,6 +76,7 @@ public class Test extends JFrame implements KeyListener, MouseMotionListener, Ru
 		}
 		
 		cam.finish(g);
+		Logger.newLine(Logger.DEBUG);
 	}
 
 	@Override
