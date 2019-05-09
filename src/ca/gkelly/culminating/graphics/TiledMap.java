@@ -6,7 +6,6 @@ import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.imageio.ImageIO;
@@ -18,8 +17,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import com.sun.javafx.iio.ImageStorage.ImageType;
 
 import ca.gkelly.culminating.util.Logger;
 import ca.gkelly.culminating.util.Utils;

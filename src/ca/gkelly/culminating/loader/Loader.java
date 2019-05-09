@@ -19,100 +19,95 @@ public class Loader {
 	public static ArrayList<VesselSource> vessels = new ArrayList<VesselSource>();
 	public static ArrayList<MountSource> mounts = new ArrayList<MountSource>();
 //	public static ArrayList<TiledMap> maps = new ArrayList<TiledMap>();
-	
-	
+
 	public static String directory;
-	
-	public enum ResourceType{
-		VESSEL,
-		MOUNT,
-		WEAPON
+
+	public enum ResourceType {
+		VESSEL, MOUNT, WEAPON
 	}
-	
+
 	public static void init(String dir) {
 		directory = dir;
 	}
-	
+
 	public static void load() {
 		Logger.log(Logger.INFO, "Loading");
 		Logger.epoch("LOAD");
-		File[] files = new File(directory+"\\gameData").listFiles();
-		
-		
+		File[] files = new File(directory + "\\gameData").listFiles();
+
 		BufferedReader reader;
-		for(File f : files) {
+		for(File f: files) {
 			Logger.log(Logger.DEBUG, f.getName());
-			//We only want the JSON files
+			// We only want the JSON files
 			if(!f.getName().endsWith(".json")) {
 				continue;
 			}
-			
+
 			try {
 				reader = new BufferedReader(new FileReader(f));
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				continue;
 			}
-			
+
 			String declaration = "";
-			
+
 			try {
 				declaration = reader.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			//Get the type from the declaration
+
+			// Get the type from the declaration
 			ResourceType t = ResourceType.valueOf(declaration.split(" ")[1]);
 			Logger.log(Logger.DEBUG, t);
-			
+
 			try {
 				loadResource(f, t);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			
+
 		}
-		
-		
-		files = new File(directory+"\\maps").listFiles();
-		
-		//TODO: Figure out maps
+
+		files = new File(directory + "\\maps").listFiles();
+
+		// TODO: Figure out maps
 //		for(File f : files) {
 //			//Only read map files
 //			if(f.getName().endsWith(".tmx")) {
 //				maps.add(new TmxMapLoader().load(getResourcePath(f.getPath())));
 //			}
 //		}
-		
+
 		Logger.log(Logger.INFO, "Loaded in {LOAD}");
 	}
-	
+
 	private static void loadResource(File file, ResourceType t) throws Exception {
 		FileReader fr;
 		fr = new FileReader(file);
 		BufferedReader br = new BufferedReader(fr);
-	 
+
 		String text = "";
 		String line;
-		while((line=br.readLine()) != null) {
-			//Ignore declaration line
-			if(line.contains("//DOCTYPE")) continue;
+		while((line = br.readLine()) != null) {
+			// Ignore declaration line
+			if(line.contains("//DOCTYPE"))
+				continue;
 			text += line;
 		}
-		
+
 //		System.out.println(text);
-		
+
 		JSONObject rootJSON;
 		rootJSON = (JSONObject) new JSONParser().parse(text);
-		
-		String imagePath = (file.getParentFile().getPath())+"\\"+(String) rootJSON.get("texture");
-		
+
+		String imagePath = (file.getParentFile().getPath()) + "\\" + (String) rootJSON.get("texture");
+
 		Logger.log(Logger.DEBUG, imagePath);
-		BufferedImage image  = ImageIO.read(new File(imagePath));
-		
-		switch(t) {
+		BufferedImage image = ImageIO.read(new File(imagePath));
+
+		switch (t) {
 		case VESSEL:
 			VesselSource v = new VesselSource(image, rootJSON);
 			vessels.add(v);
@@ -125,12 +120,14 @@ public class Loader {
 			WeaponSource w = new WeaponSource(image, rootJSON);
 			mounts.add(w);
 			break;
-		
+
 		}
+
+		br.close();
 	}
-	
-	//TODO:Dispose of assets
+
+	// TODO:Dispose of assets
 	public static void dispose() {
 	}
-	
+
 }

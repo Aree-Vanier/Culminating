@@ -7,16 +7,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.PathIterator;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import ca.gkelly.culminating.util.Logger;
-import javafx.scene.shape.Circle;
 
 public class Camera {
 
@@ -64,8 +57,8 @@ public class Camera {
 		Object[] mapRender = map.render(worldSpace(0, 0), worldSpace(buffer.getWidth(), buffer.getHeight()));
 		render((BufferedImage) mapRender[0], (int) mapRender[1], (int) mapRender[2]);
 //		Logger.log("Map rendered in {REND}");
-		
-		drawPoint(minX, minY, 15, Color.CYAN);	
+
+		drawPoint(minX, minY, 15, Color.CYAN);
 		drawPoint(maxX, maxY, 15, Color.BLACK);
 	}
 
@@ -84,12 +77,12 @@ public class Camera {
 					Image.SCALE_FAST), pos[0], pos[1], null);
 		}
 	}
-	
-	/**Draw a point to the world*/
+
+	/** Draw a point to the world */
 	public void drawPoint(int x, int y, int radius, Color c) {
-		//Todo: Onscreen check
+		// Todo: Onscreen check
 		g.setColor(c);
-		int[] pos = screenSpace(x,y);
+		int[] pos = screenSpace(x, y);
 		g.fillOval(pos[0], pos[1], radius, radius);
 	}
 

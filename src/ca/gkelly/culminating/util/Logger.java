@@ -178,20 +178,20 @@ public class Logger {
 		}
 		return "Error";
 	}
-	
+
 	private static String insertTime(String message) {
 		String[] stamps = message.split("\\{");
 		message = "";
-		for(int i = 0; i < stamps.length; i++) {
+		for(int i = 0;i < stamps.length;i++) {
 			if(!stamps[i].contains("}")) {
-				message+=stamps[i];
+				message += stamps[i];
 				continue;
 			}
 			String stamp = stamps[i].split("}")[0];
-			String time = (System.currentTimeMillis()-epochs.get(stamp))+"ms";
-			message+=time;
+			String time = (System.currentTimeMillis() - epochs.get(stamp)) + "ms";
+			message += time;
 		}
-		
+
 		return message;
 	}
 
@@ -210,7 +210,8 @@ public class Logger {
 	/**
 	 * Save a new epoch
 	 * 
-	 * @param id Identifier to be used with the new epoch, can not exceed 4 characters
+	 * @param id Identifier to be used with the new epoch, can not exceed 4
+	 *           characters
 	 */
 	public static void epoch(String id) {
 		if(id.length() > 4)
