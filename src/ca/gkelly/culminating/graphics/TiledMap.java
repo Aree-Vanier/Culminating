@@ -19,7 +19,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import ca.gkelly.culminating.util.Logger;
-import ca.gkelly.culminating.util.Utils;
+import ca.gkelly.culminating.util.Tools;
 
 public class TiledMap {
 
@@ -158,10 +158,10 @@ public class TiledMap {
 	public Object[] render(int[] tl, int[] br) {
 
 		int margin = 10;
-		tl[0] = Utils.minmax(tl[0], margin, image.getWidth() - margin);
-		br[0] = Utils.minmax(br[0], margin, image.getWidth() - margin);
-		tl[1] = Utils.minmax(tl[1], margin, image.getHeight() - margin);
-		br[1] = Utils.minmax(br[1], margin, image.getHeight() - margin);
+		tl[0] = Tools.minmax(tl[0], margin, image.getWidth() - margin);
+		br[0] = Tools.minmax(br[0], margin, image.getWidth() - margin);
+		tl[1] = Tools.minmax(tl[1], margin, image.getHeight() - margin);
+		br[1] = Tools.minmax(br[1], margin, image.getHeight() - margin);
 
 		// If the values have changed, re-crop the image
 		// Otherwise just use existing

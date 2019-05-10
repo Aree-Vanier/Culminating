@@ -1,6 +1,6 @@
 package ca.gkelly.culminating.util;
 
-public class Utils {
+public class Tools {
 	/**
 	 * Fit a value to min/max boundary
 	 * 
