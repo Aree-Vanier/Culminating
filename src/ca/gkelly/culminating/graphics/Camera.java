@@ -51,6 +51,7 @@ public class Camera {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
 
+		//Create a logger epoch
 		Logger.epoch("REND");
 
 		// Render the map
@@ -58,8 +59,6 @@ public class Camera {
 		render((BufferedImage) mapRender[0], (int) mapRender[1], (int) mapRender[2]);
 //		Logger.log("Map rendered in {REND}");
 
-		drawPoint(minX, minY, 15, Color.CYAN);
-		drawPoint(maxX, maxY, 15, Color.BLACK);
 	}
 
 	/**
@@ -71,7 +70,7 @@ public class Camera {
 	 */
 	public void render(BufferedImage image, int x, int y) {
 		if(onScreen(x, y, image.getWidth(), image.getHeight())) {
-			drawRect(x, y, x + image.getWidth(), x + image.getHeight(), Color.PINK);
+//			drawRect(x, y, x + image.getWidth(), x + image.getHeight(), Color.PINK);
 			int[] pos = screenSpace(x, y);
 			g.drawImage(image.getScaledInstance((int) (image.getWidth() * zoom), (int) (image.getHeight() * zoom),
 					Image.SCALE_FAST), pos[0], pos[1], null);

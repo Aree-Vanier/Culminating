@@ -70,7 +70,7 @@ public class Test extends JFrame implements KeyListener, MouseMotionListener, Ru
 		Logger.epoch("BOAT");
 		s.render(cam);
 		Logger.log("Ship drawn in {BOAT}");
-		cam.drawRect(0, 0, 10, 10, Color.RED);
+		cam.drawRect(s.rect.x, s.rect.y, s.rect.width, s.rect.height, Color.red);
 
 		if(selectedPoly != null) {
 			cam.drawPoly(selectedPoly, Color.RED);
