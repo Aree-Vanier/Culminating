@@ -6,14 +6,18 @@ import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 
 import ca.gkelly.culminating.entities.Mount;
 import ca.gkelly.culminating.entities.Ship;
 import ca.gkelly.culminating.entities.Weapon;
-import ca.gkelly.culminating.loader.Loader;
+import ca.gkelly.culminating.loader.MountSource;
+import ca.gkelly.culminating.loader.VesselSource;
+import ca.gkelly.culminating.loader.WeaponSource;
 import ca.gkelly.engine.Manager;
 import ca.gkelly.engine.graphics.Camera;
 import ca.gkelly.engine.graphics.TiledMap;
+import ca.gkelly.engine.loader.Loader;
 import ca.gkelly.engine.util.Logger;
 
 public class TestManager extends Manager {
@@ -38,12 +42,18 @@ public class TestManager extends Manager {
 
 		Logger.log(Logger.DEBUG, m.doc.getDocumentElement().getNodeName());
 
-		Loader.init(args[0]);
+		HashMap<String, Class> classes = new HashMap<>();
+		classes.put("vessel", VesselSource.class);
+		classes.put("mount", MountSource.class);
+		classes.put("weapon", WeaponSource.class);
+		
+		Loader.init(args[0], classes);
 		Loader.load();
 
 		cam = new Camera(container, m);
-		Mount[] m = { new Weapon(Loader.mounts.get(0), 0, 0), new Weapon(Loader.mounts.get(0), 20, 10) };
-		s = new Ship(Loader.vessels.get(0), 100, 100, m);
+		Logger.log(Loader.resources.get("weapon"));
+		Mount[] m = { new Weapon((MountSource) Loader.resources.get("weapon").get(0), 0, 0), new Weapon((MountSource) Loader.resources.get("weapon").get(0), 20, 10) };
+		s = new Ship((VesselSource) Loader.resources.get("vessel").get(0), 100, 100, m);
 
 	}
 

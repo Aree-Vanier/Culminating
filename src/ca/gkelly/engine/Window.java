@@ -81,7 +81,6 @@ public class Window extends JFrame implements Runnable {
 	public void run() {
 		while (runThread) {
 			if (manager == null) {
-				Logger.log("null");
 				continue;
 			}
 			calculateDeltaTime();

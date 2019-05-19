@@ -1,4 +1,4 @@
-package ca.gkelly.culminating.loader;
+package ca.gkelly.engine.loader;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -7,27 +7,28 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import ca.gkelly.culminating.loader.MountSource;
+import ca.gkelly.culminating.loader.VesselSource;
+import ca.gkelly.culminating.loader.WeaponSource;
 import ca.gkelly.engine.util.Logger;
 
 public class Loader {
-	public static ArrayList<VesselSource> vessels = new ArrayList<VesselSource>();
-	public static ArrayList<MountSource> mounts = new ArrayList<MountSource>();
-//	public static ArrayList<TiledMap> maps = new ArrayList<TiledMap>();
+
+	public static HashMap<String, ArrayList<Resource>> resources = new HashMap<>();
+	public static HashMap<String, Class> resourceClasses = new HashMap<>();
 
 	public static String directory;
 
-	public enum ResourceType {
-		VESSEL, MOUNT, WEAPON
-	}
-
-	public static void init(String dir) {
+	public static void init(String dir, HashMap<String, Class> classes) {
 		directory = dir;
+		resourceClasses = classes;
 	}
 
 	public static void load() {
@@ -59,11 +60,11 @@ public class Loader {
 			}
 
 			// Get the type from the declaration
-			ResourceType t = ResourceType.valueOf(declaration.split(" ")[1]);
-			Logger.log(Logger.DEBUG, t);
+			String type = declaration.split(" ")[1].toLowerCase();
+			Logger.log(Logger.DEBUG, type);
 
 			try {
-				loadResource(f, t);
+				loadResource(f, type);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -83,7 +84,7 @@ public class Loader {
 		Logger.log(Logger.INFO, "Loaded in {LOAD}");
 	}
 
-	private static void loadResource(File file, ResourceType t) throws Exception {
+	private static void loadResource(File file, String type) throws Exception {
 		FileReader fr;
 		fr = new FileReader(file);
 		BufferedReader br = new BufferedReader(fr);
@@ -107,21 +108,16 @@ public class Loader {
 		Logger.log(Logger.DEBUG, imagePath);
 		BufferedImage image = ImageIO.read(new File(imagePath));
 
-		switch (t) {
-		case VESSEL:
-			VesselSource v = new VesselSource(image, rootJSON);
-			vessels.add(v);
-			break;
-		case MOUNT:
-			MountSource m = new MountSource(image, rootJSON);
-			mounts.add(m);
-			break;
-		case WEAPON:
-			WeaponSource w = new WeaponSource(image, rootJSON);
-			mounts.add(w);
-			break;
-
+		Logger.log("Type: "+type);
+		Class<Resource> c = resourceClasses.get(type);
+		Logger.log(c.getSimpleName());
+		Resource r = c.newInstance();
+		r.create(image, rootJSON);
+		if (!resources.containsKey(type)) {
+			Logger.log("Created resource: " + type);
+			resources.put(type, new ArrayList<Resource>());
 		}
+		resources.get(type).add(r);
 
 		br.close();
 	}

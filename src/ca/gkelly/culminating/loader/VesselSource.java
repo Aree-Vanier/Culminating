@@ -8,8 +8,9 @@ import org.json.simple.JSONObject;
 import ca.gkelly.culminating.entities.Mount;
 import ca.gkelly.culminating.entities.Ship;
 import ca.gkelly.culminating.entities.Weapon;
+import ca.gkelly.engine.loader.Resource;
 
-public class VesselSource {
+public class VesselSource extends Resource{
 
 	public MountPoint[] mountPoints;
 	public String name;
@@ -17,7 +18,7 @@ public class VesselSource {
 
 	public int health;
 
-	public VesselSource(BufferedImage image, JSONObject json) {
+	public void create(BufferedImage image, JSONObject json) {
 		name = (String) json.get("name");
 
 		texture = image;

@@ -7,9 +7,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import ca.gkelly.culminating.entities.Ship;
-import ca.gkelly.culminating.loader.Loader;
 import ca.gkelly.culminating.loader.MountSource;
 import ca.gkelly.engine.graphics.Camera;
+import ca.gkelly.engine.loader.Loader;
 import ca.gkelly.engine.util.Logger;
 
 public class Main extends JPanel {
@@ -20,20 +20,20 @@ public class Main extends JPanel {
 	Camera c;
 
 	public Main() {
-		window = new JFrame();
-		window.setName(NAME);
-		window.setSize(1280, 720);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		window.setContentPane(this);
-
-		window.setVisible(true);
-
-		MountSource m = Loader.mounts.get(0);
-
-		MountSource[] mounts = { m, m, m };
-
-		s = Loader.vessels.get(0).build(mounts);
+//		window = new JFrame();
+//		window.setName(NAME);
+//		window.setSize(1280, 720);
+//		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//
+//		window.setContentPane(this);
+//
+//		window.setVisible(true);
+//
+//		MountSource m = Loader.mounts.get(0);
+//
+//		MountSource[] mounts = { m, m, m };
+//
+//		s = Loader.vessels.get(0).build(mounts);
 	}
 
 	@Override
@@ -43,15 +43,15 @@ public class Main extends JPanel {
 	}
 
 	public static void main(String[] args) {
-		Loader.directory = args[0];
-
-		Logger.log(Logger.INFO, Loader.directory);
-
-		Loader.load();
-
-		Logger.log(Loader.vessels.get(0).name);
-
-		new Main();
+//		Loader.directory = args[0];
+//
+//		Logger.log(Logger.INFO, Loader.directory);
+//
+//		Loader.load();
+//
+//		Logger.log(Loader.vessels.get(0).name);
+//
+//		new Main();
 
 	}
 

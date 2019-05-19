@@ -4,22 +4,24 @@ import java.awt.image.BufferedImage;
 
 import org.json.simple.JSONObject;
 
-public class MountSource {
+import ca.gkelly.engine.loader.Resource;
+
+public class MountSource extends Resource{
 	public int x;
 	public int y;
 
 	public BufferedImage texture;
 
 	public int health;
-	public final int MAX_HEALTH;
+	public int MAX_HEALTH;
 
-	public final int BASE_COST;
+	public int BASE_COST;
 
 	public MountPoint.Type type;
 
 	public String name;
 
-	public MountSource(BufferedImage image, JSONObject json) {
+	public void create(BufferedImage image, JSONObject json) {
 		name = (String) json.get("name");
 
 		texture = image;
