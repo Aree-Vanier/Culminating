@@ -19,8 +19,10 @@ import ca.gkelly.engine.util.Logger;
 public class Camera {
 
 	public double zoom = 1;
-	int x;
-	int y;
+	int x = 0;
+	int y = 0;
+	int rawX = 0;
+	int rawY = 0;
 
 	int centreX;
 	int centreY;
@@ -42,6 +44,9 @@ public class Camera {
 	public Camera(Container window, TileMap map) {
 		this.window = window;
 		this.map = map;
+		//Set to initial position
+		buffer = new BufferedImage(window.getWidth(), window.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+		setPosition(rawX, rawY, 1);
 	}
 
 	/**
@@ -160,7 +165,7 @@ public class Camera {
 		g.setColor(Color.red);
 		g.drawOval(centreX, centreY, 25, 25);
 		Logger.log(x + "," + y + "  " + buffer.getWidth() + "," + buffer.getHeight() + "  " + worldSpace(centreX, 0)[0]
-				+ "," + worldSpace(0, centreY)[1]+"  "+zoom);
+				+ "," + worldSpace(0, centreY)[1] + "  " + zoom);
 	}
 
 	/**
@@ -233,9 +238,19 @@ public class Camera {
 	 * @param x The x offset
 	 * @param y The y offset
 	 */
-	public void translate(double x, double y) {
-		x += x;
-		y += y;
+	public void translate(int x, int y) {
+		rawX +=x;
+		rawY +=y;
+		setPosition(rawX, rawY, this.zoom);
+	}
+
+	/**
+	 * Change the camera's zoom
+	 * 
+	 * @param zoom The amount to change
+	 */
+	public void zoom(double zoom) {
+		setPosition(rawX, rawY, this.zoom + zoom);
 	}
 
 	/**
@@ -246,11 +261,14 @@ public class Camera {
 	 * @param zoom The new zoom
 	 */
 	public void setPosition(int x, int y, double zoom) {
-		if(buffer == null) return;
+		rawX = x;
+		rawY = y;
+		if (buffer == null)
+			return;
 		this.zoom = zoom > 0 ? zoom : 0.1;
-		this.x = (int) ((-x+buffer.getWidth()/2));
-		this.y = (int) ((-y+buffer.getHeight()/2));
-		this.x -= (x*(zoom-1));
-		this.y -= (y*(zoom-1));
+		this.x = (int) ((-x + buffer.getWidth() / 2));
+		this.y = (int) ((-y + buffer.getHeight() / 2));
+		this.x -= (x * (zoom - 1));
+		this.y -= (y * (zoom - 1));
 	}
 }

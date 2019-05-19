@@ -85,20 +85,20 @@ public class TestManager extends Manager {
 	public void update() {
 //		Logger.log("Update");
 		if (keyboard.pressed.contains(KeyEvent.VK_W))
-			y--;
+			cam.translate(0, -1);
 		if (keyboard.pressed.contains(KeyEvent.VK_S))
-			y++;
+			cam.translate(0, 1);
 		if (keyboard.pressed.contains(KeyEvent.VK_A))
-			x--;
+			cam.translate(-1, 0);
 		if (keyboard.pressed.contains(KeyEvent.VK_D))
-			x++;
+			cam.translate(1, 0);
 
 		if (keyboard.pressed.contains(KeyEvent.VK_E))
-			zoom += 0.1;
+			cam.zoom(0.1);
 		if (keyboard.pressed.contains(KeyEvent.VK_Q))
-			zoom -= 0.1;
+			cam.zoom(-0.1);
 
-		cam.setPosition(x, y, zoom);
+//		cam.setPosition(x, y, zoom);
 	}
 
 	@Override
