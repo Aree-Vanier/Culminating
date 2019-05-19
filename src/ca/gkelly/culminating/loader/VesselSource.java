@@ -18,7 +18,7 @@ public class VesselSource extends Resource{
 
 	public int health;
 
-	public void create(BufferedImage image, JSONObject json) {
+	public void load(BufferedImage image, JSONObject json) {
 		name = (String) json.get("name");
 
 		texture = image;

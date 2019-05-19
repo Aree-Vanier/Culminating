@@ -16,12 +16,12 @@ import ca.gkelly.culminating.loader.VesselSource;
 import ca.gkelly.culminating.loader.WeaponSource;
 import ca.gkelly.engine.Manager;
 import ca.gkelly.engine.graphics.Camera;
-import ca.gkelly.engine.graphics.TiledMap;
+import ca.gkelly.engine.graphics.TileMap;
 import ca.gkelly.engine.loader.Loader;
 import ca.gkelly.engine.util.Logger;
 
 public class TestManager extends Manager {
-	TiledMap m;
+	TileMap m;
 	int x = 256;
 	int y = 256;
 	double zoom = 1;
@@ -37,7 +37,7 @@ public class TestManager extends Manager {
 	
 	@Override
 	public void init(Container container) {
-		m = new TiledMap(args[0] + "\\maps\\test.tmx");
+		m = new TileMap(args[0] + "\\maps\\test.tmx");
 		Logger.log(Logger.INFO, m.load());
 
 		Logger.log(Logger.DEBUG, m.doc.getDocumentElement().getNodeName());
@@ -102,7 +102,7 @@ public class TestManager extends Manager {
 	}
 
 	@Override
-	public void interrupt() {
+	public void end() {
 		// TODO Auto-generated method stub
 
 	}

@@ -1,7 +1,7 @@
 package ca.gkelly.culminating;
 
-import ca.gkelly.engine.Window;
 import ca.gkelly.engine.graphics.DisplayMode;
+import ca.gkelly.engine.graphics.Window;
 import ca.gkelly.engine.util.Logger;
 
 //This is a class used for quick console tests that don't need the graphics

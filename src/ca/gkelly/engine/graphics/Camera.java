@@ -11,6 +11,11 @@ import java.awt.image.BufferedImage;
 
 import ca.gkelly.engine.util.Logger;
 
+/**
+ * 2D world-space camera, allows translation and zoom<br/>
+ * To use place all draw calls between {@link #begin()} and
+ * {@link #finish(Graphics) finish()}
+ */
 public class Camera {
 
 	public double zoom = 1;
@@ -21,7 +26,7 @@ public class Camera {
 	BufferedImage buffer;
 	Graphics2D g;
 	Container window;
-	TiledMap map;
+	TileMap map;
 
 	int maxX, maxY, minX, minY;
 
@@ -29,9 +34,9 @@ public class Camera {
 	 * Create a new Camera
 	 * 
 	 * @param window The container that will hold the camera
-	 * @param map    The {@link TiledMap} that will be used as the background
+	 * @param map    The {@link TileMap} that will be used as the background
 	 */
-	public Camera(Container window, TiledMap map) {
+	public Camera(Container window, TileMap map) {
 		this.window = window;
 		this.map = map;
 	}
@@ -77,7 +82,14 @@ public class Camera {
 		}
 	}
 
-	/** Draw a point to the world */
+	/**
+	 * Draw a point to the world
+	 * 
+	 * @param x      The x position
+	 * @param y      The y position
+	 * @param radius The radius
+	 * @param c      The color to use
+	 */
 	public void drawPoint(int x, int y, int radius, Color c) {
 		// Todo: Onscreen check
 		g.setColor(c);
@@ -85,7 +97,15 @@ public class Camera {
 		g.fillOval(pos[0], pos[1], radius, radius);
 	}
 
-	/** Draw a rectangle to the world */
+	/**
+	 * Draw a rectangle to the world
+	 * 
+	 * @param x      The x position
+	 * @param y      The y position
+	 * @param width  The width of the rectangle
+	 * @param height The height of the rectangle
+	 * @param c      The color to use
+	 */
 	public void drawRect(int x, int y, int width, int height, Color c) {
 		if (onScreen(x, y, width, height)) {
 			g.setColor(c);
@@ -94,7 +114,12 @@ public class Camera {
 		}
 	}
 
-	/** Draw a polygon to the world */
+	/**
+	 * Draw a polygon to the world
+	 * 
+	 * @param p The polygon
+	 * @param c The color to use
+	 */
 	public void drawPoly(Polygon p, Color c) {
 		int[] xPoints = new int[p.xpoints.length];
 		int[] yPoints = new int[p.ypoints.length];
@@ -192,11 +217,24 @@ public class Camera {
 		return (buffer.getHeight());
 	}
 
+	/**
+	 * Translate the camera
+	 * 
+	 * @param x The x offset
+	 * @param y The y offset
+	 */
 	public void translate(double x, double y) {
 		x += x;
 		y += y;
 	}
 
+	/**
+	 * Set the camera position
+	 * 
+	 * @param x    The new x position
+	 * @param y    The new y position
+	 * @param zoom The new zoom
+	 */
 	public void setPosition(int x, int y, double zoom) {
 		this.x = x;
 		this.y = y;

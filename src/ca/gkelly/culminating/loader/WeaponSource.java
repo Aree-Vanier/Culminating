@@ -12,8 +12,8 @@ public class WeaponSource extends MountSource {
 	public int accHit;
 	public int accMiss;
 
-	public void create(BufferedImage image, JSONObject json) {
-		super.create(image, json);
+	public void load(BufferedImage image, JSONObject json) {
+		super.load(image, json);
 
 		damage = Math.toIntExact((Long) json.get("damage"));
 		ammo = Math.toIntExact((Long) json.get("ammo"));

@@ -1,5 +1,6 @@
 package ca.gkelly.engine.util;
 
+/** An assortment of tools and utility functions */
 public class Tools {
 	/**
 	 * Fit a value to min/max boundary

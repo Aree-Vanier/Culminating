@@ -14,6 +14,9 @@ public class Keyboard implements KeyListener {
 
 	Manager m;
 
+	/**
+	 * @param m The manager to use for callbacks
+	 */
 	public Keyboard(Manager m) {
 		this.m = m;
 	}

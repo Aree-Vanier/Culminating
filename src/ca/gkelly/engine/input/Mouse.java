@@ -18,6 +18,9 @@ public class Mouse implements MouseListener, MouseMotionListener {
 
 	Manager m;
 
+	/**
+	 * @param m The manager to use for callbacks
+	 */
 	public Mouse(Manager m) {
 		this.m = m;
 	}

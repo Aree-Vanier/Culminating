@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import ca.gkelly.engine.graphics.Window;
 import ca.gkelly.engine.input.Keyboard;
 import ca.gkelly.engine.input.Mouse;
 
@@ -33,12 +34,12 @@ public abstract class Manager {
 	public abstract void update();
 
 	/** Called when the manager is interrupted */
-	public abstract void interrupt();
+	public abstract void end();
 
 	/** Called when the window is closed */
 	public void onClose() {
 		// By default call interrupt
-		interrupt();
+		end();
 	}
 
 	/** Called by {@link #mouse} when the mouse is clicked */

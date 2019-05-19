@@ -1,4 +1,4 @@
-package ca.gkelly.engine;
+package ca.gkelly.engine.graphics;
 
 import java.awt.Graphics;
 import java.awt.event.WindowEvent;
@@ -6,9 +6,13 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 
-import ca.gkelly.engine.graphics.DisplayMode;
+import ca.gkelly.engine.Manager;
 import ca.gkelly.engine.util.Logger;
 
+/**
+ * Class used to create and manage a JFrame window<br/>
+ * Paint, Update and Input will be passed to the active {@link Manager}
+ */
 public class Window extends JFrame implements Runnable {
 	Manager manager;
 	Thread t;
@@ -17,6 +21,11 @@ public class Window extends JFrame implements Runnable {
 	public static int deltaTime = 0;
 	private long lastTime = 0;
 
+	/**
+	 * Create a new window, a {@link Manager} will need to be set for functionality
+	 * 
+	 * @param d {@link DisplayMode} specifying window dimensions and mode
+	 */
 	public Window(DisplayMode d) {
 		if (d.mode == DisplayMode.WINDOWED) {
 			setSize(d.width, d.height);
@@ -64,6 +73,12 @@ public class Window extends JFrame implements Runnable {
 		});
 	}
 
+	/**
+	 * Create a new window, with an associated {@link Manager}
+	 * 
+	 * @param d {@link DisplayMode} specifying window dimensions and mode
+	 * @param m {@link Manager} to be used
+	 */
 	public Window(DisplayMode d, Manager m) {
 		this(d);
 		setManager(m);
@@ -81,6 +96,7 @@ public class Window extends JFrame implements Runnable {
 	public void run() {
 		while (runThread) {
 			if (manager == null) {
+				Logger.log(manager);
 				continue;
 			}
 			calculateDeltaTime();
@@ -100,7 +116,7 @@ public class Window extends JFrame implements Runnable {
 	 */
 	public void setManager(Manager m) {
 		if (manager != null) {
-			manager.interrupt();
+			manager.end();
 			removeMouseListener(manager.mouse);
 			removeMouseMotionListener(manager.mouse);
 			removeKeyListener(manager.keyboard);

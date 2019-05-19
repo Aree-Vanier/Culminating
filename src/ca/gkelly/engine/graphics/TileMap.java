@@ -21,7 +21,8 @@ import org.xml.sax.SAXException;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Tools;
 
-public class TiledMap {
+/** Class used to load and render a .tmx tilemap */
+public class TileMap {
 
 	BufferedImage[] tiles;
 	String src;
@@ -52,7 +53,7 @@ public class TiledMap {
 	 * 
 	 * @param src The path to the <code>.tmx</code> file
 	 */
-	public TiledMap(String src) {
+	public TileMap(String src) {
 		this.src = src;
 	}
 
@@ -207,10 +208,17 @@ public class TiledMap {
 
 }
 
+/** A class used to handle loading and management of a tileset */
 class ColliderLayer {
 	Polygon[] polygons;
 	String name;
 
+	/**
+	 * Create the collider layer
+	 * 
+	 * @param polys The list of polygons
+	 * @param name  The name to used for identification
+	 */
 	ColliderLayer(NodeList polys, String name) {
 		this.name = name;
 		polygons = new Polygon[polys.getLength()];
@@ -262,7 +270,7 @@ class ColliderLayer {
 	}
 }
 
-/** A class used to handle loading and management of a tileset */
+/** A class used to handle loading and management of a collider layer */
 class Tileset {
 	/** Width of a tile */
 	int tWidth;
