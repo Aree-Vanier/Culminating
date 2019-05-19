@@ -1,10 +1,10 @@
-package ca.gkelly.culminating.engine.input;
+package ca.gkelly.engine.input;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
-import ca.gkelly.culminating.engine.Manager;
+import ca.gkelly.engine.Manager;
 
 /** Class used by {@link Manager}s to handle keyboard input */
 public class Keyboard implements KeyListener {

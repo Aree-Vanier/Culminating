@@ -7,14 +7,14 @@ import java.awt.Polygon;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import ca.gkelly.culminating.engine.Manager;
 import ca.gkelly.culminating.entities.Mount;
 import ca.gkelly.culminating.entities.Ship;
 import ca.gkelly.culminating.entities.Weapon;
-import ca.gkelly.culminating.graphics.Camera;
-import ca.gkelly.culminating.graphics.TiledMap;
 import ca.gkelly.culminating.loader.Loader;
-import ca.gkelly.culminating.util.Logger;
+import ca.gkelly.engine.Manager;
+import ca.gkelly.engine.graphics.Camera;
+import ca.gkelly.engine.graphics.TiledMap;
+import ca.gkelly.engine.util.Logger;
 
 public class TestManager extends Manager {
 	TiledMap m;

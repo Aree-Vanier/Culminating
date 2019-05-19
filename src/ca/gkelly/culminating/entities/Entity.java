@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-import ca.gkelly.culminating.graphics.Camera;
+import ca.gkelly.engine.graphics.Camera;
 
 public abstract class Entity {
 

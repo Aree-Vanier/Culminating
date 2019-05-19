@@ -1,4 +1,4 @@
-package ca.gkelly.culminating.util;
+package ca.gkelly.engine.util;
 
 import java.util.HashMap;
 
@@ -45,13 +45,13 @@ public class Logger {
 	public static void log(byte type, Object message, String terminator, boolean discreete, String epoch) {
 		String head = "";
 		// Add log level to header,
-		if((type & ALL) == ALL) {
+		if ((type & ALL) == ALL) {
 			head += "ALL  |";
-		} else if(((type & ERROR) == ERROR && errorEnabled)) {
+		} else if (((type & ERROR) == ERROR && errorEnabled)) {
 			head += "ERROR|";
-		} else if(((type & DEBUG) == DEBUG && debugEnabled)) {
+		} else if (((type & DEBUG) == DEBUG && debugEnabled)) {
 			head += "DEBUG|";
-		} else if(((type & INFO) == INFO && infoEnabled)) {
+		} else if (((type & INFO) == INFO && infoEnabled)) {
 			head += "INFO |";
 		} else {
 			return;
@@ -60,11 +60,11 @@ public class Logger {
 		// Get time
 		String time = "";
 		// If initial, or timestamp DNE
-		if(epoch == "INIT" || !epochs.containsKey(epoch)) {
+		if (epoch == "INIT" || !epochs.containsKey(epoch)) {
 			// Get time string
 			time = "" + (System.currentTimeMillis() - EPOCH_INIT);
 			// Add apropriate whitespace
-			for(int i = 0;i < TIME_WIDTH - time.length();i++)
+			for (int i = 0; i < TIME_WIDTH - time.length(); i++)
 				head += " ";
 		} else {
 			// Get time string
@@ -72,7 +72,7 @@ public class Logger {
 			// Add epoch identifier
 			head += epoch;
 			// Add whitespace
-			for(int i = 0;i < TIME_WIDTH - time.length() - epoch.length();i++)
+			for (int i = 0; i < TIME_WIDTH - time.length() - epoch.length(); i++)
 				head += " ";
 		}
 		// Add time to header
@@ -83,17 +83,17 @@ public class Logger {
 		// Add trace
 		head += trace;
 		// Add whitespace
-		for(int i = 0;i < TRACE_WIDTH - trace.length();i++)
+		for (int i = 0; i < TRACE_WIDTH - trace.length(); i++)
 			head += " ";
 
 		// Add head and message
-		if(message instanceof String) {
-			if(((String) message).contains("{")) {
+		if (message instanceof String) {
+			if (((String) message).contains("{")) {
 				message = insertTime((String) message);
 			}
 		}
 		String out = head + "| " + message + terminator;
-		if(discreete) {
+		if (discreete) {
 			out = message + terminator;
 		}
 
@@ -166,8 +166,8 @@ public class Logger {
 	private static String getTrace() {
 		StackTraceElement[] trace = Thread.currentThread().getStackTrace();
 		// Skip first element, it is unwanted
-		for(int i = 1;i < trace.length;i++) {
-			if(trace[i].getClassName().contains("Logger")) {
+		for (int i = 1; i < trace.length; i++) {
+			if (trace[i].getClassName().contains("Logger")) {
 				continue;
 			}
 			String s = "";
@@ -182,8 +182,8 @@ public class Logger {
 	private static String insertTime(String message) {
 		String[] stamps = message.split("\\{");
 		message = "";
-		for(int i = 0;i < stamps.length;i++) {
-			if(!stamps[i].contains("}")) {
+		for (int i = 0; i < stamps.length; i++) {
+			if (!stamps[i].contains("}")) {
 				message += stamps[i];
 				continue;
 			}
@@ -197,10 +197,10 @@ public class Logger {
 
 	/** Output a blank line, when selected level is enabled */
 	public static void newLine(byte type) {
-		if((type & ALL) == ALL) {
-		} else if(((type & ERROR) == ERROR && errorEnabled)) {
-		} else if(((type & DEBUG) == DEBUG && debugEnabled)) {
-		} else if(((type & INFO) == INFO && infoEnabled)) {
+		if ((type & ALL) == ALL) {
+		} else if (((type & ERROR) == ERROR && errorEnabled)) {
+		} else if (((type & DEBUG) == DEBUG && debugEnabled)) {
+		} else if (((type & INFO) == INFO && infoEnabled)) {
 		} else {
 			return;
 		}
@@ -214,7 +214,7 @@ public class Logger {
 	 *           characters
 	 */
 	public static void epoch(String id) {
-		if(id.length() > 4)
+		if (id.length() > 4)
 			id = id.substring(0, 4);
 		epochs.put(id, System.currentTimeMillis());
 	}

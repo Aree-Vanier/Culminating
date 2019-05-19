@@ -1,13 +1,12 @@
-package ca.gkelly.culminating.engine;
+package ca.gkelly.engine;
 
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import ca.gkelly.culminating.engine.input.Keyboard;
-import ca.gkelly.culminating.engine.input.Mouse;
-import ca.gkelly.culminating.graphics.Window;
+import ca.gkelly.engine.input.Keyboard;
+import ca.gkelly.engine.input.Mouse;
 
 /**
  * Abstract class to be extended to create managers<br/>
@@ -15,8 +14,8 @@ import ca.gkelly.culminating.graphics.Window;
  * switch between them as needed
  */
 public abstract class Manager {
-	
-	/**Target framerate to be maintained by {@link Window}*/
+
+	/** Target framerate to be maintained by {@link Window} */
 	public int targetFramerate = 50;
 
 	/** Mouse event handler */

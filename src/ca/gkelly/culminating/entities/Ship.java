@@ -4,8 +4,8 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-import ca.gkelly.culminating.graphics.Camera;
 import ca.gkelly.culminating.loader.VesselSource;
+import ca.gkelly.engine.graphics.Camera;
 
 public class Ship extends Entity {
 
@@ -20,10 +20,10 @@ public class Ship extends Entity {
 
 	@Override
 	public void render(Camera c) {
-		if(texture == null)
+		if (texture == null)
 			reRender();
-		for(Mount m: mounts) {
-			if(m.getRenderRequest()) {
+		for (Mount m : mounts) {
+			if (m.getRenderRequest()) {
 				reRender();
 			}
 		}
@@ -35,7 +35,7 @@ public class Ship extends Entity {
 		texture = new BufferedImage(baseTexture.getWidth(), baseTexture.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics g = texture.getGraphics();
 		g.drawImage(baseTexture, 0, 0, null);
-		for(Mount m: mounts) {
+		for (Mount m : mounts) {
 			m.render(g);
 		}
 

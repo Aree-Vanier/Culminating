@@ -1,4 +1,4 @@
-package ca.gkelly.culminating.util;
+package ca.gkelly.engine.util;
 
 public class Tools {
 	/**
@@ -11,5 +11,5 @@ public class Tools {
 	 */
 	public static int minmax(int val, int min, int max) {
 		return (Math.max(min, Math.min(val, max)));
-	};
+	}
 }

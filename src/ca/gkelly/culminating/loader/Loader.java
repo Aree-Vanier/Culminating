@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import ca.gkelly.culminating.util.Logger;
+import ca.gkelly.engine.util.Logger;
 
 public class Loader {
 	public static ArrayList<VesselSource> vessels = new ArrayList<VesselSource>();
@@ -36,10 +36,10 @@ public class Loader {
 		File[] files = new File(directory + "\\gameData").listFiles();
 
 		BufferedReader reader;
-		for(File f: files) {
+		for (File f : files) {
 			Logger.log(Logger.DEBUG, f.getName());
 			// We only want the JSON files
-			if(!f.getName().endsWith(".json")) {
+			if (!f.getName().endsWith(".json")) {
 				continue;
 			}
 
@@ -90,9 +90,9 @@ public class Loader {
 
 		String text = "";
 		String line;
-		while((line = br.readLine()) != null) {
+		while ((line = br.readLine()) != null) {
 			// Ignore declaration line
-			if(line.contains("//DOCTYPE"))
+			if (line.contains("//DOCTYPE"))
 				continue;
 			text += line;
 		}

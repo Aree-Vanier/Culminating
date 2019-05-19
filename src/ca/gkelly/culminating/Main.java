@@ -7,10 +7,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import ca.gkelly.culminating.entities.Ship;
-import ca.gkelly.culminating.graphics.Camera;
 import ca.gkelly.culminating.loader.Loader;
 import ca.gkelly.culminating.loader.MountSource;
-import ca.gkelly.culminating.util.Logger;
+import ca.gkelly.engine.graphics.Camera;
+import ca.gkelly.engine.util.Logger;
 
 public class Main extends JPanel {
 

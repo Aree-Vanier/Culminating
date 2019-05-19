@@ -1,4 +1,4 @@
-package ca.gkelly.culminating.graphics;
+package ca.gkelly.engine;
 
 import java.awt.Graphics;
 import java.awt.event.WindowEvent;
@@ -6,9 +6,8 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 
-import ca.gkelly.culminating.engine.DisplayMode;
-import ca.gkelly.culminating.engine.Manager;
-import ca.gkelly.culminating.util.Logger;
+import ca.gkelly.engine.graphics.DisplayMode;
+import ca.gkelly.engine.util.Logger;
 
 public class Window extends JFrame implements Runnable {
 	Manager manager;

@@ -4,7 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import ca.gkelly.culminating.loader.MountSource;
-import ca.gkelly.culminating.util.Logger;
+import ca.gkelly.engine.util.Logger;
 
 public abstract class Mount {
 

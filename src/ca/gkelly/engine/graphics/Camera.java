@@ -1,4 +1,4 @@
-package ca.gkelly.culminating.graphics;
+package ca.gkelly.engine.graphics;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -9,7 +9,7 @@ import java.awt.Image;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 
-import ca.gkelly.culminating.util.Logger;
+import ca.gkelly.engine.util.Logger;
 
 public class Camera {
 
@@ -51,7 +51,7 @@ public class Camera {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
 
-		//Create a logger epoch
+		// Create a logger epoch
 		Logger.epoch("REND");
 
 		// Render the map
@@ -69,7 +69,7 @@ public class Camera {
 	 * @param y     The y position of the image
 	 */
 	public void render(BufferedImage image, int x, int y) {
-		if(onScreen(x, y, image.getWidth(), image.getHeight())) {
+		if (onScreen(x, y, image.getWidth(), image.getHeight())) {
 //			drawRect(x, y, x + image.getWidth(), x + image.getHeight(), Color.PINK);
 			int[] pos = screenSpace(x, y);
 			g.drawImage(image.getScaledInstance((int) (image.getWidth() * zoom), (int) (image.getHeight() * zoom),
@@ -87,7 +87,7 @@ public class Camera {
 
 	/** Draw a rectangle to the world */
 	public void drawRect(int x, int y, int width, int height, Color c) {
-		if(onScreen(x, y, width, height)) {
+		if (onScreen(x, y, width, height)) {
 			g.setColor(c);
 			int[] pos = screenSpace(x, y);
 			g.drawRect(pos[0], pos[1], (int) (width * zoom), (int) (height * zoom));
@@ -102,13 +102,13 @@ public class Camera {
 
 		boolean onScreen = false;
 
-		for(int i = 0;i < nPoints;i++) {
-			if(onScreen(xPoints[i], yPoints[i]))
+		for (int i = 0; i < nPoints; i++) {
+			if (onScreen(xPoints[i], yPoints[i]))
 				onScreen = true;
 			xPoints[i] = screenSpace(p.xpoints[i], p.ypoints[i])[0];
 			yPoints[i] = screenSpace(p.xpoints[i], p.ypoints[i])[1];
 		}
-		if(onScreen) {
+		if (onScreen) {
 			g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 175));
 			g.fillPolygon(xPoints, yPoints, nPoints);
 			g.setColor(c);
