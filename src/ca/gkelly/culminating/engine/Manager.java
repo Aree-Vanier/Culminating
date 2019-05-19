@@ -1,10 +1,16 @@
 package ca.gkelly.culminating.engine;
 
+import java.awt.Container;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JPanel;
+
 import ca.gkelly.culminating.engine.input.Keyboard;
 import ca.gkelly.culminating.engine.input.Mouse;
+import ca.gkelly.culminating.graphics.Window;
+import ca.gkelly.culminating.util.Logger;
 
 /**
  * Abstract class to be extended to create managers<br/>
@@ -17,15 +23,15 @@ public abstract class Manager {
 	private long lastTime = 0;
 
 	/** Mouse event handler */
-	public Mouse mouse;
+	public Mouse mouse = new Mouse(this);
 	/** Keyboard event handler */
-	public Keyboard keyboard;
+	public Keyboard keyboard = new Keyboard(this);
 
 	/** Called when the manager is initialized */
-	public abstract void init();
+	public abstract void init(Container container);
 
 	/** Called periodically by {@link Window} on main thread */
-	public abstract void render();
+	public abstract void render(Graphics g);
 
 	/** Called periodically by {@link Window} on separate thread */
 	public abstract void update();
@@ -81,5 +87,19 @@ public abstract class Manager {
 	public final void calculateDeltaTime() {
 		deltaTime = (int) (System.currentTimeMillis() - lastTime);
 		lastTime = System.currentTimeMillis();
+	}
+
+	/**
+	 * Pauses thread based on {@link #deltaTime} value to maintain 50 fps<br/>
+	 * Called automatically by {@link Window} after {@link #update()}
+	 */
+	public final void sleepUntilDeltaTime() {
+		try {
+			Thread.sleep((1000 / 50) - (System.currentTimeMillis() - lastTime));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			Logger.log(Logger.INFO, "Loop time exceed 20ms");
+		}
 	}
 }

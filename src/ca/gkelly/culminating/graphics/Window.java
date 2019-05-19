@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 
 import ca.gkelly.culminating.engine.DisplayMode;
 import ca.gkelly.culminating.engine.Manager;
+import ca.gkelly.culminating.util.Logger;
 
 public class Window extends JFrame implements Runnable {
 	Manager manager;
@@ -26,9 +27,6 @@ public class Window extends JFrame implements Runnable {
 
 		// Set up this way to call manager.close() before closing
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		addMouseListener(manager.mouse);
-		addMouseMotionListener(manager.mouse);
-		addKeyListener(manager.keyboard);
 		addWindowListener(new WindowListener() {
 
 			@Override
@@ -64,19 +62,31 @@ public class Window extends JFrame implements Runnable {
 		});
 	}
 
+	public Window(DisplayMode d, Manager m) {
+		this(d);
+		setManager(m);
+	}
+
 	@Override
 	public void paint(Graphics g) {
 		if (manager == null)
 			return;
 
-		manager.render();
+		manager.render(g);
 	}
 
 	@Override
 	public void run() {
 		while (runThread) {
+			if (manager == null) {
+				Logger.log("null");
+				continue;
+			}
 			manager.calculateDeltaTime();
 			manager.update();
+			// TODO: Find a better way
+			repaint();
+			manager.sleepUntilDeltaTime();
 		}
 	}
 
@@ -88,10 +98,17 @@ public class Window extends JFrame implements Runnable {
 	 * @param m New manager
 	 */
 	public void setManager(Manager m) {
-		if (manager != null)
+		if (manager != null) {
 			manager.interrupt();
-		m.init();
+			removeMouseListener(manager.mouse);
+			removeMouseMotionListener(manager.mouse);
+			removeKeyListener(manager.keyboard);
+		}
+		m.init(getContentPane());
 		manager = m;
+		addMouseListener(manager.mouse);
+		addMouseMotionListener(manager.mouse);
+		addKeyListener(manager.keyboard);
 	}
 
 }

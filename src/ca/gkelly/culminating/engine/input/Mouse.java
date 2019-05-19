@@ -14,7 +14,7 @@ public class Mouse implements MouseListener, MouseMotionListener {
 	public boolean left;
 	public boolean right;
 	public boolean middle;
-	public Point pos;
+	public Point pos = new Point();
 
 	Manager m;
 

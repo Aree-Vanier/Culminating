@@ -10,7 +10,7 @@ import ca.gkelly.culminating.engine.Manager;
 public class Keyboard implements KeyListener {
 
 	/** List of all currently pressed keys */
-	ArrayList<Integer> pressed = new ArrayList<>();
+	public ArrayList<Integer> pressed = new ArrayList<>();
 
 	Manager m;
 
@@ -34,7 +34,7 @@ public class Keyboard implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		if (pressed.contains(e.getKeyCode())) {
-			pressed.remove(e.getKeyCode());
+			pressed.remove((Object) e.getKeyCode());
 		}
 		m.onKeyReleased(e);
 	}
