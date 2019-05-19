@@ -246,8 +246,11 @@ public class Camera {
 	 * @param zoom The new zoom
 	 */
 	public void setPosition(int x, int y, double zoom) {
-		this.x = x;
-		this.y = y;
+		if(buffer == null) return;
 		this.zoom = zoom > 0 ? zoom : 0.1;
+		this.x = (int) ((-x+buffer.getWidth()/2));
+		this.y = (int) ((-y+buffer.getHeight()/2));
+		this.x -= (x*(zoom-1));
+		this.y -= (y*(zoom-1));
 	}
 }

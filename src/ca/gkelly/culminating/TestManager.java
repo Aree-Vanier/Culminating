@@ -22,8 +22,8 @@ import ca.gkelly.engine.util.Logger;
 
 public class TestManager extends Manager {
 	TileMap m;
-	int x = 256;
-	int y = 256;
+	int x = 100;
+	int y = 100;
 	double zoom = 1;
 
 	Camera cam;
