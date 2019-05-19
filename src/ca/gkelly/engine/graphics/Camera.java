@@ -10,6 +10,7 @@ import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 
 import ca.gkelly.engine.util.Logger;
+import ca.gkelly.engine.util.Tools;
 
 /**
  * 2D world-space camera, allows translation and zoom<br/>
@@ -18,7 +19,10 @@ import ca.gkelly.engine.util.Logger;
  */
 public class Camera {
 
-	public double zoom = 1;
+	static final double MIN_ZOOM = 0.1;
+	static final double MAX_ZOOM = 10;
+	
+	double zoom = 1;
 	int x = 0;
 	int y = 0;
 	int rawX = 0;
@@ -265,7 +269,7 @@ public class Camera {
 		rawY = y;
 		if (buffer == null)
 			return;
-		this.zoom = zoom > 0 ? zoom : 0.1;
+		this.zoom = Tools.minmax(zoom, MIN_ZOOM, MAX_ZOOM);
 		this.x = (int) ((-x + buffer.getWidth() / 2));
 		this.y = (int) ((-y + buffer.getHeight() / 2));
 		this.x -= (x * (zoom - 1));
