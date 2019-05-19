@@ -15,6 +15,9 @@ public class Window extends JFrame implements Runnable {
 	Thread t;
 	boolean runThread = true;
 
+	public static int deltaTime = 0;
+	private long lastTime = 0;
+
 	public Window(DisplayMode d) {
 		if (d.mode == DisplayMode.WINDOWED) {
 			setSize(d.width, d.height);
@@ -82,11 +85,11 @@ public class Window extends JFrame implements Runnable {
 				Logger.log("null");
 				continue;
 			}
-			manager.calculateDeltaTime();
+			calculateDeltaTime();
 			manager.update();
 			// TODO: Find a better way
 			repaint();
-			manager.sleepUntilDeltaTime();
+			sleepUntilDeltaTime();
 		}
 	}
 
@@ -109,6 +112,32 @@ public class Window extends JFrame implements Runnable {
 		addMouseListener(manager.mouse);
 		addMouseMotionListener(manager.mouse);
 		addKeyListener(manager.keyboard);
+	}
+
+	/**
+	 * Calculates new {@link #deltaTime} value<br/>
+	 * Called before {@link Manager#update()}
+	 */
+	public final void calculateDeltaTime() {
+		deltaTime = (int) (System.currentTimeMillis() - lastTime);
+		lastTime = System.currentTimeMillis();
+	}
+
+	/**
+	 * Pauses thread based on {@link #deltaTime} value to maintain
+	 * {@link Manager#targetFramerate}<br/>
+	 * Called after {@link Manager#update()}
+	 */
+	public final void sleepUntilDeltaTime() {
+		if (manager == null)
+			return;
+		try {
+			Thread.sleep((1000 / manager.targetFramerate) - (System.currentTimeMillis() - lastTime));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			Logger.log(Logger.INFO, "Loop time exceed 20ms");
+		}
 	}
 
 }
