@@ -70,7 +70,7 @@ public class TestManager extends Manager {
 
 		Logger.epoch("BOAT");
 		s.render(cam);
-		Logger.log("Ship drawn in {BOAT}");
+//		Logger.log("Ship drawn in {BOAT}");
 		cam.drawRect(s.rect.x, s.rect.y, s.rect.width, s.rect.height, Color.red);
 
 		if (selectedPoly != null) {
@@ -83,7 +83,7 @@ public class TestManager extends Manager {
 
 	@Override
 	public void update() {
-		Logger.log("Update");
+//		Logger.log("Update");
 		if (keyboard.pressed.contains(KeyEvent.VK_W))
 			y--;
 		if (keyboard.pressed.contains(KeyEvent.VK_S))

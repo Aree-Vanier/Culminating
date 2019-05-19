@@ -169,7 +169,7 @@ public class TileMap {
 		if (!(Arrays.equals(lastTL, tl) && Arrays.equals(lastBR, br))) {
 			lastTL = tl;
 			lastBR = br;
-			Logger.log("Re-render");
+//			Logger.log("Re-render");
 			cameraRender = image.getSubimage(tl[0] - margin, tl[1] - margin, br[0] - tl[0] + 2 * margin,
 					br[1] - tl[1] + 2 * margin);
 		}
