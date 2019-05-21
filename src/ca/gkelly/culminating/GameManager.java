@@ -49,8 +49,13 @@ public class GameManager extends Manager {
 			player.move(-1.0, 0);
 		if (keyboard.pressed.contains(KeyEvent.VK_D))
 			player.move(1.0, 0);
+		
+		if(keyboard.pressed.contains(KeyEvent.VK_Q))
+			cam.zoom(0.05);
+		if(keyboard.pressed.contains(KeyEvent.VK_E))
+			cam.zoom(-0.05);
 
-		cam.setPosition(player.getX(), player.getY(), 1.25);
+		cam.setPosition(player.getX()+player.rect.width/2, player.getY()+player.rect.height/2);
 	}
 
 	@Override

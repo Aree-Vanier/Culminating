@@ -9,7 +9,7 @@ import ca.gkelly.engine.graphics.Camera;
 public class Entity {
 
 	protected BufferedImage image;
-	protected Rectangle rect;
+	public Rectangle rect;
 
 	protected void move(int x, int y) {
 		x += rect.x;

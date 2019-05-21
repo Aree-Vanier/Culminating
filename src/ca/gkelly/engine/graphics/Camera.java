@@ -21,7 +21,7 @@ public class Camera {
 
 	static final double MIN_ZOOM = 0.1;
 	static final double MAX_ZOOM = 10;
-	
+
 	double zoom = 1;
 	int x = 0;
 	int y = 0;
@@ -48,7 +48,7 @@ public class Camera {
 	public Camera(Container window, TileMap map) {
 		this.window = window;
 		this.map = map;
-		//Set to initial position
+		// Set to initial position
 		buffer = new BufferedImage(window.getWidth(), window.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
 		setPosition(rawX, rawY, 1);
 	}
@@ -89,7 +89,7 @@ public class Camera {
 	 * @param y     The y position of the image
 	 */
 	public void render(BufferedImage image, int x, int y) {
-		if (onScreen(x, y, image.getWidth(), image.getHeight())) {
+		if(onScreen(x, y, image.getWidth(), image.getHeight())) {
 //			drawRect(x, y, x + image.getWidth(), x + image.getHeight(), Color.PINK);
 			int[] pos = screenSpace(x, y);
 			g.drawImage(image.getScaledInstance((int) (image.getWidth() * zoom), (int) (image.getHeight() * zoom),
@@ -122,7 +122,7 @@ public class Camera {
 	 * @param c      The color to use
 	 */
 	public void drawRect(int x, int y, int width, int height, Color c) {
-		if (onScreen(x, y, width, height)) {
+		if(onScreen(x, y, width, height)) {
 			g.setColor(c);
 			int[] pos = screenSpace(x, y);
 			g.drawRect(pos[0], pos[1], (int) (width * zoom), (int) (height * zoom));
@@ -142,13 +142,13 @@ public class Camera {
 
 		boolean onScreen = false;
 
-		for (int i = 0; i < nPoints; i++) {
-			if (onScreen(xPoints[i], yPoints[i]))
+		for(int i = 0;i < nPoints;i++) {
+			if(onScreen(xPoints[i], yPoints[i]))
 				onScreen = true;
 			xPoints[i] = screenSpace(p.xpoints[i], p.ypoints[i])[0];
 			yPoints[i] = screenSpace(p.xpoints[i], p.ypoints[i])[1];
 		}
-		if (onScreen) {
+		if(onScreen) {
 			g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 175));
 			g.fillPolygon(xPoints, yPoints, nPoints);
 			g.setColor(c);
@@ -241,8 +241,8 @@ public class Camera {
 	 * @param y The y offset
 	 */
 	public void translate(int x, int y) {
-		rawX +=x;
-		rawY +=y;
+		rawX += x;
+		rawY += y;
 		setPosition(rawX, rawY, this.zoom);
 	}
 
@@ -265,12 +265,22 @@ public class Camera {
 	public void setPosition(int x, int y, double zoom) {
 		rawX = x;
 		rawY = y;
-		if (buffer == null)
+		if(buffer == null)
 			return;
 		this.zoom = Tools.minmax(zoom, MIN_ZOOM, MAX_ZOOM);
 		this.x = (int) ((-x + buffer.getWidth() / 2));
 		this.y = (int) ((-y + buffer.getHeight() / 2));
 		this.x -= (x * (zoom - 1));
 		this.y -= (y * (zoom - 1));
+	}
+
+	/**
+	 * Set the camera position, without changing the zoom
+	 * 
+	 * @param x The new x position
+	 * @param y The new y position
+	 */
+	public void setPosition(int x, int y) {
+		setPosition(x, y, zoom);
 	}
 }
