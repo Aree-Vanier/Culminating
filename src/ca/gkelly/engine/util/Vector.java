@@ -64,13 +64,13 @@ public class Vector {
 	}
 
 	/** Get the full x component */
-	public double getX() {
-		return x * magnitude;
+	public int getX() {
+		return (int) (x * magnitude);
 	}
 
 	/** Get the full y component */
-	public double getY() {
-		return y * magnitude;
+	public int getY() {
+		return (int) (y * magnitude);
 	}
 
 	/** Get the magnitude of the vector */
@@ -111,13 +111,12 @@ public class Vector {
 	}
 
 	/**
-	 * Get a normalized version of passed vector
+	 * Get a normalized version of the vector
 	 * 
-	 * @param v The vector to normalize
 	 * @return The normalized vector
 	 */
-	public static Vector getNormal(Vector v) {
-		return (new Vector(v.getNormalX(), v.getNormalY()));
+	public Vector normalized() {
+		return (new Vector(x, y));
 	}
 
 	/**

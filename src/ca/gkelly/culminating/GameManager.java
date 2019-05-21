@@ -3,19 +3,24 @@ package ca.gkelly.culminating;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
+import ca.gkelly.culminating.resources.Bullet;
 import ca.gkelly.culminating.resources.PlayerResource;
 import ca.gkelly.engine.Manager;
 import ca.gkelly.engine.graphics.Camera;
 import ca.gkelly.engine.graphics.TileMap;
 import ca.gkelly.engine.loader.Loader;
 import ca.gkelly.engine.util.Logger;
+import ca.gkelly.engine.util.Vector;
 
 public class GameManager extends Manager {
 
 	TileMap map;
 	Camera cam;
 	Player player;
+	ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 
 	public GameManager(String[] args) {
 		map = new TileMap(args[0] + "\\maps\\map.tmx");
@@ -35,12 +40,20 @@ public class GameManager extends Manager {
 		cam.begin();
 		player.render(cam);
 
+		for(Bullet b : bullets) {
+			b.render(cam);
+		}
+		
 		cam.finish(g);
 		Logger.newLine(Logger.DEBUG);
 	}
 
 	@Override
 	public void update() {
+		for(Bullet b : bullets) {
+			b.update();
+		}
+		
 		if (keyboard.pressed.contains(KeyEvent.VK_W))
 			player.move(0, -1.0);
 		if (keyboard.pressed.contains(KeyEvent.VK_S))
@@ -61,6 +74,11 @@ public class GameManager extends Manager {
 	@Override
 	public void end() {
 
+	}
+	
+	@Override
+	public void onClick(MouseEvent e) {
+		bullets.add(new Bullet(player.getX(), player.getY(), new Vector(1,0)));
 	}
 
 }

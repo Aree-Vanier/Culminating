@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 
 import ca.gkelly.engine.util.Logger;
@@ -106,10 +108,21 @@ public class Camera {
 	 * @param c      The color to use
 	 */
 	public void drawPoint(int x, int y, int radius, Color c) {
-		// Todo: Onscreen check
+		// TODO: Onscreen check
 		g.setColor(c);
 		int[] pos = screenSpace(x, y);
 		g.fillOval(pos[0], pos[1], radius, radius);
+	}
+	
+	public void drawLine(int x1, int y1, int x2, int y2, float width, Color c) {
+		// TODO: Onscreen check
+		g.setColor(c);
+		int[] pos1 = screenSpace(x1, y1);
+		int[] pos2 = screenSpace(x2, y2);
+		Stroke oldStroke = g.getStroke();
+		g.setStroke(new BasicStroke(width));
+		g.drawLine(pos1[0], pos1[1], pos2[0], pos2[1]);
+		g.setStroke(oldStroke);
 	}
 
 	/**
