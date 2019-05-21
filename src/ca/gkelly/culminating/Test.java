@@ -1,23 +1,24 @@
 package ca.gkelly.culminating;
 
+import java.util.HashMap;
+
+import ca.gkelly.culminating.resources.PlayerResource;
 import ca.gkelly.engine.graphics.DisplayMode;
 import ca.gkelly.engine.graphics.Window;
-import ca.gkelly.engine.util.Logger;
+import ca.gkelly.engine.loader.Loader;
 
-//This is a class used for quick console tests that don't need the graphics
 public class Test {
+	static Window w;
+	static GameManager gm;
 
-	TestManager manager;
-	
 	public static void main(String[] args) {
-		Logger.log(Logger.INFO, "TESTING");
-		new Test(args);
-	}
+		HashMap<String, Class> resources = new HashMap<>();
+		resources.put("player", PlayerResource.class);
 
-	public Test(String[] args) {
-		manager = new TestManager(args);
-		
-		new Window(new DisplayMode(DisplayMode.WINDOWED, 640, 480), manager);
-	}
+		Loader.init(args[0], resources);
+		Loader.load();
 
+		gm = new GameManager(args);
+		w = new Window(new DisplayMode(DisplayMode.WINDOWED, 640, 480), gm);
+	}
 }

@@ -95,14 +95,14 @@ public class Window extends JFrame implements Runnable {
 	@Override
 	public void run() {
 		while (runThread) {
-			if (manager == null) {
-				Logger.log(manager);
-				continue;
-			}
 			calculateDeltaTime();
-			manager.update();
-			// TODO: Find a better way
-			repaint();
+			if (manager != null) {
+				manager.update();
+				// TODO: Find a better way
+				repaint();
+			} else {
+				Logger.log(Logger.INFO, "Manager is null");
+			}
 			sleepUntilDeltaTime();
 		}
 	}

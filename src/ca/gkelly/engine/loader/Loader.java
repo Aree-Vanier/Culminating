@@ -136,18 +136,13 @@ public class Loader {
 		JSONObject rootJSON;
 		rootJSON = (JSONObject) new JSONParser().parse(text);
 
-		String imagePath = (file.getParentFile().getPath()) + "\\" + (String) rootJSON.get("texture");
-
-		Logger.log(Logger.DEBUG, imagePath);
-		BufferedImage image = ImageIO.read(new File(imagePath));
-
 		Logger.log("Type: " + type);
 		// Get the class to instantiate
 		Class<Resource> c = resourceClasses.get(type);
 		Logger.log(c.getSimpleName());
 		// Create instance
 		Resource r = c.newInstance();
-		r.load(image, rootJSON);
+		r.load(file, rootJSON);
 		// If there is not an entry for this type, add it
 		if (!resources.containsKey(type)) {
 			Logger.log("Created resource: " + type);

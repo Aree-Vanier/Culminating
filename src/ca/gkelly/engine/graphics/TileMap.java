@@ -296,9 +296,10 @@ class Tileset {
 		tCount = Integer.parseInt(e.getAttribute("tilecount"));
 		columns = Integer.parseInt(e.getAttribute("columns"));
 //		String subPath = ((Element) e.getFirstChild()).getAttribute("source");
-		String subPath = "tileset.png"; // TODO: Why?
+		String subPath = "tiles.png"; // TODO: Why?
 
 		tiles = new BufferedImage[tCount];
+		Logger.log(path.substring(0, path.lastIndexOf("\\")) + "\\" + subPath);
 		BufferedImage sheet = ImageIO.read(new File(path.substring(0, path.lastIndexOf("\\")) + "\\" + subPath));
 
 		// Load tiles from image

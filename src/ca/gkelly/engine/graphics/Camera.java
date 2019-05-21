@@ -165,11 +165,9 @@ public class Camera {
 	 */
 	public void finish(Graphics g) {
 		g.drawImage(buffer.getSubimage(0, 0, window.getWidth(), window.getHeight()), 0, 0, null);
-//		Logger.log("Rendered in {REND}");
-		g.setColor(Color.red);
-		g.drawOval(centreX, centreY, 25, 25);
-		Logger.log(x + "," + y + "  " + buffer.getWidth() + "," + buffer.getHeight() + "  " + worldSpace(centreX, 0)[0]
-				+ "," + worldSpace(0, centreY)[1] + "  " + zoom);
+		Logger.log("Rendered in {REND}");
+//		Logger.log(x + "," + y + "  " + buffer.getWidth() + "," + buffer.getHeight() + "  " + worldSpace(centreX, 0)[0]
+//				+ "," + worldSpace(0, centreY)[1] + "  " + zoom);
 	}
 
 	/**

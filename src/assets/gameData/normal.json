@@ -1,0 +1,9 @@
+//DOCTYPE PLAYER
+{
+	"name":"Normal",
+	"texture":"player.png",
+	"health":"200",
+	"speed":"2",
+	"damage":"15",
+	"rate":"10"
+}
