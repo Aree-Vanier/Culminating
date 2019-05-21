@@ -15,15 +15,14 @@ public class Player extends Entity{
 	int rate;
 
 	public Player(PlayerResource r, int x, int y) {
+		super(r.image);
 		resource = r;
 
-		image = r.image;
 		MAX_HEALTH = r.health;
 		speed = r.speed;
 		damage = r.damage;
 		rate = r.rate;
-
-		rect = new Rectangle(x, y, image.getWidth(), image.getHeight());
+		setPosition(x,y);
 	}
 	
 	public void move(double x, double y) {
