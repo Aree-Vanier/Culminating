@@ -33,7 +33,7 @@ public abstract class Manager {
 	/** Called periodically by {@link Window} on separate thread */
 	public abstract void update();
 
-	/** Called when the manager is interrupted */
+	/** Called when the manager is ended */
 	public abstract void end();
 
 	/** Called when the window is closed */

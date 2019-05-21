@@ -132,7 +132,7 @@ public class Window extends JFrame implements Runnable {
 	 * Calculates new {@link #deltaTime} value<br/>
 	 * Called before {@link Manager#update()}
 	 */
-	public final void calculateDeltaTime() {
+	private void calculateDeltaTime() {
 		deltaTime = (int) (System.currentTimeMillis() - lastTime);
 		lastTime = System.currentTimeMillis();
 	}
@@ -142,7 +142,7 @@ public class Window extends JFrame implements Runnable {
 	 * {@link Manager#targetFramerate}<br/>
 	 * Called after {@link Manager#update()}
 	 */
-	public final void sleepUntilDeltaTime() {
+	private void sleepUntilDeltaTime() {
 		if (manager == null)
 			return;
 		try {
