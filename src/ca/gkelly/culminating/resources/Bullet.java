@@ -28,7 +28,7 @@ public class Bullet {
 		Logger.log(x + "," + y + "\t" + x+Vector.multiply(velocity.normalized(), length).getX() + ","
 				+ y+Vector.multiply(velocity.normalized(), length).getX());
 		c.drawLine(x, y, x+Vector.multiply(velocity.normalized(), length).getX(),
-				y+Vector.multiply(velocity.normalized(), length).getX(), 5, Color.RED);
+				y+Vector.multiply(velocity.normalized(), length).getY(), 5, Color.RED);
 	}
 
 }

@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import ca.gkelly.engine.graphics.Camera;
+import ca.gkelly.engine.util.Logger;
 
 /** Class used to manage basic entities */
 public class Entity {
@@ -17,6 +18,9 @@ public class Entity {
 	 */
 	public Rectangle rect;
 
+	public int x;
+	public int y;
+
 	/**
 	 * Instantiate the entity, assigns image and creates basic rectangle
 	 * 
@@ -25,7 +29,8 @@ public class Entity {
 	protected Entity(BufferedImage image) {
 		this.image = image;
 
-		rect = new Rectangle(0, 0, image.getWidth(), image.getHeight());
+		rect = new Rectangle(0 - image.getWidth() / 2, 0 - image.getWidth() / 2, image.getWidth() / 2,
+				image.getHeight() / 2);
 	}
 
 	/**
@@ -35,9 +40,9 @@ public class Entity {
 	 * @param y The y distance
 	 */
 	protected void move(int x, int y) {
-		x += rect.x;
-		y += rect.y;
-		rect.setLocation((int) x, (int) y);
+		this.x += x;
+		this.y += y;
+		rect.setLocation((int) (x - rect.getWidth() / 2), (int) (y - rect.getHeight() / 2));
 	}
 
 	/**
@@ -47,7 +52,9 @@ public class Entity {
 	 * @param y The new y position
 	 */
 	public void setPosition(int x, int y) {
-		rect.setLocation(x, y);
+		this.x = x;
+		this.y = y;
+		rect.setLocation((int) (x - rect.getWidth() / 2), (int) (y - rect.getHeight() / 2));
 	}
 
 	/**
@@ -56,6 +63,7 @@ public class Entity {
 	 * @param c the camera to be used
 	 */
 	public void render(Camera c) {
+		Logger.log(x+"\t"+y);
 		c.render(image, rect.x, rect.y);
 	}
 
