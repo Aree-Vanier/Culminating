@@ -1,6 +1,6 @@
 package ca.gkelly.culminating;
 
-import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 import ca.gkelly.culminating.resources.PlayerResource;
 import ca.gkelly.engine.loader.Entity;
@@ -15,9 +15,10 @@ public class Player extends Entity{
 	int rate;
 
 	public Player(PlayerResource r, int x, int y) {
-		super(r.image);
+		super(r.image.getWidth(), r.image.getHeight());
 		resource = r;
-
+		
+		image = r.image;
 		MAX_HEALTH = r.health;
 		speed = r.speed;
 		damage = r.damage;

@@ -5,20 +5,25 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import ca.gkelly.engine.graphics.Camera;
-import ca.gkelly.engine.util.Logger;
 
 /** Class used to manage basic entities */
-public class Entity {
+public abstract class Entity {
 
-	/** Image to be rendered */
+	/**
+	 * Image to be rendered<br/>
+	 * If null, the default {@link #render(Camera) render()} will do nothing
+	 */
 	protected BufferedImage image;
+
 	/**
 	 * Bounding rectangle used for position and collision <br/>
 	 * <strong>Must be defined for functionality</strong>
 	 */
 	public Rectangle rect;
 
+	/** X coordinate of the centre of the {@link #rect bounding rectangle} */
 	public int x;
+	/** Y coordinate of the centre of the {@link #rect bounding rectangle} */
 	public int y;
 
 	/**
@@ -26,11 +31,9 @@ public class Entity {
 	 * 
 	 * @param image The image to be used
 	 */
-	protected Entity(BufferedImage image) {
-		this.image = image;
+	protected Entity(int width, int height) {
 
-		rect = new Rectangle(0 - image.getWidth() / 2, 0 - image.getWidth() / 2, image.getWidth() / 2,
-				image.getHeight() / 2);
+		rect = new Rectangle(-width / 2, -height / 2, width, height);
 	}
 
 	/**
@@ -42,7 +45,7 @@ public class Entity {
 	protected void move(int x, int y) {
 		this.x += x;
 		this.y += y;
-		rect.setLocation((int) (x - rect.getWidth() / 2), (int) (y - rect.getHeight() / 2));
+		rect.setLocation((int) (this.x - rect.getWidth() / 2), (int) (this.y - rect.getHeight() / 2));
 	}
 
 	/**
@@ -54,7 +57,7 @@ public class Entity {
 	public void setPosition(int x, int y) {
 		this.x = x;
 		this.y = y;
-		rect.setLocation((int) (x - rect.getWidth() / 2), (int) (y - rect.getHeight() / 2));
+		rect.setLocation((int) (this.x - rect.getWidth() / 2), (int) (this.y - rect.getHeight() / 2));
 	}
 
 	/**
@@ -63,8 +66,9 @@ public class Entity {
 	 * @param c the camera to be used
 	 */
 	public void render(Camera c) {
-		Logger.log(x+"\t"+y);
-		c.render(image, rect.x, rect.y);
+		if(image != null) {
+			c.render(image, getRectX(), getRectY());
+		}
 	}
 
 	/**
@@ -98,13 +102,33 @@ public class Entity {
 		return contains(p.x, p.y);
 	}
 
-	/** Get the x position of the rectangle */
-	public int getX() {
+	/**
+	 * Get the x position of the {@link #rect bounding rectangle} This will be in
+	 * the top-left corner, as opposed to centered like {@link #x}
+	 */
+	public int getRectX() {
 		return rect.x;
 	}
 
-	/** Get the y position of the rectangle */
-	public int getY() {
+	/**
+	 * Get the y position of the {@link #rect bounding rectangle} <br/>
+	 * This will be in the top-left corner, as opposed to centered like {@link #y}
+	 */
+	public int getRectY() {
 		return rect.y;
+	}
+
+	/**
+	 * Get the width of the {@link #rect bounding rectangle} <br/>
+	 */
+	public int getWidth() {
+		return rect.width;
+	}
+
+	/**
+	 * Get the height of the {@link #rect bounding rectangle} <br/>
+	 */
+	public int getHeight() {
+		return rect.height;
 	}
 }

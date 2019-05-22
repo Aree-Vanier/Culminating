@@ -3,27 +3,22 @@ package ca.gkelly.culminating.resources;
 import java.awt.Color;
 
 import ca.gkelly.engine.graphics.Camera;
+import ca.gkelly.engine.loader.PhysicsEntity;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
 
-public class Bullet {
+public class Bullet extends PhysicsEntity{
 
-	int x;
-	int y;
 	int length = 15;
-	Vector velocity;
 
 	public Bullet(int x, int y, Vector velocity) {
+		super(15, 5);
 		this.x = x;
 		this.y = y;
 		this.velocity = velocity;
 	}
 
-	public void update() {
-		x += velocity.getX();
-		y += velocity.getY();
-	}
-
+	@Override
 	public void render(Camera c) {
 		Logger.log(x + "," + y + "\t" + x+Vector.multiply(velocity.normalized(), length).getX() + ","
 				+ y+Vector.multiply(velocity.normalized(), length).getX());

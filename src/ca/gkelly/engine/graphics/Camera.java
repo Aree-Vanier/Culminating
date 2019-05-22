@@ -120,7 +120,7 @@ public class Camera {
 		int[] pos1 = screenSpace(x1, y1);
 		int[] pos2 = screenSpace(x2, y2);
 		Stroke oldStroke = g.getStroke();
-		g.setStroke(new BasicStroke(width));
+		g.setStroke(new BasicStroke((float) (width*zoom)));
 		g.drawLine(pos1[0], pos1[1], pos2[0], pos2[1]);
 		g.setStroke(oldStroke);
 	}

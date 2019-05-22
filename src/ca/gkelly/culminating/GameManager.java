@@ -1,5 +1,6 @@
 package ca.gkelly.culminating;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -40,9 +41,11 @@ public class GameManager extends Manager {
 		cam.begin();
 		player.render(cam);
 
-		for(Bullet b : bullets) {
+		for(Bullet b : new ArrayList<Bullet>(bullets)) {
 			b.render(cam);
 		}
+		
+		cam.drawRect(player.getRectX(), player.getRectY(), player.getWidth(), player.getHeight(), Color.blue);
 		
 		cam.finish(g);
 		Logger.newLine(Logger.DEBUG);
@@ -50,7 +53,7 @@ public class GameManager extends Manager {
 
 	@Override
 	public void update() {
-		for(Bullet b : bullets) {
+		for(Bullet b : new ArrayList<Bullet>(bullets)) {
 			b.update();
 		}
 		
@@ -68,7 +71,7 @@ public class GameManager extends Manager {
 		if(keyboard.pressed.contains(KeyEvent.VK_E))
 			cam.zoom(-0.05);
 
-		cam.setPosition(player.getX()+player.rect.width/2, player.getY()+player.rect.height/2);
+		cam.setPosition(player.x, player.y);
 	}
 
 	@Override
@@ -78,7 +81,7 @@ public class GameManager extends Manager {
 	
 	@Override
 	public void onClick(MouseEvent e) {
-		bullets.add(new Bullet(player.getX(), player.getY(), new Vector(1,0)));
+		bullets.add(new Bullet(player.x, player.y, new Vector(1,0)));
 	}
 
 }
