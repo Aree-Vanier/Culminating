@@ -16,7 +16,6 @@ public abstract class PhysicsEntity extends Entity {
 	@Override
 	public void update() {
 		move(velocity.getX(), velocity.getY());
-		Logger.log("Bullet updated " + velocity.getX() + "\t" + velocity.getY());
 	}
 
 	/**

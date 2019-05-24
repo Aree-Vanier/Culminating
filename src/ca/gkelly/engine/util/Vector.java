@@ -36,8 +36,13 @@ public class Vector {
 	 */
 	public Vector(double x, double y) {
 		magnitude = Math.sqrt(x * x + y * y);
-		this.x = x / magnitude;
-		this.y = y / magnitude;
+		if(magnitude == 0) {
+			this.x = 0;
+			this.y = 0;
+		} else {
+			this.x = x / magnitude;
+			this.y = y / magnitude;
+		}
 	}
 
 	/**
@@ -143,6 +148,12 @@ public class Vector {
 	/** Get a vector with just the horizontal component */
 	public Vector getVertical() {
 		return new Vector(0, getY());
+	}
+
+	public Vector getAtAngle(double angle) {
+		double offset = getAngle(false) - angle;
+		double newMag = magnitude * Math.cos(offset);
+		return new Vector(newMag * Math.cos(angle), newMag * Math.sin(angle));
 	}
 
 	/**

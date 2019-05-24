@@ -3,6 +3,7 @@ package ca.gkelly.culminating;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
+import java.awt.Polygon;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -41,12 +42,18 @@ public class GameManager extends Manager {
 		cam.begin();
 		player.render(cam);
 
-		for(Bullet b : new ArrayList<Bullet>(bullets)) {
+		for(Bullet b: new ArrayList<Bullet>(bullets)) {
 			b.render(cam);
 		}
 		
+		int[] pos = cam.worldSpace(mouse.pos.x, mouse.pos.y);
+		Polygon p = map.getPoly(pos[0], pos[1], "colliders");
+		if(p!=null) {
+			
+		}
+
 		cam.drawRect(player.getRectX(), player.getRectY(), player.getWidth(), player.getHeight(), Color.blue);
-		
+
 		cam.finish(g);
 		Logger.newLine(Logger.DEBUG);
 	}
@@ -54,25 +61,28 @@ public class GameManager extends Manager {
 	@Override
 	public void update() {
 		player.update();
-		for(Bullet b : new ArrayList<Bullet>(bullets)) {
+		for(Bullet b: new ArrayList<Bullet>(bullets)) {
 			b.update();
-			Logger.log(b.getVelocity().getString(Vector.STRING_RECTANGULAR));
+			Polygon p = map.getPoly(b.getX(), b.getY(), "colliders");
+			if(p!=null) {
+				cam.drawPoly(p, Color.blue);
+			}
 		}
-		
-		if (keyboard.pressed.contains(KeyEvent.VK_W))
+
+		if(keyboard.pressed.contains(KeyEvent.VK_W))
 			player.move(0, -1.0);
-		if (keyboard.pressed.contains(KeyEvent.VK_S))
+		if(keyboard.pressed.contains(KeyEvent.VK_S))
 			player.move(0, 1.0);
-		if (keyboard.pressed.contains(KeyEvent.VK_A))
+		if(keyboard.pressed.contains(KeyEvent.VK_A))
 			player.move(-1.0, 0);
-		if (keyboard.pressed.contains(KeyEvent.VK_D))
+		if(keyboard.pressed.contains(KeyEvent.VK_D))
 			player.move(1.0, 0);
-		
+
 		if(keyboard.pressed.contains(KeyEvent.VK_Q))
 			cam.zoom(0.05);
 		if(keyboard.pressed.contains(KeyEvent.VK_E))
 			cam.zoom(-0.05);
-		
+
 		Logger.log(player.getVelocity().getString(Vector.STRING_RECTANGULAR));
 		cam.setPosition((int) player.x, (int) player.y);
 	}
@@ -81,17 +91,22 @@ public class GameManager extends Manager {
 	public void end() {
 
 	}
-	
+
 	@Override
 	public void onMousePress(MouseEvent e) {
 		int[] pos = cam.worldSpace(e.getX(), e.getY());
-		Logger.log(Logger.INFO, new Vector(pos[0]-player.x,pos[1]-player.y).normalized().getString(Vector.STRING_RECTANGULAR));
-		
+		// Logger.log(Logger.INFO, new
+		// Vector(pos[0]-player.x,pos[1]-player.y).normalized().getString(Vector.STRING_RECTANGULAR));
+
 		if(player.contains(pos[0], pos[1])) {
 			return;
 		}
+
+		Vector vel = new Vector(pos[0] - player.x, pos[1] - player.y);
+		vel.setMag(3);
 		
-		bullets.add(new Bullet((int) player.x, (int) player.y, Vector.multiply(new Vector(pos[0]-player.x,pos[1]-player.y).normalized(), 3)));
+		Vector extraVel = player.getVelocity().getAtAngle(vel.getAngle(false));
+		bullets.add(new Bullet((int) player.x, (int) player.y, vel, extraVel));
 	}
 
 }
