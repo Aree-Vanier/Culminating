@@ -20,10 +20,10 @@ public class Bullet extends PhysicsEntity{
 
 	@Override
 	public void render(Camera c) {
-		Logger.log(x + "," + y + "\t" + x+Vector.multiply(velocity.normalized(), length).getX() + ","
-				+ y+Vector.multiply(velocity.normalized(), length).getX());
-		c.drawLine(x, y, x+Vector.multiply(velocity.normalized(), length).getX(),
-				y+Vector.multiply(velocity.normalized(), length).getY(), 5, Color.RED);
+//		Logger.log(x + "," + y + "\t" + x+Vector.multiply(velocity.normalized(), length).getX() + ","
+//				+ y+Vector.multiply(velocity.normalized(), length).getX());
+		c.drawLine(getX(), getY(), (int) (x+Vector.multiply(velocity.normalized(), length).getX()),
+				(int)(y+Vector.multiply(velocity.normalized(), length).getY()), 5, Color.RED);
 	}
 
 }

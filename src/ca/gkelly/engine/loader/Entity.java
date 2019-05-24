@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import ca.gkelly.engine.graphics.Camera;
+import ca.gkelly.engine.util.Vector;
 
 /** Class used to manage basic entities */
 public abstract class Entity {
@@ -22,9 +23,14 @@ public abstract class Entity {
 	public Rectangle rect;
 
 	/** X coordinate of the centre of the {@link #rect bounding rectangle} */
-	public int x;
+	public double x;
 	/** Y coordinate of the centre of the {@link #rect bounding rectangle} */
-	public int y;
+	public double y;
+
+	/** Previous X coordinate, used to calculate velocity */
+	private double lastX;
+	/** Previous Y coordinate, used to calculate velocity */
+	private double lastY;
 
 	/**
 	 * Instantiate the entity, assigns image and creates basic rectangle
@@ -42,10 +48,26 @@ public abstract class Entity {
 	 * @param x The x distance
 	 * @param y The y distance
 	 */
-	protected void move(int x, int y) {
+	protected void move(double x, double y) {
 		this.x += x;
 		this.y += y;
 		rect.setLocation((int) (this.x - rect.getWidth() / 2), (int) (this.y - rect.getHeight() / 2));
+	}
+
+	/** Call periodically so that {@link #getVelocity()} is accurate */
+	public void update() {
+		lastX = x;
+		lastY = y;
+	}
+
+	/**
+	 * Gets an approximate velocity, for most accurate result, call after movement
+	 * or before {@link #update()}<br/>
+	 * Calculated by getting the difference between {@link #x}/{@link #x} and
+	 * {@link #lastX}/{@link #lastY}
+	 */
+	public Vector getVelocity() {
+		return new Vector(x - lastX, y - lastY);
 	}
 
 	/**
@@ -54,7 +76,7 @@ public abstract class Entity {
 	 * @param x The new x position
 	 * @param y The new y position
 	 */
-	public void setPosition(int x, int y) {
+	public void setPosition(double x, double y) {
 		this.x = x;
 		this.y = y;
 		rect.setLocation((int) (this.x - rect.getWidth() / 2), (int) (this.y - rect.getHeight() / 2));
@@ -100,6 +122,16 @@ public abstract class Entity {
 	 */
 	public boolean contains(Point p) {
 		return contains(p.x, p.y);
+	}
+
+	/** Returns the integer equivalent of X */
+	public int getX() {
+		return (int) x;
+	}
+
+	/** Returns the integer equivalent of X */
+	public int getY() {
+		return (int) y;
 	}
 
 	/**

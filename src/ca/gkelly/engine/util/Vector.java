@@ -13,6 +13,22 @@ public class Vector {
 	double y;
 
 	/**
+	 * To be passed to {@link #getString(int) getString()}, indicates that the
+	 * output will be normalized components
+	 */
+	public static final int STRING_NORMALIZED = 0;
+	/**
+	 * To be passed to {@link #getString(int) getString()}, indicates that the
+	 * output will be full components
+	 */
+	public static final int STRING_RECTANGULAR = 1;
+	/**
+	 * To be passed to {@link #getString(int) getString()}, indicates that the
+	 * output will be polar coordinates
+	 */
+	public static final int STRING_POLAR = 2;
+
+	/**
 	 * Create the vector, using the x and y components
 	 * 
 	 * @param x The x component
@@ -64,13 +80,13 @@ public class Vector {
 	}
 
 	/** Get the full x component */
-	public int getX() {
-		return (int) (x * magnitude);
+	public double getX() {
+		return (x * magnitude);
 	}
 
 	/** Get the full y component */
-	public int getY() {
-		return (int) (y * magnitude);
+	public double getY() {
+		return (y * magnitude);
 	}
 
 	/** Get the magnitude of the vector */
@@ -117,6 +133,37 @@ public class Vector {
 	 */
 	public Vector normalized() {
 		return (new Vector(x, y));
+	}
+
+	/** Get a vector with just the horizontal component */
+	public Vector getHorizontal() {
+		return new Vector(getX(), 0);
+	}
+
+	/** Get a vector with just the horizontal component */
+	public Vector getVertical() {
+		return new Vector(0, getY());
+	}
+
+	/**
+	 * Get a string representation of vector
+	 * 
+	 * @param mode The info to output<br/>
+	 *             - {@link #STRING_NORMALIZED} Contains normalized X and Y<br/>
+	 *             - {@link #STRING_RECTANGULAR} Contains full X and Y<br/>
+	 *             - {@link #STRING_POLAR} Contains angle from up and length
+	 */
+	public String getString(int mode) {
+		switch (mode) {
+		case STRING_NORMALIZED:
+			return "(" + x + "," + y + ")";
+		case STRING_RECTANGULAR:
+			return "(" + getX() + "," + getY() + ")";
+		case STRING_POLAR:
+			return "(" + getAngle(false) + "," + magnitude + ")";
+		}
+
+		return "Invalid mode";
 	}
 
 	/**

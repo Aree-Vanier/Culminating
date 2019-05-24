@@ -1,6 +1,5 @@
 package ca.gkelly.engine.loader;
 
-import ca.gkelly.engine.graphics.Camera;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
 
@@ -13,9 +12,18 @@ public abstract class PhysicsEntity extends Entity {
 		super(width, height);
 	}
 
-	/** Called periodically to apply velocity */
+	/** Call periodically to apply velocity */
+	@Override
 	public void update() {
 		move(velocity.getX(), velocity.getY());
-		Logger.log("Bullet updated "+velocity.getX()+"\t"+velocity.getY());
+		Logger.log("Bullet updated " + velocity.getX() + "\t" + velocity.getY());
+	}
+
+	/**
+	 * Gets the stored velocity<br/>
+	 */
+	@Override
+	public Vector getVelocity() {
+		return velocity;
 	}
 }

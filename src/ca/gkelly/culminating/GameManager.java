@@ -53,8 +53,10 @@ public class GameManager extends Manager {
 
 	@Override
 	public void update() {
+		player.update();
 		for(Bullet b : new ArrayList<Bullet>(bullets)) {
 			b.update();
+			Logger.log(b.getVelocity().getString(Vector.STRING_RECTANGULAR));
 		}
 		
 		if (keyboard.pressed.contains(KeyEvent.VK_W))
@@ -70,8 +72,9 @@ public class GameManager extends Manager {
 			cam.zoom(0.05);
 		if(keyboard.pressed.contains(KeyEvent.VK_E))
 			cam.zoom(-0.05);
-
-		cam.setPosition(player.x, player.y);
+		
+		Logger.log(player.getVelocity().getString(Vector.STRING_RECTANGULAR));
+		cam.setPosition((int) player.x, (int) player.y);
 	}
 
 	@Override
@@ -80,8 +83,15 @@ public class GameManager extends Manager {
 	}
 	
 	@Override
-	public void onClick(MouseEvent e) {
-		bullets.add(new Bullet(player.x, player.y, new Vector(1,0)));
+	public void onMousePress(MouseEvent e) {
+		int[] pos = cam.worldSpace(e.getX(), e.getY());
+		Logger.log(Logger.INFO, new Vector(pos[0]-player.x,pos[1]-player.y).normalized().getString(Vector.STRING_RECTANGULAR));
+		
+		if(player.contains(pos[0], pos[1])) {
+			return;
+		}
+		
+		bullets.add(new Bullet((int) player.x, (int) player.y, Vector.multiply(new Vector(pos[0]-player.x,pos[1]-player.y).normalized(), 3)));
 	}
 
 }
