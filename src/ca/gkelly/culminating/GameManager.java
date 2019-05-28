@@ -34,7 +34,7 @@ public class GameManager extends Manager {
 		cam = new Camera(container, map);
 		cam.setPosition(0, 0, 1.25);
 
-		player = new Player((PlayerResource) Loader.resources.get("player").get(0), 0, 0);
+		player = new Player((PlayerResource) Loader.resources.get("player").get(0), 100, 100);
 	}
 
 	@Override
@@ -49,10 +49,10 @@ public class GameManager extends Manager {
 		int[] pos = cam.worldSpace(mouse.pos.x, mouse.pos.y);
 		Polygon p = map.getPoly(pos[0], pos[1], "colliders");
 		if(p!=null) {
-			
+			cam.drawPoly(p, Color.black);
 		}
 
-		cam.drawRect(player.getRectX(), player.getRectY(), player.getWidth(), player.getHeight(), Color.blue);
+//		cam.drawRect(player.getRectX(), player.getRectY(), player.getWidth(), player.getHeight(), Color.blue);
 
 		cam.finish(g);
 		Logger.newLine(Logger.DEBUG);
@@ -65,18 +65,19 @@ public class GameManager extends Manager {
 			b.update();
 			Polygon p = map.getPoly(b.getX(), b.getY(), "colliders");
 			if(p!=null) {
-				cam.drawPoly(p, Color.blue);
+				bullets.remove(b);
+//				cam.drawPoly(p, Color.blue);
 			}
 		}
 
 		if(keyboard.pressed.contains(KeyEvent.VK_W))
-			player.move(0, -1.0);
+			player.move(0, -1.0, map.getColliders("colliders"));
 		if(keyboard.pressed.contains(KeyEvent.VK_S))
-			player.move(0, 1.0);
+			player.move(0, 1.0, map.getColliders("colliders"));
 		if(keyboard.pressed.contains(KeyEvent.VK_A))
-			player.move(-1.0, 0);
+			player.move(-1.0, 0, map.getColliders("colliders"));
 		if(keyboard.pressed.contains(KeyEvent.VK_D))
-			player.move(1.0, 0);
+			player.move(1.0, 0, map.getColliders("colliders"));
 
 		if(keyboard.pressed.contains(KeyEvent.VK_Q))
 			cam.zoom(0.05);

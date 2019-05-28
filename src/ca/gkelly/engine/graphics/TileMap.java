@@ -3,6 +3,7 @@ package ca.gkelly.engine.graphics;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
+import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -205,12 +206,21 @@ public class TileMap {
 		}
 		return null;
 	}
+	
+	public Shape[] getColliders(String layer) {
+		for (ColliderLayer c : colliders) {
+			if(c.name.equals(layer)) {
+				return c.polygons;
+			}
+		}
+		return null;
+	}
 
 }
 
 /** A class used to handle loading and management of a tileset */
 class ColliderLayer {
-	Polygon[] polygons;
+	public Polygon[] polygons;
 	String name;
 
 	/**

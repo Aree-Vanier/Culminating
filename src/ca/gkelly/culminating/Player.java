@@ -1,6 +1,6 @@
 package ca.gkelly.culminating;
 
-import java.awt.image.BufferedImage;
+import java.awt.Shape;
 
 import ca.gkelly.culminating.resources.PlayerResource;
 import ca.gkelly.engine.loader.Entity;
@@ -26,10 +26,10 @@ public class Player extends Entity{
 		setPosition(x,y);
 	}
 	
-	public void move(double x, double y) {
+	public void move(double x, double y, Shape[] colliders) {
 		x *= speed;
 		y *= speed;
-		super.move((int) x, (int) y); 
+		super.move((int) x, (int) y, colliders); 
 	}
 
 }

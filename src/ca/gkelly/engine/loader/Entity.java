@@ -1,10 +1,13 @@
 package ca.gkelly.engine.loader;
 
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.image.BufferedImage;
 
 import ca.gkelly.engine.graphics.Camera;
+import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
 
 /** Class used to manage basic entities */
@@ -21,7 +24,7 @@ public abstract class Entity {
 	 * <strong>Must be defined for functionality</strong>
 	 */
 	public Rectangle rect;
-
+	
 	/** X coordinate of the centre of the {@link #rect bounding rectangle} */
 	public double x;
 	/** Y coordinate of the centre of the {@link #rect bounding rectangle} */
@@ -31,7 +34,7 @@ public abstract class Entity {
 	private double lastX;
 	/** Previous Y coordinate, used to calculate velocity */
 	private double lastY;
-
+	
 	/**
 	 * Instantiate the entity, assigns image and creates basic rectangle
 	 * 
@@ -51,6 +54,51 @@ public abstract class Entity {
 	protected void move(double x, double y) {
 		this.x += x;
 		this.y += y;
+		rect.setLocation((int) (this.x - rect.getWidth() / 2), (int) (this.y - rect.getHeight() / 2));
+	}
+	
+	/**
+	 * Move by the specified distance, with collision detection
+	 * 
+	 * @param x The x distance
+	 * @param y The y distance
+	 * @param s The shapes to check for collision against, requires {@link #rect}
+	 */
+	protected void move(double x, double y, Shape[] colliders) {
+		this.x += x;
+		this.y += y;
+		
+
+		rect.setLocation((int) (this.x - rect.getWidth() / 2), (int) (this.y - rect.getHeight() / 2));
+		boolean tl = false;
+		boolean tr = false;
+		boolean bl = false;
+		boolean br = false;
+		
+		for(Shape s: colliders) {
+			if(s.contains(rect.x, rect.y)) {
+				tl = true;
+			}
+			if(s.contains(rect.x+rect.getWidth(), rect.y)) {
+				tr = true;
+			}
+			if(s.contains(rect.x, rect.y+rect.getHeight())) {
+				bl = true;
+			}
+			if(s.contains(rect.x+rect.getWidth(), rect.y+rect.getHeight())) {
+				br = true;
+			}
+		}
+		if(tl&&tr)
+			this.y = (this.y - y);
+		if(bl&&br)
+			this.y = (this.y - y);
+		if(tr&&br)
+			this.x = (this.x - x);
+		if(tl&&bl)
+			this.x = (this.x - x);
+		
+
 		rect.setLocation((int) (this.x - rect.getWidth() / 2), (int) (this.y - rect.getHeight() / 2));
 	}
 
@@ -101,6 +149,16 @@ public abstract class Entity {
 	 */
 	public boolean collides(Rectangle r) {
 		return rect.intersects(r);
+	}
+
+	/**
+	 * Check for collision with polygon
+	 * 
+	 * @param p Polygon to check against
+	 * @return True if there is a collision
+	 */
+	public boolean collides(Polygon p) {
+		return p.intersects(rect);
 	}
 
 	/**
