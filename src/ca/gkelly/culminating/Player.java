@@ -3,6 +3,7 @@ package ca.gkelly.culminating;
 import java.awt.Shape;
 
 import ca.gkelly.culminating.resources.PlayerResource;
+import ca.gkelly.engine.collision.Collider;
 import ca.gkelly.engine.collision.RectCollider;
 import ca.gkelly.engine.loader.Entity;
 
@@ -30,7 +31,7 @@ public class Player extends Entity{
 		rc = new RectCollider(rect);
 	}
 	
-	public void move(double x, double y, Shape[] colliders) {
+	public void move(double x, double y, Collider[] colliders) {
 		x *= speed;
 		y *= speed;
 		super.move((int) x, (int) y, colliders); 

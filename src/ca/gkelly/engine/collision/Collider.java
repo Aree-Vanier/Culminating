@@ -45,9 +45,12 @@ public abstract class Collider {
 	 * @param verticesY   The list of y vertices
 	 * @param vertexCount The amount of vertices in the shape
 	 */
-	public void setVectices(double[] verticesX, double[] verticesY, int vertexCount) {
+	public void setVertices(double[] verticesX, double[] verticesY, int vertexCount) {
 		this.verticesX = verticesX;
 		this.verticesY = verticesY;
+		this.vertexCount = vertexCount;
+		
+		
 		for(double d: verticesX) {
 			if(d > maxX) maxX = d;
 			if(d < minX) minX = d;
@@ -58,7 +61,7 @@ public abstract class Collider {
 		}
 		width = Math.abs(maxX - minX);
 		height = Math.abs(maxY - minY);
-
+		
 		radius = Math.sqrt(Math.pow(width / 2, 2) + Math.pow(height / 2, 2));
 		this.x = minX + width / 2;
 		this.y = minY + height / 2;

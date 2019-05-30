@@ -7,7 +7,7 @@ import java.awt.Rectangle;
 public class RectCollider extends Collider {
 
 	public RectCollider(double x, double y, double width, double height) {
-		setVectices(new double[] { x, x + width, x + width, x }, new double[] { y, y, y + height, y + height }, 4);
+		setVertices(new double[] { x, x + width, x + width, x }, new double[] { y, y, y + height, y + height }, 4);
 	}
 	
 	public RectCollider(Rectangle r) {

@@ -3,7 +3,6 @@ package ca.gkelly.engine.graphics;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
-import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +18,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import ca.gkelly.engine.collision.Collider;
+import ca.gkelly.engine.collision.PolyCollider;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Tools;
 
@@ -207,7 +208,7 @@ public class TileMap {
 		return null;
 	}
 	
-	public Shape[] getColliders(String layer) {
+	public Collider[] getColliders(String layer) {
 		for (ColliderLayer c : colliders) {
 			if(c.name.equals(layer)) {
 				return c.polygons;
@@ -218,9 +219,9 @@ public class TileMap {
 
 }
 
-/** A class used to handle loading and management of a tileset */
+/** A class used to handle the colliders on a map */
 class ColliderLayer {
-	public Polygon[] polygons;
+	public PolyCollider[] polygons;
 	String name;
 
 	/**
@@ -231,7 +232,7 @@ class ColliderLayer {
 	 */
 	ColliderLayer(NodeList polys, String name) {
 		this.name = name;
-		polygons = new Polygon[polys.getLength()];
+		polygons = new PolyCollider[polys.getLength()];
 		for (int j = 0; j < polys.getLength(); j++) {
 			Element poly = (Element) polys.item(j);
 			int x = Integer.parseInt(poly.getAttribute("x"));
@@ -247,7 +248,7 @@ class ColliderLayer {
 				yPoints[s] = (Integer.parseInt(points[s].split(",")[1])) + y;
 			}
 			// Create the corresponding polygon
-			polygons[j] = new Polygon(xPoints, yPoints, xPoints.length);
+			polygons[j] = new PolyCollider(xPoints, yPoints, xPoints.length);
 		}
 	}
 
@@ -258,8 +259,8 @@ class ColliderLayer {
 	 * @param c   The colour to use
 	 */
 	public void render(Camera cam, Color c) {
-		for (Polygon collider : polygons) {
-			cam.drawPoly(collider, c);
+		for (PolyCollider collider : polygons) {
+			cam.drawPoly(collider.getPoly(), c);
 		}
 	}
 
@@ -272,9 +273,9 @@ class ColliderLayer {
 	 *         <strong>null</strong> if no polygon contains the point
 	 */
 	public Polygon getPoly(int x, int y) {
-		for (Polygon p : polygons) {
+		for (PolyCollider p : polygons) {
 			if (p.contains(x, y))
-				return new Polygon(p.xpoints, p.ypoints, p.npoints);
+				return p.getPoly();
 		}
 		return null;
 	}

@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.image.BufferedImage;
 
+import ca.gkelly.engine.collision.Collider;
 import ca.gkelly.engine.graphics.Camera;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
@@ -64,7 +65,7 @@ public abstract class Entity {
 	 * @param y The y distance
 	 * @param s The shapes to check for collision against, requires {@link #rect}
 	 */
-	protected void move(double x, double y, Shape[] colliders) {
+	protected void move(double x, double y, Collider[] colliders) {
 		this.x += x;
 		this.y += y;
 		
@@ -75,17 +76,17 @@ public abstract class Entity {
 		boolean bl = false;
 		boolean br = false;
 		
-		for(Shape s: colliders) {
-			if(s.contains(rect.x, rect.y)) {
+		for(Collider c: colliders) {
+			if(c.contains(rect.x, rect.y)) {
 				tl = true;
 			}
-			if(s.contains(rect.x+rect.getWidth(), rect.y)) {
+			if(c.contains(rect.x+rect.getWidth(), rect.y)) {
 				tr = true;
 			}
-			if(s.contains(rect.x, rect.y+rect.getHeight())) {
+			if(c.contains(rect.x, rect.y+rect.getHeight())) {
 				bl = true;
 			}
-			if(s.contains(rect.x+rect.getWidth(), rect.y+rect.getHeight())) {
+			if(c.contains(rect.x+rect.getWidth(), rect.y+rect.getHeight())) {
 				br = true;
 			}
 		}

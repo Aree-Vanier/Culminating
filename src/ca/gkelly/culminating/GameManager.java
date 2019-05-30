@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import ca.gkelly.culminating.resources.Bullet;
 import ca.gkelly.culminating.resources.PlayerResource;
 import ca.gkelly.engine.Manager;
+import ca.gkelly.engine.collision.Collider;
+import ca.gkelly.engine.collision.PolyCollider;
 import ca.gkelly.engine.graphics.Camera;
 import ca.gkelly.engine.graphics.TileMap;
 import ca.gkelly.engine.loader.Loader;
@@ -45,17 +47,20 @@ public class GameManager extends Manager {
 		for(Bullet b: new ArrayList<Bullet>(bullets)) {
 			b.render(cam);
 		}
-		
+
 		int[] pos = cam.worldSpace(mouse.pos.x, mouse.pos.y);
 		Polygon p = map.getPoly(pos[0], pos[1], "colliders");
-		if(p!=null) {
+		if(p != null) {
+			Logger.log("Poly");
 			cam.drawPoly(p, Color.black);
+		} else {
+			Logger.log("No poly");
 		}
-
-//		cam.drawRect(player.getRectX(), player.getRectY(), player.getWidth(), player.getHeight(), Color.blue);
 		
-		cam.drawPoint((int) player.rc.x, (int)player.rc.y, 15, Color.pink);
-		Logger.log(player.rc.x+","+player.rc.y);
+//		cam.drawRect(player.getRectX(), player.getRectY(), player.getWidth(), player.getHeight(), Color.blue);
+
+		cam.drawPoint((int) player.rc.x, (int) player.rc.y, 15, Color.pink);
+		Logger.log(player.rc.x + "," + player.rc.y);
 
 		cam.finish(g);
 		Logger.newLine(Logger.DEBUG);
@@ -67,25 +72,19 @@ public class GameManager extends Manager {
 		for(Bullet b: new ArrayList<Bullet>(bullets)) {
 			b.update();
 			Polygon p = map.getPoly(b.getX(), b.getY(), "colliders");
-			if(p!=null) {
+			if(p != null) {
 				bullets.remove(b);
 //				cam.drawPoly(p, Color.blue);
 			}
 		}
 
-		if(keyboard.pressed.contains(KeyEvent.VK_W))
-			player.move(0, -1.0, map.getColliders("colliders"));
-		if(keyboard.pressed.contains(KeyEvent.VK_S))
-			player.move(0, 1.0, map.getColliders("colliders"));
-		if(keyboard.pressed.contains(KeyEvent.VK_A))
-			player.move(-1.0, 0, map.getColliders("colliders"));
-		if(keyboard.pressed.contains(KeyEvent.VK_D))
-			player.move(1.0, 0, map.getColliders("colliders"));
+		if(keyboard.pressed.contains(KeyEvent.VK_W)) player.move(0, -1.0, map.getColliders("colliders"));
+		if(keyboard.pressed.contains(KeyEvent.VK_S)) player.move(0, 1.0, map.getColliders("colliders"));
+		if(keyboard.pressed.contains(KeyEvent.VK_A)) player.move(-1.0, 0, map.getColliders("colliders"));
+		if(keyboard.pressed.contains(KeyEvent.VK_D)) player.move(1.0, 0, map.getColliders("colliders"));
 
-		if(keyboard.pressed.contains(KeyEvent.VK_Q))
-			cam.zoom(0.05);
-		if(keyboard.pressed.contains(KeyEvent.VK_E))
-			cam.zoom(-0.05);
+		if(keyboard.pressed.contains(KeyEvent.VK_Q)) cam.zoom(0.05);
+		if(keyboard.pressed.contains(KeyEvent.VK_E)) cam.zoom(-0.05);
 
 		Logger.log(player.getVelocity().getString(Vector.STRING_RECTANGULAR));
 		cam.setPosition((int) player.x, (int) player.y);
@@ -108,7 +107,7 @@ public class GameManager extends Manager {
 
 		Vector vel = new Vector(pos[0] - player.x, pos[1] - player.y);
 		vel.setMag(3);
-		
+
 		Vector extraVel = player.getVelocity().getAtAngle(vel.getAngle(false));
 		bullets.add(new Bullet((int) player.x, (int) player.y, vel, extraVel));
 	}
