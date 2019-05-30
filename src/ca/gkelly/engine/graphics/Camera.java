@@ -111,7 +111,7 @@ public class Camera {
 		// TODO: Onscreen check
 		g.setColor(c);
 		int[] pos = screenSpace(x, y);
-		g.fillOval(pos[0], pos[1], radius, radius);
+		g.fillOval(pos[0]-radius/2, pos[1]-radius/2, (int)(radius), (int)(radius));
 	}
 	
 	public void drawLine(int x1, int y1, int x2, int y2, float width, Color c) {

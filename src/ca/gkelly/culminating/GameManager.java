@@ -53,6 +53,9 @@ public class GameManager extends Manager {
 		}
 
 //		cam.drawRect(player.getRectX(), player.getRectY(), player.getWidth(), player.getHeight(), Color.blue);
+		
+		cam.drawPoint((int) player.rc.x, (int)player.rc.y, 15, Color.pink);
+		Logger.log(player.rc.x+","+player.rc.y);
 
 		cam.finish(g);
 		Logger.newLine(Logger.DEBUG);
