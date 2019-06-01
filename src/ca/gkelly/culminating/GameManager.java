@@ -44,24 +44,27 @@ public class GameManager extends Manager {
 		cam.begin();
 		player.render(cam);
 
-		for(Bullet b: new ArrayList<Bullet>(bullets)) {
+		for (Bullet b : new ArrayList<Bullet>(bullets)) {
 			b.render(cam);
 		}
 
 		int[] pos = cam.worldSpace(mouse.pos.x, mouse.pos.y);
 		Polygon p = map.getPoly(pos[0], pos[1], "colliders");
-		if(p != null) {
+		if (p != null) {
 			cam.drawPoly(p, Color.black);
 		}
 
 		Collider[] colliders = map.getColliders("colliders");
-//		for(Collider c:colliders) {
-		Collider c = colliders[0];
-		double[][] intersects = player.rc.getIntersections(c);
-		for(double[] d: intersects) {
-			cam.drawPoint((int) d[0], (int) d[1], 5, Color.GREEN);
+		for (Collider c : colliders) {
+//		Collider c = colliders[0];
+
+			Logger.log(player.rc.printVertices() + "\t" + c.printVertices());
+
+			double[][] intersects = player.rc.getIntersections(c);
+			for (double[] d : intersects) {
+				cam.drawPoint((int) d[0], (int) d[1], 5, Color.GREEN);
+			}
 		}
-//		}
 
 //		cam.drawRect(player.getRectX(), player.getRectY(), player.getWidth(), player.getHeight(), Color.blue);
 
@@ -74,22 +77,28 @@ public class GameManager extends Manager {
 	@Override
 	public void update() {
 		player.update();
-		for(Bullet b: new ArrayList<Bullet>(bullets)) {
+		for (Bullet b : new ArrayList<Bullet>(bullets)) {
 			b.update();
 			Polygon p = map.getPoly(b.getX(), b.getY(), "colliders");
-			if(p != null) {
+			if (p != null) {
 				bullets.remove(b);
 //				cam.drawPoly(p, Color.blue);
 			}
 		}
 
-		if(keyboard.pressed.contains(KeyEvent.VK_W)) player.move(0, -1.0, map.getColliders("colliders"));
-		if(keyboard.pressed.contains(KeyEvent.VK_S)) player.move(0, 1.0, map.getColliders("colliders"));
-		if(keyboard.pressed.contains(KeyEvent.VK_A)) player.move(-1.0, 0, map.getColliders("colliders"));
-		if(keyboard.pressed.contains(KeyEvent.VK_D)) player.move(1.0, 0, map.getColliders("colliders"));
+		if (keyboard.pressed.contains(KeyEvent.VK_W))
+			player.move(0, -1.0, map.getColliders("colliders"));
+		if (keyboard.pressed.contains(KeyEvent.VK_S))
+			player.move(0, 1.0, map.getColliders("colliders"));
+		if (keyboard.pressed.contains(KeyEvent.VK_A))
+			player.move(-1.0, 0, map.getColliders("colliders"));
+		if (keyboard.pressed.contains(KeyEvent.VK_D))
+			player.move(1.0, 0, map.getColliders("colliders"));
 
-		if(keyboard.pressed.contains(KeyEvent.VK_Q)) cam.zoom(0.05);
-		if(keyboard.pressed.contains(KeyEvent.VK_E)) cam.zoom(-0.05);
+		if (keyboard.pressed.contains(KeyEvent.VK_Q))
+			cam.zoom(0.05);
+		if (keyboard.pressed.contains(KeyEvent.VK_E))
+			cam.zoom(-0.05);
 
 		cam.setPosition((int) player.x, (int) player.y);
 	}
@@ -105,7 +114,7 @@ public class GameManager extends Manager {
 		// Logger.log(Logger.INFO, new
 		// Vector(pos[0]-player.x,pos[1]-player.y).normalized().getString(Vector.STRING_RECTANGULAR));
 
-		if(player.contains(pos[0], pos[1])) {
+		if (player.contains(pos[0], pos[1])) {
 			return;
 		}
 

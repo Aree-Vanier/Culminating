@@ -54,13 +54,17 @@ public abstract class Collider {
 		this.verticesY = verticesY;
 		this.vertexCount = vertexCount;
 
-		for(double d: verticesX) {
-			if(d > maxX) maxX = d;
-			if(d < minX) minX = d;
+		for (double d : verticesX) {
+			if (d > maxX)
+				maxX = d;
+			if (d < minX)
+				minX = d;
 		}
-		for(double d: verticesY) {
-			if(d > maxY) maxY = d;
-			if(d < minY) minY = d;
+		for (double d : verticesY) {
+			if (d > maxY)
+				maxY = d;
+			if (d < minY)
+				minY = d;
 		}
 		width = Math.abs(maxX - minX);
 		height = Math.abs(maxY - minY);
@@ -71,7 +75,7 @@ public abstract class Collider {
 
 		localVerticesX = new double[vertexCount];
 		localVerticesY = new double[vertexCount];
-		for(int i = 0;i < vertexCount;i++) {
+		for (int i = 0; i < vertexCount; i++) {
 			localVerticesX[i] = verticesX[i] - x;
 			localVerticesY[i] = verticesY[i] - x;
 		}
@@ -98,9 +102,9 @@ public abstract class Collider {
 		this.x = x;
 		this.y = y;
 
-		for(int i = 0;i < vertexCount;i++) {
+		for (int i = 0; i < vertexCount; i++) {
 			verticesX[i] = localVerticesX[i] + x;
-			verticesY[i] = localVerticesY[i] + x;
+			verticesY[i] = localVerticesY[i] + y;
 		}
 	}
 
@@ -120,8 +124,8 @@ public abstract class Collider {
 		int i;
 		int j;
 		boolean result = false;
-		for(i = 0, j = vertexCount - 1;i < vertexCount;j = i++) {
-			if((verticesY[i] > y) != (verticesY[j] > y)
+		for (i = 0, j = vertexCount - 1; i < vertexCount; j = i++) {
+			if ((verticesY[i] > y) != (verticesY[j] > y)
 					&& (x < (verticesX[j] - verticesX[i]) * (y - verticesY[i]) / (verticesY[j] - verticesY[i])
 							+ verticesX[i])) {
 				result = !result;
@@ -149,9 +153,10 @@ public abstract class Collider {
 	 * @return True if all any point is contained
 	 */
 	public boolean intersects(Collider c) {
-		if(!inRange(c)) return false;
-		for(int i = 0;i < c.vertexCount;i++) {
-			if(contains(c.verticesX[i], c.verticesY[i])) {
+		if (!inRange(c))
+			return false;
+		for (int i = 0; i < c.vertexCount; i++) {
+			if (contains(c.verticesX[i], c.verticesY[i])) {
 				return true;
 			}
 		}
@@ -165,9 +170,10 @@ public abstract class Collider {
 	 * @return True if all points are contained
 	 */
 	public boolean cointains(Collider c) {
-		if(!inRange(c)) return false;
-		for(int i = 0;i < c.vertexCount;i++) {
-			if(!contains(c.verticesX[i], c.verticesY[i])) {
+		if (!inRange(c))
+			return false;
+		for (int i = 0; i < c.vertexCount; i++) {
+			if (!contains(c.verticesX[i], c.verticesY[i])) {
 				return false;
 			}
 		}
@@ -176,27 +182,28 @@ public abstract class Collider {
 	}
 
 	public double[][] getIntersections(Collider c) {
-		if(!inRange(c)) return new double[0][];
+		if (!inRange(c))
+			return new double[0][];
 		ArrayList<double[]> out = new ArrayList<>();
 
-		for(int i = 0;i < vertexCount;i++) {
+		for (int i = 0; i < vertexCount; i++) {
 			Edge e1;
-			if(i + 1 < vertexCount) { // If this is just a normal vertex, use the next one
+			if (i + 1 < vertexCount) { // If this is just a normal vertex, use the next one
 				e1 = new Edge(verticesX[i], verticesY[i], verticesX[i + 1], verticesY[i + 1]);
 			} else { // If this is the last vertex, wrap to the first
 				e1 = new Edge(verticesX[i], verticesY[i], verticesX[0], verticesY[0]);
 			}
 
-			for(int j = 0;j < c.vertexCount;j++) {
+			for (int j = 0; j < c.vertexCount; j++) {
 				Edge e2;
-				if(j + 1 < c.vertexCount) { // If this is just a normal vertex, use the next one
+				if (j + 1 < c.vertexCount) { // If this is just a normal vertex, use the next one
 					e2 = new Edge(c.verticesX[j], c.verticesY[j], c.verticesX[j + 1], c.verticesY[j + 1]);
 				} else { // If this is the last c.vertex, wrap to the first
 					e2 = new Edge(c.verticesX[j], c.verticesY[j], c.verticesX[0], c.verticesY[0]);
 				}
 
 				double[] intersect = e1.getIntersect(e2);
-				if(intersect != null) {
+				if (intersect != null) {
 					out.add(intersect);
 				}
 			}
@@ -227,6 +234,14 @@ public abstract class Collider {
 		return null;
 	}
 
+	public String printVertices() {
+		String out = "";
+		for (int i = 0; i < vertexCount; i++) {
+			out += "(" + verticesX[i] + "," + verticesY[i] + "), ";
+		}
+		return out;
+	}
+
 }
 
 class Edge {
@@ -241,7 +256,7 @@ class Edge {
 		this.y1 = y1;
 		this.y2 = y2;
 
-		if((x2 - x1) != 0) {// If the line isn't vertical
+		if ((x2 - x1) != 0) {// If the line isn't vertical
 			slope = ((y2 - y1) / (x2 - x1));
 			b = y1 - slope * (x1);
 		} else { // If the line is vertical
@@ -252,13 +267,13 @@ class Edge {
 	public double[] getIntersect(Edge e) {
 		double x, y;
 
-		if(undefined) { // If this line is vertical, the x is it's
+		if (undefined) { // If this line is vertical, the x is it's
 			x = x1;
 			y = e.slope * x + e.b;
-		} else if(e.undefined) { // If the other line is vertical
+		} else if (e.undefined) { // If the other line is vertical
 			x = e.x1;
 			y = slope * x + b;
-		} else if(e.slope == slope) { // Parallel lines never intersect (placed after vert because vert and horz
+		} else if (e.slope == slope) { // Parallel lines never intersect (placed after vert because vert and horz
 										// slopes = 0)
 			return null;
 		} else {
@@ -267,7 +282,7 @@ class Edge {
 		}
 
 		// If the point exists within the span of the lines
-		if(inRange(x, y) && e.inRange(x, y)) {
+		if (inRange(x, y) && e.inRange(x, y)) {
 			return new double[] { x, y };
 		} else {
 			return null;
