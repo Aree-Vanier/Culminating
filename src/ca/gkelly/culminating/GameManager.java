@@ -51,16 +51,21 @@ public class GameManager extends Manager {
 		int[] pos = cam.worldSpace(mouse.pos.x, mouse.pos.y);
 		Polygon p = map.getPoly(pos[0], pos[1], "colliders");
 		if(p != null) {
-			Logger.log("Poly");
 			cam.drawPoly(p, Color.black);
-		} else {
-			Logger.log("No poly");
 		}
-		
+
+		Collider[] colliders = map.getColliders("colliders");
+//		for(Collider c:colliders) {
+		Collider c = colliders[0];
+		double[][] intersects = player.rc.getIntersections(c);
+		for(double[] d: intersects) {
+			cam.drawPoint((int) d[0], (int) d[1], 5, Color.GREEN);
+		}
+//		}
+
 //		cam.drawRect(player.getRectX(), player.getRectY(), player.getWidth(), player.getHeight(), Color.blue);
 
 		cam.drawPoint((int) player.rc.x, (int) player.rc.y, 15, Color.pink);
-		Logger.log(player.rc.x + "," + player.rc.y);
 
 		cam.finish(g);
 		Logger.newLine(Logger.DEBUG);
@@ -86,7 +91,6 @@ public class GameManager extends Manager {
 		if(keyboard.pressed.contains(KeyEvent.VK_Q)) cam.zoom(0.05);
 		if(keyboard.pressed.contains(KeyEvent.VK_E)) cam.zoom(-0.05);
 
-		Logger.log(player.getVelocity().getString(Vector.STRING_RECTANGULAR));
 		cam.setPosition((int) player.x, (int) player.y);
 	}
 

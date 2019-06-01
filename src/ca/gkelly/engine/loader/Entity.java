@@ -90,14 +90,14 @@ public abstract class Entity {
 				br = true;
 			}
 		}
-		if(tl&&tr)
-			this.y = (this.y - y);
-		if(bl&&br)
-			this.y = (this.y - y);
-		if(tr&&br)
-			this.x = (this.x - x);
-		if(tl&&bl)
-			this.x = (this.x - x);
+//		if(tl&&tr)
+//			this.y = (this.y - y);
+//		if(bl&&br)
+//			this.y = (this.y - y);
+//		if(tr&&br)
+//			this.x = (this.x - x);
+//		if(tl&&bl)
+//			this.x = (this.x - x);
 		
 
 		rect.setLocation((int) (this.x - rect.getWidth() / 2), (int) (this.y - rect.getHeight() / 2));

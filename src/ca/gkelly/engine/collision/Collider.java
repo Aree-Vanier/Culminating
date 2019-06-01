@@ -18,10 +18,14 @@ public abstract class Collider {
 	/** The distance from the middle to the extremity */
 	double radius;
 
-	/** The x vertices of the collider */
+	/** The x vertices of the collider, in world space */
 	double[] verticesX;
-	/** The y vertices of the collider */
+	/** The y vertices of the collider, in world space */
 	double[] verticesY;
+	/** The x vertices of the collider, relative to {@link x} */
+	double[] localVerticesX;
+	/** The y vertices of the collider, relative to {@link y} */
+	double[] localVerticesY;
 	/** The number of vertices of the collider */
 	int vertexCount;
 
@@ -49,8 +53,7 @@ public abstract class Collider {
 		this.verticesX = verticesX;
 		this.verticesY = verticesY;
 		this.vertexCount = vertexCount;
-		
-		
+
 		for(double d: verticesX) {
 			if(d > maxX) maxX = d;
 			if(d < minX) minX = d;
@@ -61,10 +64,18 @@ public abstract class Collider {
 		}
 		width = Math.abs(maxX - minX);
 		height = Math.abs(maxY - minY);
-		
+
 		radius = Math.sqrt(Math.pow(width / 2, 2) + Math.pow(height / 2, 2));
 		this.x = minX + width / 2;
 		this.y = minY + height / 2;
+
+		localVerticesX = new double[vertexCount];
+		localVerticesY = new double[vertexCount];
+		for(int i = 0;i < vertexCount;i++) {
+			localVerticesX[i] = verticesX[i] - x;
+			localVerticesY[i] = verticesY[i] - x;
+		}
+
 	}
 
 	/**
@@ -86,6 +97,11 @@ public abstract class Collider {
 	public void setPosition(double x, double y) {
 		this.x = x;
 		this.y = y;
+
+		for(int i = 0;i < vertexCount;i++) {
+			verticesX[i] = localVerticesX[i] + x;
+			verticesY[i] = localVerticesY[i] + x;
+		}
 	}
 
 	// TODO: A funciton that gets line collision see
@@ -159,6 +175,37 @@ public abstract class Collider {
 
 	}
 
+	public double[][] getIntersections(Collider c) {
+		if(!inRange(c)) return new double[0][];
+		ArrayList<double[]> out = new ArrayList<>();
+
+		for(int i = 0;i < vertexCount;i++) {
+			Edge e1;
+			if(i + 1 < vertexCount) { // If this is just a normal vertex, use the next one
+				e1 = new Edge(verticesX[i], verticesY[i], verticesX[i + 1], verticesY[i + 1]);
+			} else { // If this is the last vertex, wrap to the first
+				e1 = new Edge(verticesX[i], verticesY[i], verticesX[0], verticesY[0]);
+			}
+
+			for(int j = 0;j < c.vertexCount;j++) {
+				Edge e2;
+				if(j + 1 < c.vertexCount) { // If this is just a normal vertex, use the next one
+					e2 = new Edge(c.verticesX[j], c.verticesY[j], c.verticesX[j + 1], c.verticesY[j + 1]);
+				} else { // If this is the last c.vertex, wrap to the first
+					e2 = new Edge(c.verticesX[j], c.verticesY[j], c.verticesX[0], c.verticesY[0]);
+				}
+
+				double[] intersect = e1.getIntersect(e2);
+				if(intersect != null) {
+					out.add(intersect);
+				}
+			}
+		}
+
+		return out.toArray(new double[out.size()][]);
+
+	}
+
 	/**
 	 * Return true if the given point is contained inside the boundary.<br/>
 	 * Override for {@link #contains(double, double)}
@@ -171,11 +218,64 @@ public abstract class Collider {
 	}
 
 	/**
-	 * Get the normalized vector representing the required pushback to exit collider
+	 * Get vector representing the required translation to exit collider
 	 * 
 	 * @param c The {@link Collider} to check against
 	 * @return Pushback vector, null if no collision with c
 	 */
-	public abstract Vector getPushback(Collider c);
+	public Vector getPushback(Collider c) {
+		return null;
+	}
 
+}
+
+class Edge {
+	double slope;
+	double b;
+	double x1, x2, y1, y2;
+	boolean undefined = false;
+
+	Edge(double x1, double y1, double x2, double y2) {
+		this.x1 = x1;
+		this.x2 = x2;
+		this.y1 = y1;
+		this.y2 = y2;
+
+		if((x2 - x1) != 0) {// If the line isn't vertical
+			slope = ((y2 - y1) / (x2 - x1));
+			b = y1 - slope * (x1);
+		} else { // If the line is vertical
+			undefined = true;
+		}
+	}
+
+	public double[] getIntersect(Edge e) {
+		double x, y;
+
+		if(undefined) { // If this line is vertical, the x is it's
+			x = x1;
+			y = e.slope * x + e.b;
+		} else if(e.undefined) { // If the other line is vertical
+			x = e.x1;
+			y = slope * x + b;
+		} else if(e.slope == slope) { // Parallel lines never intersect (placed after vert because vert and horz
+										// slopes = 0)
+			return null;
+		} else {
+			x = (e.b - b) / (e.slope - slope);
+			y = slope * x + b;
+		}
+
+		// If the point exists within the span of the lines
+		if(inRange(x, y) && e.inRange(x, y)) {
+			return new double[] { x, y };
+		} else {
+			return null;
+		}
+
+	}
+
+	public boolean inRange(double x, double y) {
+		return ((x <= x1 && x >= x2) || (x >= x1 && x <= x2)) && ((y <= y1 && y >= y2) || (y >= y1 && y <= y2));
+	}
 }

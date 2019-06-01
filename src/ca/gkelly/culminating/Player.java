@@ -15,7 +15,7 @@ public class Player extends Entity{
 	int speed;
 	int damage;
 	int rate;
-	RectCollider rc;
+	public RectCollider rc;
 
 	public Player(PlayerResource r, int x, int y) {
 		super(r.image.getWidth(), r.image.getHeight());

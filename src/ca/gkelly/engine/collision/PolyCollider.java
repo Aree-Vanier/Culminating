@@ -34,9 +34,4 @@ public class PolyCollider extends Collider {
 		return new Polygon(x, y, vertexCount);
 	}
 
-	@Override
-	public Vector getPushback(Collider c) {
-		return null;
-	}
-
 }

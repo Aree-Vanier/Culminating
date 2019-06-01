@@ -14,10 +14,4 @@ public class RectCollider extends Collider {
 		this(r.x, r.y, r.width, r.height);
 	}
 
-	@Override
-	public Vector getPushback(Collider c) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
