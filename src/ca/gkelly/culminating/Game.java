@@ -7,7 +7,7 @@ import ca.gkelly.engine.graphics.DisplayMode;
 import ca.gkelly.engine.graphics.Window;
 import ca.gkelly.engine.loader.Loader;
 
-public class Test {
+public class Game {
 	static Window w;
 	static GameManager gm;
 
