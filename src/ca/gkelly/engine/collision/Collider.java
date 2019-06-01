@@ -273,11 +273,8 @@ class Edge {
 		} else if (e.undefined) { // If the other line is vertical
 			x = e.x1;
 			y = slope * x + b;
-		} else if (e.slope == slope) { // Parallel lines never intersect (placed after vert because vert and horz
-										// slopes = 0)
-			return null;
 		} else {
-			x = (e.b - b) / (e.slope - slope);
+			x = (e.b - b) / (slope - e.slope);
 			y = slope * x + b;
 		}
 

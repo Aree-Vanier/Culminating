@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="19">
+<map version="1.2" tiledversion="1.2.2" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="21">
  <tileset firstgid="1" name="tiles" tilewidth="32" tileheight="32" tilecount="20" columns="4">
   <image source="tiles.png" width="128" height="160"/>
  </tileset>
@@ -39,7 +39,7 @@
 19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19,19
 </data>
  </layer>
- <objectgroup id="2" name="colliders">
+ <objectgroup id="2" name="colliders2">
   <object id="12" x="192" y="192">
    <polygon points="0,0 256,0 256,480 0,480"/>
   </object>
@@ -58,8 +58,10 @@
   <object id="17" x="960" y="64">
    <polygon points="0,0 64,-64 -960,-64 -896,0"/>
   </object>
-  <object id="18" x="448" y="96">
-   <polygon points="0,0 32,32 64,64 96,32 128,0 96,0"/>
+ </objectgroup>
+ <objectgroup id="3" name="colliders">
+  <object id="20" x="448" y="96">
+   <polygon points="0,0 96,96 160,32 160,0"/>
   </object>
  </objectgroup>
 </map>
