@@ -1,8 +1,10 @@
 package ca.gkelly.engine.collision;
 
 import java.awt.Point;
+import java.awt.Polygon;
 import java.util.ArrayList;
 
+import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
 
 /**
@@ -108,9 +110,6 @@ public abstract class Collider {
 		}
 	}
 
-	// TODO: A funciton that gets line collision see
-	// https://math.stackexchange.com/questions/2188507/how-do-you-find-the-point-of-intersection-of-2-vectors
-
 	/**
 	 * Return true if the given point is contained inside the boundary.<br/>
 	 * See: <a href=
@@ -184,6 +183,8 @@ public abstract class Collider {
 	public double[][] getIntersections(Collider c) {
 		if (!inRange(c))
 			return new double[0][];
+		if (!intersects(c))
+			return new double[0][];
 		ArrayList<double[]> out = new ArrayList<>();
 
 		for (int i = 0; i < vertexCount; i++) {
@@ -230,8 +231,153 @@ public abstract class Collider {
 	 * @param c The {@link Collider} to check against
 	 * @return Pushback vector, null if no collision with c
 	 */
-	public Vector getPushback(Collider c) {
-		return null;
+	public Polygon getPushback(Collider c) {
+		double[][] intersections = c.getIntersections(this);
+		// Don't bother with any of this if there are no intersections
+		Logger.log(intersections.length);
+		if (intersections.length == 0)
+			return null;// new Vector(0, 0);
+		ArrayList<Double> vertX = new ArrayList<Double>();
+		ArrayList<Double> vertY = new ArrayList<Double>();
+		int vertCount = 0;
+		for (double[] d : intersections) {
+			vertX.add(d[0]);
+			vertY.add(d[1]);
+			vertCount++;
+		}
+		boolean vertexFound = false;
+		for (int i = 0; i < vertexCount; i++) {
+			if (c.contains(verticesX[i], verticesY[i])) {
+				Logger.log("Point at " + verticesX[i] + "," + verticesY[i]);
+				vertX.add(verticesX[i]);
+				vertY.add(verticesY[i]);
+				vertCount++;
+				vertexFound = true;
+			}
+		}
+
+		ArrayList<Double>[] sorted = getHull(vertX.toArray(new Double[vertX.size()]),
+				vertY.toArray(new Double[vertY.size()]), vertCount);
+		vertX = sorted[0];
+		vertY = sorted[1];
+		// Update the vertex count
+		vertCount = vertX.size();
+
+		int[] xp = new int[vertCount];
+		int[] yp = new int[vertCount];
+		for (int i = 0; i < vertCount; i++) {
+			// Must be casted from Double to double, then to int
+			xp[i] = (int) (double) vertX.get(i);
+			yp[i] = (int) (double) vertY.get(i);
+		}
+
+		return new Polygon(xp, yp, vertCount);
+	}
+
+	private ArrayList<Double>[] getHull(Double[] x, Double[] y, int vertCount) {
+		// TODO: Allow for inlets, somehow
+		ArrayList<Double> vertX = new ArrayList<>();
+		ArrayList<Double> vertY = new ArrayList<>();
+
+		// Join duplicate points, as they break system
+		// The arrayLists will be used temporarily to avoid excess variables
+		for (int i = 0; i < vertCount; i++) {
+			boolean add = true;
+			for (int j = 0; j < vertX.size(); j++) {
+				if (vertX.get(j).equals(x[i]) && vertY.get(j).equals(y[i]))
+					add = false;
+			}
+			if (add) {
+				vertX.add(x[i]);
+				vertY.add(y[i]);
+			}
+		}
+
+		// If there are 2 or less vertices, then the rest of the math is redundant
+		if (vertX.size() <= 2) {
+			return (new ArrayList[] { vertX, vertY });
+		}
+
+		// Transfer data back to Double[]s
+		x = vertX.toArray(new Double[vertX.size()]);
+		y = vertY.toArray(new Double[vertY.size()]);
+		vertCount = x.length;
+
+		// Reset the ArrayLists
+		vertX = new ArrayList<>();
+		vertY = new ArrayList<>();
+
+		int start = 0; // Index of the leftmost x vertex
+		// Get the leftmost vertex (using top y as tiebreak)
+		for (int i = 0; i < vertCount; i++) {
+			if (x[i] < x[start])
+				start = i;
+			else if (x[i] == x[start] && y[i] < y[start]) {
+				start = i;
+			}
+		}
+
+		// Add the initial vertex
+		vertX.add(x[start]);
+		vertY.add(y[start]);
+
+		int currentVertex = start;
+		int bestVertex = 0;
+		double bestAngle;
+		double angle;
+
+		while (true) {
+			bestAngle = Double.MAX_VALUE;
+			for (int i = 0; i < vertCount; i++) {
+				// Don't pair with itself
+				if (i == currentVertex)
+					continue;
+				// Get the angle from down
+				angle = Vector.DOWN.getAngle(new Vector(x[i] - x[currentVertex], y[i] - y[currentVertex]), false);
+
+				// Make directly down always 0
+				if (angle == Math.PI*2) {
+					angle = 0;
+				}
+
+				// If we are looking from the top-left vertex, we can start from straight up
+				// This prevents us from accidentally selecting a vertex directly below, which
+				// would skip all others
+				if (currentVertex == start) {
+					angle -= Math.PI;
+				}
+
+				// Shift negative values into target range
+				if (angle < 0) {
+					angle += Math.PI * 2;
+				}
+
+				// If it's a better angle, save it
+				if (angle < bestAngle) {
+					bestAngle = angle;
+					bestVertex = i;
+				}
+			}
+			if (bestVertex == start) // If the best vertex is the initial, then we have completed the hull
+				break;
+			// Make the best vertex the next one in the list
+			vertX.add(x[bestVertex]);
+			vertY.add(y[bestVertex]);
+			currentVertex = bestVertex;
+		}
+
+//		//Convert to double arrays
+//		double[] xout = new double[vertX.size()];
+//		for(int i = 0; i<vertX.size(); i++) {
+//			xout[i] = vertX.get(i);
+//		}
+//		double[] yout = new double[vertY.size()];
+//		for(int i = 0; i<vertY.size(); i++) {
+//			yout[i] = vertY.get(i);
+//		}
+
+		return new ArrayList[] { vertX, vertY };
+
 	}
 
 	public String printVertices() {

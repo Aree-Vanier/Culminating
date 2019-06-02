@@ -25,10 +25,4 @@ public class LineCollider extends Collider {
 		return false;
 	}
 
-	/**Does not work with line colliders*/
-	@Override
-	public Vector getPushback(Collider c) {
-		return null;
-	}
-
 }

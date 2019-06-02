@@ -64,6 +64,10 @@ public class GameManager extends Manager {
 			for (double[] d : intersects) {
 				cam.drawPoint((int) d[0], (int) d[1], 5, Color.GREEN);
 			}
+			Polygon p2 = player.rc.getPushback(c);
+			if (p2 != null) {
+				cam.drawPoly(p2, Color.green);
+			}
 		}
 
 //		cam.drawRect(player.getRectX(), player.getRectY(), player.getWidth(), player.getHeight(), Color.blue);

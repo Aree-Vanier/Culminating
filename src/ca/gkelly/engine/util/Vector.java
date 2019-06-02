@@ -28,6 +28,11 @@ public class Vector {
 	 */
 	public static final int STRING_POLAR = 2;
 
+	public static final Vector UP = new Vector(0, 1);
+	public static final Vector RIGHT = new Vector(1, 0);
+	public static final Vector DOWN = new Vector(0, -1);
+	public static final Vector LEFT = new Vector(-1, 0);
+
 	/**
 	 * Create the vector, using the x and y components
 	 * 
@@ -36,7 +41,7 @@ public class Vector {
 	 */
 	public Vector(double x, double y) {
 		magnitude = Math.sqrt(x * x + y * y);
-		if(magnitude == 0) {
+		if (magnitude == 0) {
 			this.x = 0;
 			this.y = 0;
 		} else {
@@ -67,18 +72,18 @@ public class Vector {
 	 */
 	public Vector(double angle, double magnitude, boolean ccw) {
 		this.magnitude = magnitude;
-		if(ccw)
+		if (ccw)
 			angle = Math.PI * 2 - angle;
-		if(angle < Math.PI * 0.5) { // All quadrant
+		if (angle < Math.PI * 0.5) { // All quadrant
 			x = Math.cos(angle);
 			y = Math.sin(angle);
-		} else if(angle > Math.PI * 0.5 && angle < Math.PI) { // Cosine quadrant
+		} else if (angle > Math.PI * 0.5 && angle < Math.PI) { // Cosine quadrant
 			x = Math.cos(angle);
 			y = -Math.sin(angle);
-		} else if(angle > Math.PI && angle < Math.PI * 0.75) { // Tan quadrant
+		} else if (angle > Math.PI && angle < Math.PI * 0.75) { // Tan quadrant
 			x = -Math.cos(angle);
 			y = -Math.sin(angle);
-		} else if(angle > Math.PI * 0.75 && angle < Math.PI * 2) { // Sine quadrant
+		} else if (angle > Math.PI * 0.75 && angle < Math.PI * 2) { // Sine quadrant
 			x = -Math.cos(angle);
 			y = Math.sin(angle);
 		}
@@ -125,7 +130,7 @@ public class Vector {
 	 * @return The angle, in radians
 	 */
 	public double getAngle(boolean ccw) {
-		if(ccw)
+		if (ccw)
 			return Math.PI * 2 - Math.atan2(y, x);
 		else
 			return Math.atan2(y, x);
@@ -178,6 +183,21 @@ public class Vector {
 	}
 
 	/**
+	 * Get the angle to another vector, using dot and cross
+	 * 
+	 * @param v   The other vector
+	 * @param ccw Flag to indicate counter-clockwise
+	 * @return Radian angle from this vector to v
+	 */
+	public double getAngle(Vector v, boolean ccw) {
+		double dot = -dot(v, this);
+		double cross = cross(v, this);
+		if (ccw)
+			return 2 * Math.PI - (Math.atan2(cross, dot));
+		return (Math.atan2(cross, dot));
+	}
+
+	/**
 	 * Get the sum of the passed vectors
 	 * 
 	 * @param v1 The first vector to add
@@ -220,4 +240,27 @@ public class Vector {
 	public static Vector divide(Vector v, int s) {
 		return (new Vector(v.getX() / s, v.getY() / s));
 	}
+
+	/**
+	 * Perform dot multiplication on two vectors
+	 * 
+	 * @param v1 The first vector
+	 * @param v2 The second vector
+	 * @return The resultant scalar
+	 */
+	public static double dot(Vector v1, Vector v2) {
+		return v1.getX() * v2.getX() + v1.getY() * v2.getY();
+	}
+
+	/**
+	 * Perform cross multiplication on two vectors
+	 * 
+	 * @param v1 The first vector
+	 * @param v2 The second vector
+	 * @return The magnitude resultant vector
+	 */
+	public static double cross(Vector v1, Vector v2) {
+		return v1.getX() * v2.getY() - v1.getY() * v2.getX();
+	}
+
 }
