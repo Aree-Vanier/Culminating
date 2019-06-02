@@ -255,6 +255,15 @@ public abstract class Collider {
 				vertexFound = true;
 			}
 		}
+		for (int i = 0; i < c.vertexCount; i++) {
+			if (contains(c.verticesX[i], c.verticesY[i])) {
+				Logger.log("Point at " + c.verticesX[i] + "," + c.verticesY[i]);
+				vertX.add(c.verticesX[i]);
+				vertY.add(c.verticesY[i]);
+				vertCount++;
+				vertexFound = true;
+			}
+		}
 
 		ArrayList<Double>[] sorted = getHull(vertX.toArray(new Double[vertX.size()]),
 				vertY.toArray(new Double[vertY.size()]), vertCount);
@@ -288,10 +297,14 @@ public abstract class Collider {
 					add = false;
 			}
 			if (add) {
+				Logger.log(Logger.DEBUG, x[i]+","+y[i], "\t", true);
 				vertX.add(x[i]);
 				vertY.add(y[i]);
 			}
 		}
+		Logger.log(Logger.DEBUG, "", "\n", true);
+		Logger.log(vertX.size());
+		
 
 		// If there are 2 or less vertices, then the rest of the math is redundant
 		if (vertX.size() <= 2) {
@@ -312,7 +325,7 @@ public abstract class Collider {
 		for (int i = 0; i < vertCount; i++) {
 			if (x[i] < x[start])
 				start = i;
-			else if (x[i] == x[start] && y[i] < y[start]) {
+			else if (x[i].equals(x[start]) && y[i] < y[start]) {
 				start = i;
 			}
 		}
