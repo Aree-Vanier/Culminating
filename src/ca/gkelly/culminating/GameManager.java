@@ -60,13 +60,13 @@ public class GameManager extends Manager {
 
 			Logger.log(player.rc.printVertices() + "\t" + c.printVertices());
 
-			double[][] intersects = player.rc.getIntersections(c);
-			for (double[] d : intersects) {
-				cam.drawPoint((int) d[0], (int) d[1], 5, Color.GREEN);
-			}
 			Polygon p2 = player.rc.getPushback(c);
 			if (p2 != null) {
 				cam.drawPoly(p2, Color.green);
+			}
+			double[][] intersects = c.getIntersections(player.rc);
+			for (double[] d : intersects) {
+				cam.drawPoint((int) d[0], (int) d[1], 5, Color.BLUE);
 			}
 		}
 

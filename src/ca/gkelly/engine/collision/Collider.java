@@ -183,8 +183,6 @@ public abstract class Collider {
 	public double[][] getIntersections(Collider c) {
 		if (!inRange(c))
 			return new double[0][];
-		if (!intersects(c))
-			return new double[0][];
 		ArrayList<double[]> out = new ArrayList<>();
 
 		for (int i = 0; i < vertexCount; i++) {
@@ -265,6 +263,8 @@ public abstract class Collider {
 			}
 		}
 
+		Logger.log(vertCount);
+
 		ArrayList<Double>[] sorted = getHull(vertX.toArray(new Double[vertX.size()]),
 				vertY.toArray(new Double[vertY.size()]), vertCount);
 		vertX = sorted[0];
@@ -297,14 +297,13 @@ public abstract class Collider {
 					add = false;
 			}
 			if (add) {
-				Logger.log(Logger.DEBUG, x[i]+","+y[i], "\t", true);
+				Logger.log(Logger.DEBUG, x[i] + "," + y[i], "\t", true);
 				vertX.add(x[i]);
 				vertY.add(y[i]);
 			}
 		}
 		Logger.log(Logger.DEBUG, "", "\n", true);
 		Logger.log(vertX.size());
-		
 
 		// If there are 2 or less vertices, then the rest of the math is redundant
 		if (vertX.size() <= 2) {
@@ -338,8 +337,12 @@ public abstract class Collider {
 		int bestVertex = 0;
 		double bestAngle;
 		double angle;
+		ArrayList<Integer> usedVertices = new ArrayList<>();
 
-		while (true) {
+		// Counter to break loop if iterations exceeeds number of vertices
+		int lim = 0;
+		while (lim < vertCount) {
+			lim++;
 			bestAngle = Double.MAX_VALUE;
 			for (int i = 0; i < vertCount; i++) {
 				// Don't pair with itself
@@ -349,7 +352,7 @@ public abstract class Collider {
 				angle = Vector.DOWN.getAngle(new Vector(x[i] - x[currentVertex], y[i] - y[currentVertex]), false);
 
 				// Make directly down always 0
-				if (angle == Math.PI*2) {
+				if (angle == Math.PI * 2) {
 					angle = 0;
 				}
 
@@ -365,8 +368,26 @@ public abstract class Collider {
 					angle += Math.PI * 2;
 				}
 
+				//Don't reuse vertices
+				if(usedVertices.contains(i))
+					continue;
+				
+				// We want preferences towards angles that are to the left, so greater (but not
+				// equal) to pi
+				if (bestAngle > Math.PI && angle < Math.PI && bestAngle != Double.MAX_VALUE)
+					continue;
+
 				// If it's a better angle, save it
-				if (angle < bestAngle) {
+				if (bestAngle < Math.PI && angle > Math.PI) { // Better left than right
+					bestAngle = angle;
+					bestVertex = i;
+				} else if (angle == 0 && bestAngle < Math.PI) { // An angle to the left is better than one straight down
+					bestAngle = angle;
+					bestVertex = i;
+				} else if (bestAngle == 0 && angle > Math.PI) {
+					bestAngle = angle;
+					bestVertex = i;
+				} else if (angle < bestAngle) {
 					bestAngle = angle;
 					bestVertex = i;
 				}
@@ -377,6 +398,7 @@ public abstract class Collider {
 			vertX.add(x[bestVertex]);
 			vertY.add(y[bestVertex]);
 			currentVertex = bestVertex;
+			usedVertices.add(bestVertex);
 		}
 
 //		//Convert to double arrays
