@@ -41,7 +41,7 @@ public class Vector {
 	 */
 	public Vector(double x, double y) {
 		magnitude = Math.sqrt(x * x + y * y);
-		if (magnitude == 0) {
+		if(magnitude == 0) {
 			this.x = 0;
 			this.y = 0;
 		} else {
@@ -72,18 +72,17 @@ public class Vector {
 	 */
 	public Vector(double angle, double magnitude, boolean ccw) {
 		this.magnitude = magnitude;
-		if (ccw)
-			angle = Math.PI * 2 - angle;
-		if (angle < Math.PI * 0.5) { // All quadrant
+		if(ccw) angle = Math.PI * 2 - angle;
+		if(angle < Math.PI * 0.5) { // All quadrant
 			x = Math.cos(angle);
 			y = Math.sin(angle);
-		} else if (angle > Math.PI * 0.5 && angle < Math.PI) { // Cosine quadrant
+		} else if(angle > Math.PI * 0.5 && angle < Math.PI) { // Cosine quadrant
 			x = Math.cos(angle);
 			y = -Math.sin(angle);
-		} else if (angle > Math.PI && angle < Math.PI * 0.75) { // Tan quadrant
+		} else if(angle > Math.PI && angle < Math.PI * 0.75) { // Tan quadrant
 			x = -Math.cos(angle);
 			y = -Math.sin(angle);
-		} else if (angle > Math.PI * 0.75 && angle < Math.PI * 2) { // Sine quadrant
+		} else if(angle > Math.PI * 0.75 && angle < Math.PI * 2) { // Sine quadrant
 			x = -Math.cos(angle);
 			y = Math.sin(angle);
 		}
@@ -105,11 +104,18 @@ public class Vector {
 	}
 
 	/**
-	 * Set the magnitude of the vector
+	 * Set the magnitude of the vector<br/>
+	 * Negative magnitudes will mirror the vector
 	 * 
 	 * @param magnitude The new magnitude
 	 */
 	public void setMag(double magnitude) {
+		//Mirror if negative
+		if(magnitude < 0) {
+			magnitude = -magnitude;
+			x = -x;
+			y = -y;
+		}
 		this.magnitude = magnitude;
 	}
 
@@ -130,7 +136,7 @@ public class Vector {
 	 * @return The angle, in radians
 	 */
 	public double getAngle(boolean ccw) {
-		if (ccw)
+		if(ccw)
 			return Math.PI * 2 - Math.atan2(y, x);
 		else
 			return Math.atan2(y, x);
@@ -192,8 +198,7 @@ public class Vector {
 	public double getAngle(Vector v, boolean ccw) {
 		double dot = -dot(v, this);
 		double cross = cross(v, this);
-		if (ccw)
-			return 2 * Math.PI - (Math.atan2(cross, dot));
+		if(ccw) return 2 * Math.PI - (Math.atan2(cross, dot));
 		return (Math.atan2(cross, dot));
 	}
 

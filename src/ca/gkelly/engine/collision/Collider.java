@@ -1,5 +1,6 @@
 package ca.gkelly.engine.collision;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.util.ArrayList;
@@ -56,32 +57,64 @@ public abstract class Collider {
 		this.verticesY = verticesY;
 		this.vertexCount = vertexCount;
 
-		for (double d : verticesX) {
-			if (d > maxX)
-				maxX = d;
-			if (d < minX)
-				minX = d;
+		double xSum = 0;
+		double ySum = 0;
+
+		for(int i = 0;i < vertexCount;i++) {
+			// Get min/max
+			if(verticesX[i] > maxX) maxX = verticesX[i];
+			if(verticesX[i] < minX) minX = verticesX[i];
+			if(verticesY[i] > maxY) maxY = verticesY[i];
+			if(verticesY[i] < minY) minY = verticesY[i];
+
+			// Get values for midpoint
+			if(i == vertexCount - 1) {
+				xSum += (verticesX[i] + verticesX[0]) * (verticesX[i] * verticesY[0] - verticesX[0] * verticesY[i]);
+				ySum += (verticesY[i] + verticesY[0]) * (verticesX[i] * verticesY[0] - verticesX[0] * verticesY[i]);
+			} else {
+				xSum += (verticesX[i] + verticesX[i + 1])
+						* (verticesX[i] * verticesY[i + 1] - verticesX[i + 1] * verticesY[i]);
+				ySum += (verticesY[i] + verticesY[i + 1])
+						* (verticesX[i] * verticesY[i + 1] - verticesX[i + 1] * verticesY[i]);
+			}
 		}
-		for (double d : verticesY) {
-			if (d > maxY)
-				maxY = d;
-			if (d < minY)
-				minY = d;
-		}
+		//Get rough boundaries
 		width = Math.abs(maxX - minX);
 		height = Math.abs(maxY - minY);
-
 		radius = Math.sqrt(Math.pow(width / 2, 2) + Math.pow(height / 2, 2));
-		this.x = minX + width / 2;
-		this.y = minY + height / 2;
+	
+		//Get the midpoint
+		this.x = xSum/(6 * getArea());
+		this.y = ySum/(6 * getArea());
+		
+		//If the polygon is too small, the midpoint may be placed at 0,0.
+		//This checks to if that is true, and the midpoint is nowhere near the simple midpoint
+		if(Double.isNaN(this.x)){
+			this.x = (minX+maxX)/2;
+		}
+		if(Double.isNaN(this.y)){
+			this.y = (minY+maxY)/2;
+		}
 
 		localVerticesX = new double[vertexCount];
 		localVerticesY = new double[vertexCount];
-		for (int i = 0; i < vertexCount; i++) {
+		for(int i = 0;i < vertexCount;i++) {
 			localVerticesX[i] = verticesX[i] - x;
 			localVerticesY[i] = verticesY[i] - x;
 		}
 
+	}
+
+	/** Get the area of the polygon */
+	public double getArea() {
+		double sum = 0;
+		for(int i = 0;i < vertexCount;i++) {
+			if(i == vertexCount - 1)
+				sum += verticesX[i] * verticesY[0] - verticesX[0] * verticesY[i];
+			else
+				sum += verticesX[i] * verticesY[i + 1] - verticesX[i + 1] * verticesY[i];
+		}
+		return 0.5 * sum;
 	}
 
 	/**
@@ -104,7 +137,7 @@ public abstract class Collider {
 		this.x = x;
 		this.y = y;
 
-		for (int i = 0; i < vertexCount; i++) {
+		for(int i = 0;i < vertexCount;i++) {
 			verticesX[i] = localVerticesX[i] + x;
 			verticesY[i] = localVerticesY[i] + y;
 		}
@@ -123,8 +156,8 @@ public abstract class Collider {
 		int i;
 		int j;
 		boolean result = false;
-		for (i = 0, j = vertexCount - 1; i < vertexCount; j = i++) {
-			if ((verticesY[i] > y) != (verticesY[j] > y)
+		for(i = 0, j = vertexCount - 1;i < vertexCount;j = i++) {
+			if((verticesY[i] > y) != (verticesY[j] > y)
 					&& (x < (verticesX[j] - verticesX[i]) * (y - verticesY[i]) / (verticesY[j] - verticesY[i])
 							+ verticesX[i])) {
 				result = !result;
@@ -152,10 +185,9 @@ public abstract class Collider {
 	 * @return True if all any point is contained
 	 */
 	public boolean intersects(Collider c) {
-		if (!inRange(c))
-			return false;
-		for (int i = 0; i < c.vertexCount; i++) {
-			if (contains(c.verticesX[i], c.verticesY[i])) {
+		if(!inRange(c)) return false;
+		for(int i = 0;i < c.vertexCount;i++) {
+			if(contains(c.verticesX[i], c.verticesY[i])) {
 				return true;
 			}
 		}
@@ -169,10 +201,9 @@ public abstract class Collider {
 	 * @return True if all points are contained
 	 */
 	public boolean cointains(Collider c) {
-		if (!inRange(c))
-			return false;
-		for (int i = 0; i < c.vertexCount; i++) {
-			if (!contains(c.verticesX[i], c.verticesY[i])) {
+		if(!inRange(c)) return false;
+		for(int i = 0;i < c.vertexCount;i++) {
+			if(!contains(c.verticesX[i], c.verticesY[i])) {
 				return false;
 			}
 		}
@@ -181,28 +212,27 @@ public abstract class Collider {
 	}
 
 	public double[][] getIntersections(Collider c) {
-		if (!inRange(c))
-			return new double[0][];
+		if(!inRange(c)) return new double[0][];
 		ArrayList<double[]> out = new ArrayList<>();
 
-		for (int i = 0; i < vertexCount; i++) {
+		for(int i = 0;i < vertexCount;i++) {
 			Edge e1;
-			if (i + 1 < vertexCount) { // If this is just a normal vertex, use the next one
+			if(i + 1 < vertexCount) { // If this is just a normal vertex, use the next one
 				e1 = new Edge(verticesX[i], verticesY[i], verticesX[i + 1], verticesY[i + 1]);
 			} else { // If this is the last vertex, wrap to the first
 				e1 = new Edge(verticesX[i], verticesY[i], verticesX[0], verticesY[0]);
 			}
 
-			for (int j = 0; j < c.vertexCount; j++) {
+			for(int j = 0;j < c.vertexCount;j++) {
 				Edge e2;
-				if (j + 1 < c.vertexCount) { // If this is just a normal vertex, use the next one
+				if(j + 1 < c.vertexCount) { // If this is just a normal vertex, use the next one
 					e2 = new Edge(c.verticesX[j], c.verticesY[j], c.verticesX[j + 1], c.verticesY[j + 1]);
 				} else { // If this is the last c.vertex, wrap to the first
 					e2 = new Edge(c.verticesX[j], c.verticesY[j], c.verticesX[0], c.verticesY[0]);
 				}
 
 				double[] intersect = e1.getIntersect(e2);
-				if (intersect != null) {
+				if(intersect != null) {
 					out.add(intersect);
 				}
 			}
@@ -224,38 +254,36 @@ public abstract class Collider {
 	}
 
 	/**
-	 * Get vector representing the required translation to exit collider
+	 * Get polygon representing intersection between colliders
 	 * 
 	 * @param c The {@link Collider} to check against
-	 * @return Pushback vector, null if no collision with c
+	 * @return {@link PolyCollider} representing collision area
 	 */
-	public Polygon getPushback(Collider c) {
+	public PolyCollider getCollisionPolygon(Collider c) {
 		double[][] intersections = c.getIntersections(this);
 		// Don't bother with any of this if there are no intersections
-		Logger.log(intersections.length);
-		if (intersections.length == 0)
-			return null;// new Vector(0, 0);
+		if(intersections.length == 0) return null;
 		ArrayList<Double> vertX = new ArrayList<Double>();
 		ArrayList<Double> vertY = new ArrayList<Double>();
 		int vertCount = 0;
-		for (double[] d : intersections) {
+		for(double[] d: intersections) {
 			vertX.add(d[0]);
 			vertY.add(d[1]);
 			vertCount++;
 		}
 		boolean vertexFound = false;
-		for (int i = 0; i < vertexCount; i++) {
-			if (c.contains(verticesX[i], verticesY[i])) {
-				Logger.log("Point at " + verticesX[i] + "," + verticesY[i]);
+		for(int i = 0;i < vertexCount;i++) {
+			if(c.contains(verticesX[i], verticesY[i])) {
+//				Logger.log("Point at " + verticesX[i] + "," + verticesY[i]);
 				vertX.add(verticesX[i]);
 				vertY.add(verticesY[i]);
 				vertCount++;
 				vertexFound = true;
 			}
 		}
-		for (int i = 0; i < c.vertexCount; i++) {
-			if (contains(c.verticesX[i], c.verticesY[i])) {
-				Logger.log("Point at " + c.verticesX[i] + "," + c.verticesY[i]);
+		for(int i = 0;i < c.vertexCount;i++) {
+			if(contains(c.verticesX[i], c.verticesY[i])) {
+//				Logger.log("Point at " + c.verticesX[i] + "," + c.verticesY[i]);
 				vertX.add(c.verticesX[i]);
 				vertY.add(c.verticesY[i]);
 				vertCount++;
@@ -272,17 +300,66 @@ public abstract class Collider {
 		// Update the vertex count
 		vertCount = vertX.size();
 
-		int[] xp = new int[vertCount];
-		int[] yp = new int[vertCount];
-		for (int i = 0; i < vertCount; i++) {
+		double[] xp = new double[vertCount];
+		double[] yp = new double[vertCount];
+		for(int i = 0;i < vertCount;i++) {
 			// Must be casted from Double to double, then to int
-			xp[i] = (int) (double) vertX.get(i);
-			yp[i] = (int) (double) vertY.get(i);
+			xp[i] = (double) vertX.get(i);
+			yp[i] = (double) vertY.get(i);
 		}
 
-		return new Polygon(xp, yp, vertCount);
+		return new PolyCollider(xp, yp, vertCount);
 	}
 
+	/**
+	 * Get vector representing the required translation to exit collider
+	 * 
+	 * @param c The {@link Collider} to check against
+	 * @return Pushback vector, null if no collision with c
+	 */
+	public Vector getPushback(Collider c) {
+		final int MAX_PASS = 5; // The maximum nuber of times to attempt full removal
+		int tries = 0;
+		PolyCollider collision;
+		Vector out = new Vector(0, 0);
+
+		// If there is an intersection, attempt to remedy, up to MAX_PASS times
+		while((collision = getCollisionPolygon(c)) != null && tries < MAX_PASS) {
+			tries++;
+			Vector offset = new Vector(collision.x - x, collision.y - y);
+			offset.setMag(-offset.getMag());
+			// Get the projections of the offset vector (shorter = further in)
+			double horz = Math.abs(Vector.dot(offset, Vector.LEFT));
+			double vert = Math.abs(Vector.dot(offset, Vector.UP));
+			Logger.log(horz + "\t" + vert);
+			if(Double.isNaN(horz)) {
+				Logger.log("nan");
+				offset.setMag(-offset.getMag());
+				// Get the projections of the offset vector (shorter = further in)
+				horz = Math.abs(Vector.dot(offset, Vector.LEFT));
+				vert = Math.abs(Vector.dot(offset, Vector.UP));
+			}
+
+			// If the horizontal is further in, deal with it
+			if(horz < vert) {
+
+			} else {
+
+			}
+		}
+		return out;
+	}
+
+	@SuppressWarnings("unchecked") // Issues with ArrayList[]s
+	/**
+	 * Get the convex hull that contains the passed points, using an approximation
+	 * of the gift wrapping algorithm
+	 * 
+	 * @param x         The list of x points
+	 * @param y         The list of y points
+	 * @param vertCount The amount of vertices
+	 * @return An ArrayList containing the ordered x and y points that form the hull
+	 */
 	private ArrayList<Double>[] getHull(Double[] x, Double[] y, int vertCount) {
 		// TODO: Allow for inlets, somehow
 		ArrayList<Double> vertX = new ArrayList<>();
@@ -290,23 +367,21 @@ public abstract class Collider {
 
 		// Join duplicate points, as they break system
 		// The arrayLists will be used temporarily to avoid excess variables
-		for (int i = 0; i < vertCount; i++) {
+		for(int i = 0;i < vertCount;i++) {
 			boolean add = true;
-			for (int j = 0; j < vertX.size(); j++) {
-				if (vertX.get(j).equals(x[i]) && vertY.get(j).equals(y[i]))
-					add = false;
+			for(int j = 0;j < vertX.size();j++) {
+				if(vertX.get(j).equals(x[i]) && vertY.get(j).equals(y[i])) add = false;
 			}
-			if (add) {
-				Logger.log(Logger.DEBUG, x[i] + "," + y[i], "\t", true);
+			if(add) {
+//				Logger.log(Logger.DEBUG, x[i] + "," + y[i], "\t", true);
 				vertX.add(x[i]);
 				vertY.add(y[i]);
 			}
 		}
-		Logger.log(Logger.DEBUG, "", "\n", true);
-		Logger.log(vertX.size());
+//		Logger.log(Logger.DEBUG, "", "\n", true);
 
 		// If there are 2 or less vertices, then the rest of the math is redundant
-		if (vertX.size() <= 2) {
+		if(vertX.size() <= 2) {
 			return (new ArrayList[] { vertX, vertY });
 		}
 
@@ -321,10 +396,10 @@ public abstract class Collider {
 
 		int start = 0; // Index of the leftmost x vertex
 		// Get the leftmost vertex (using top y as tiebreak)
-		for (int i = 0; i < vertCount; i++) {
-			if (x[i] < x[start])
+		for(int i = 0;i < vertCount;i++) {
+			if(x[i] < x[start])
 				start = i;
-			else if (x[i].equals(x[start]) && y[i] < y[start]) {
+			else if(x[i].equals(x[start]) && y[i] < y[start]) {
 				start = i;
 			}
 		}
@@ -341,58 +416,55 @@ public abstract class Collider {
 
 		// Counter to break loop if iterations exceeeds number of vertices
 		int lim = 0;
-		while (lim < vertCount) {
+		while(lim < vertCount) {
 			lim++;
 			bestAngle = Double.MAX_VALUE;
-			for (int i = 0; i < vertCount; i++) {
+			for(int i = 0;i < vertCount;i++) {
 				// Don't pair with itself
-				if (i == currentVertex)
-					continue;
+				if(i == currentVertex) continue;
 				// Get the angle from down
 				angle = Vector.DOWN.getAngle(new Vector(x[i] - x[currentVertex], y[i] - y[currentVertex]), false);
 
 				// Make directly down always 0
-				if (angle == Math.PI * 2) {
+				if(angle == Math.PI * 2) {
 					angle = 0;
 				}
 
 				// If we are looking from the top-left vertex, we can start from straight up
 				// This prevents us from accidentally selecting a vertex directly below, which
 				// would skip all others
-				if (currentVertex == start) {
+				if(currentVertex == start) {
 					angle -= Math.PI;
 				}
 
 				// Shift negative values into target range
-				if (angle < 0) {
+				if(angle < 0) {
 					angle += Math.PI * 2;
 				}
 
-				//Don't reuse vertices
-				if(usedVertices.contains(i))
-					continue;
-				
+				// Don't reuse vertices
+				if(usedVertices.contains(i)) continue;
+
 				// We want preferences towards angles that are to the left, so greater (but not
 				// equal) to pi
-				if (bestAngle > Math.PI && angle < Math.PI && bestAngle != Double.MAX_VALUE)
-					continue;
+				if(bestAngle > Math.PI && angle < Math.PI && bestAngle != Double.MAX_VALUE) continue;
 
 				// If it's a better angle, save it
-				if (bestAngle < Math.PI && angle > Math.PI) { // Better left than right
+				if(bestAngle < Math.PI && angle > Math.PI) { // Better left than right
 					bestAngle = angle;
 					bestVertex = i;
-				} else if (angle == 0 && bestAngle < Math.PI) { // An angle to the left is better than one straight down
+				} else if(angle == 0 && bestAngle < Math.PI) { // An angle to the left is better than one straight down
 					bestAngle = angle;
 					bestVertex = i;
-				} else if (bestAngle == 0 && angle > Math.PI) {
+				} else if(bestAngle == 0 && angle > Math.PI) {
 					bestAngle = angle;
 					bestVertex = i;
-				} else if (angle < bestAngle) {
+				} else if(angle < bestAngle) {
 					bestAngle = angle;
 					bestVertex = i;
 				}
 			}
-			if (bestVertex == start) // If the best vertex is the initial, then we have completed the hull
+			if(bestVertex == start) // If the best vertex is the initial, then we have completed the hull
 				break;
 			// Make the best vertex the next one in the list
 			vertX.add(x[bestVertex]);
@@ -401,23 +473,13 @@ public abstract class Collider {
 			usedVertices.add(bestVertex);
 		}
 
-//		//Convert to double arrays
-//		double[] xout = new double[vertX.size()];
-//		for(int i = 0; i<vertX.size(); i++) {
-//			xout[i] = vertX.get(i);
-//		}
-//		double[] yout = new double[vertY.size()];
-//		for(int i = 0; i<vertY.size(); i++) {
-//			yout[i] = vertY.get(i);
-//		}
-
 		return new ArrayList[] { vertX, vertY };
 
 	}
 
 	public String printVertices() {
 		String out = "";
-		for (int i = 0; i < vertexCount; i++) {
+		for(int i = 0;i < vertexCount;i++) {
 			out += "(" + verticesX[i] + "," + verticesY[i] + "), ";
 		}
 		return out;
@@ -437,7 +499,7 @@ class Edge {
 		this.y1 = y1;
 		this.y2 = y2;
 
-		if ((x2 - x1) != 0) {// If the line isn't vertical
+		if((x2 - x1) != 0) {// If the line isn't vertical
 			slope = ((y2 - y1) / (x2 - x1));
 			b = y1 - slope * (x1);
 		} else { // If the line is vertical
@@ -448,10 +510,10 @@ class Edge {
 	public double[] getIntersect(Edge e) {
 		double x, y;
 
-		if (undefined) { // If this line is vertical, the x is it's
+		if(undefined) { // If this line is vertical, the x is it's
 			x = x1;
 			y = e.slope * x + e.b;
-		} else if (e.undefined) { // If the other line is vertical
+		} else if(e.undefined) { // If the other line is vertical
 			x = e.x1;
 			y = slope * x + b;
 		} else {
@@ -460,7 +522,7 @@ class Edge {
 		}
 
 		// If the point exists within the span of the lines
-		if (inRange(x, y) && e.inRange(x, y)) {
+		if(inRange(x, y) && e.inRange(x, y)) {
 			return new double[] { x, y };
 		} else {
 			return null;

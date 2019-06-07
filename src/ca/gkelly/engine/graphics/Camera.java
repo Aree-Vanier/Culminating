@@ -111,16 +111,26 @@ public class Camera {
 		// TODO: Onscreen check
 		g.setColor(c);
 		int[] pos = screenSpace(x, y);
-		g.fillOval(pos[0]-radius/2, pos[1]-radius/2, (int)(radius), (int)(radius));
+		g.fillOval(pos[0] - radius / 2, pos[1] - radius / 2, (int) (radius), (int) (radius));
 	}
-	
+
+	/**
+	 * Draw a line to the world
+	 * 
+	 * @param x1    The start x position
+	 * @param y1    The start y position
+	 * @param x2    The stop x position
+	 * @param y2    The stop y position
+	 * @param width The width of the line
+	 * @param c     The color to use
+	 */
 	public void drawLine(int x1, int y1, int x2, int y2, float width, Color c) {
 		// TODO: Onscreen check
 		g.setColor(c);
 		int[] pos1 = screenSpace(x1, y1);
 		int[] pos2 = screenSpace(x2, y2);
 		Stroke oldStroke = g.getStroke();
-		g.setStroke(new BasicStroke((float) (width*zoom)));
+		g.setStroke(new BasicStroke((float) (width * zoom)));
 		g.drawLine(pos1[0], pos1[1], pos2[0], pos2[1]);
 		g.setStroke(oldStroke);
 	}
@@ -156,8 +166,7 @@ public class Camera {
 		boolean onScreen = false;
 
 		for(int i = 0;i < nPoints;i++) {
-			if(onScreen(xPoints[i], yPoints[i]))
-				onScreen = true;
+			if(onScreen(xPoints[i], yPoints[i])) onScreen = true;
 			xPoints[i] = screenSpace(p.xpoints[i], p.ypoints[i])[0];
 			yPoints[i] = screenSpace(p.xpoints[i], p.ypoints[i])[1];
 		}
@@ -278,8 +287,7 @@ public class Camera {
 	public void setPosition(int x, int y, double zoom) {
 		rawX = x;
 		rawY = y;
-		if(buffer == null)
-			return;
+		if(buffer == null) return;
 		this.zoom = Tools.minmax(zoom, MIN_ZOOM, MAX_ZOOM);
 		this.x = (int) ((-x + buffer.getWidth() / 2));
 		this.y = (int) ((-y + buffer.getHeight() / 2));
