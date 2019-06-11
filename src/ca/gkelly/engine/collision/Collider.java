@@ -12,7 +12,7 @@ import ca.gkelly.engine.util.Vector;
  * Generic class for creating colliders<br/>
  * has functions to handle generic polygon collision detection
  */
-public abstract class Collider {
+public abstract class Collider implements Cloneable{
 
 	/** The x coordinate of the middle of the collider */
 	public double x;
@@ -44,7 +44,7 @@ public abstract class Collider {
 	double width;
 	/** The bounding height of the collider */
 	double height;
-
+	
 	/**
 	 * Set the collider vertices
 	 * 
@@ -318,13 +318,16 @@ public abstract class Collider {
 	 * @return Pushback vector, null if no collision with c
 	 */
 	public Vector getPushback(Collider c) {
-		final int MAX_PASS = 5; // The maximum nuber of times to attempt full removal
+		final int MAX_TRIES = 5; // The maximum nuber of times to attempt full removal TODO move somewhere better
 		int tries = 0;
 		PolyCollider collision;
 		Vector out = new Vector(0, 0);
-
+		double oldX = x;
+		double oldY = y;
+		
+		
 		// If there is an intersection, attempt to remedy, up to MAX_PASS times
-		while((collision = getCollisionPolygon(c)) != null && tries < MAX_PASS) {
+		while((collision = getCollisionPolygon(c)) != null && tries < MAX_TRIES) {
 			tries++;
 			Vector offset = new Vector(collision.x - x, collision.y - y);
 			offset.setMag(-offset.getMag());
@@ -340,13 +343,21 @@ public abstract class Collider {
 				vert = Math.abs(Vector.dot(offset, Vector.UP));
 			}
 
+
+			double deltaX = collision.width * Integer.signum((int) offset.getX());
+			double deltaY = collision.height * Integer.signum((int) offset.getY());
+			Logger.log("Deltas: "+deltaX + '\t' + deltaY);
 			// If the horizontal is further in, deal with it
-			if(horz < vert) {
-
+			if(horz > vert) {
+				translate(deltaX, 0);
+				out = Vector.add(out, new Vector(deltaX,0));
 			} else {
-
+				translate(0,deltaY);
+				out = Vector.add(out, new Vector(0,deltaY));
 			}
+			Logger.log(out.getString(Vector.STRING_RECTANGULAR));
 		}
+		setPosition(oldX, oldY);
 		return out;
 	}
 

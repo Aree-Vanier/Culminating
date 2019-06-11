@@ -3,12 +3,11 @@ package ca.gkelly.engine.loader;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.image.BufferedImage;
 
 import ca.gkelly.engine.collision.Collider;
+import ca.gkelly.engine.collision.RectCollider;
 import ca.gkelly.engine.graphics.Camera;
-import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
 
 /** Class used to manage basic entities */
@@ -26,6 +25,9 @@ public abstract class Entity {
 	 */
 	public Rectangle rect;
 	
+	/***/
+	public Collider collider;
+	
 	/** X coordinate of the centre of the {@link #rect bounding rectangle} */
 	public double x;
 	/** Y coordinate of the centre of the {@link #rect bounding rectangle} */
@@ -42,8 +44,8 @@ public abstract class Entity {
 	 * @param image The image to be used
 	 */
 	protected Entity(int width, int height) {
-
 		rect = new Rectangle(-width / 2, -height / 2, width, height);
+		collider = new RectCollider(rect);
 	}
 
 	/**
@@ -68,37 +70,10 @@ public abstract class Entity {
 	protected void move(double x, double y, Collider[] colliders) {
 		this.x += x;
 		this.y += y;
-		
-
 		rect.setLocation((int) (this.x - rect.getWidth() / 2), (int) (this.y - rect.getHeight() / 2));
-		boolean tl = false;
-		boolean tr = false;
-		boolean bl = false;
-		boolean br = false;
 		
 		for(Collider c: colliders) {
-			if(c.contains(rect.x, rect.y)) {
-				tl = true;
-			}
-			if(c.contains(rect.x+rect.getWidth(), rect.y)) {
-				tr = true;
-			}
-			if(c.contains(rect.x, rect.y+rect.getHeight())) {
-				bl = true;
-			}
-			if(c.contains(rect.x+rect.getWidth(), rect.y+rect.getHeight())) {
-				br = true;
-			}
 		}
-//		if(tl&&tr)
-//			this.y = (this.y - y);
-//		if(bl&&br)
-//			this.y = (this.y - y);
-//		if(tr&&br)
-//			this.x = (this.x - x);
-//		if(tl&&bl)
-//			this.x = (this.x - x);
-		
 
 		rect.setLocation((int) (this.x - rect.getWidth() / 2), (int) (this.y - rect.getHeight() / 2));
 	}

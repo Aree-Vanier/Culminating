@@ -67,7 +67,8 @@ public class GameManager extends Manager {
 				cam.drawLine((int) player.x, (int) player.y, (int) (player.x + offset.getX()),
 						(int) (player.y + offset.getY()), 5, Color.red);
 			}
-			player.rc.getPushback(c);
+			Vector pushback = player.rc.getPushback(c);
+			player.move(pushback.getX(), pushback.getY(), colliders);
 			double[][] intersects = c.getIntersections(player.rc);
 			for (double[] d : intersects) {
 				cam.drawPoint((int) d[0], (int) d[1], 5, Color.BLUE);
