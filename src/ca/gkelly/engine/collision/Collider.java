@@ -33,17 +33,17 @@ public abstract class Collider implements Cloneable{
 	int vertexCount;
 
 	/** The largest x vertex of the collider */
-	double maxX = Double.MIN_VALUE;
+	public double maxX = Double.MIN_VALUE;
 	/** The smallest x vertex of the collider */
-	double minX = Double.MAX_VALUE;
+	public double minX = Double.MAX_VALUE;
 	/** The largest y vertex of the collider */
-	double maxY = Double.MIN_VALUE;
+	public double maxY = Double.MIN_VALUE;
 	/** The smallest y vertex of the collider */
-	double minY = Double.MAX_VALUE;
+	public double minY = Double.MAX_VALUE;
 	/** The bounding width of the collider */
-	double width;
+	public double width;
 	/** The bounding height of the collider */
-	double height;
+	public double height;
 	
 	/**
 	 * Set the collider vertices

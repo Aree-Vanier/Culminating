@@ -58,7 +58,7 @@ public class GameManager extends Manager {
 		for (Collider c : colliders) {
 //		Collider c = colliders[0];
 
-			PolyCollider p2 = player.rc.getCollisionPolygon(c);
+			PolyCollider p2 = player.collider.getCollisionPolygon(c);
 			if (p2 != null) {
 				cam.drawPoly(p2.getPoly(), Color.green);
 				cam.drawPoint((int) p2.x, (int) p2.y, 10, Color.red);
@@ -67,9 +67,7 @@ public class GameManager extends Manager {
 				cam.drawLine((int) player.x, (int) player.y, (int) (player.x + offset.getX()),
 						(int) (player.y + offset.getY()), 5, Color.red);
 			}
-			Vector pushback = player.rc.getPushback(c);
-			player.move(pushback.getX(), pushback.getY(), colliders);
-			double[][] intersects = c.getIntersections(player.rc);
+			double[][] intersects = c.getIntersections(player.collider);
 			for (double[] d : intersects) {
 				cam.drawPoint((int) d[0], (int) d[1], 5, Color.BLUE);
 			}

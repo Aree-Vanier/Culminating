@@ -20,14 +20,11 @@ public abstract class Entity {
 	protected BufferedImage image;
 
 	/**
-	 * Bounding rectangle used for position and collision <br/>
+	 * Bounding collider used for position and collision <br/>
 	 * <strong>Must be defined for functionality</strong>
 	 */
-	public Rectangle rect;
-	
-	/***/
 	public Collider collider;
-	
+
 	/** X coordinate of the centre of the {@link #rect bounding rectangle} */
 	public double x;
 	/** Y coordinate of the centre of the {@link #rect bounding rectangle} */
@@ -37,15 +34,14 @@ public abstract class Entity {
 	private double lastX;
 	/** Previous Y coordinate, used to calculate velocity */
 	private double lastY;
-	
+
 	/**
 	 * Instantiate the entity, assigns image and creates basic rectangle
 	 * 
 	 * @param image The image to be used
 	 */
 	protected Entity(int width, int height) {
-		rect = new Rectangle(-width / 2, -height / 2, width, height);
-		collider = new RectCollider(rect);
+		collider = new RectCollider(-width / 2, -height / 2, width, height);
 	}
 
 	/**
@@ -57,9 +53,9 @@ public abstract class Entity {
 	protected void move(double x, double y) {
 		this.x += x;
 		this.y += y;
-		rect.setLocation((int) (this.x - rect.getWidth() / 2), (int) (this.y - rect.getHeight() / 2));
+		collider.translate(x, y);
 	}
-	
+
 	/**
 	 * Move by the specified distance, with collision detection
 	 * 
@@ -70,12 +66,13 @@ public abstract class Entity {
 	protected void move(double x, double y, Collider[] colliders) {
 		this.x += x;
 		this.y += y;
-		rect.setLocation((int) (this.x - rect.getWidth() / 2), (int) (this.y - rect.getHeight() / 2));
-		
+		collider.translate(x, y);
+
 		for(Collider c: colliders) {
+			Vector pushback = collider.getPushback(c);
+			move(pushback.getX(), pushback.getY());
 		}
 
-		rect.setLocation((int) (this.x - rect.getWidth() / 2), (int) (this.y - rect.getHeight() / 2));
 	}
 
 	/** Call periodically so that {@link #getVelocity()} is accurate */
@@ -103,7 +100,7 @@ public abstract class Entity {
 	public void setPosition(double x, double y) {
 		this.x = x;
 		this.y = y;
-		rect.setLocation((int) (this.x - rect.getWidth() / 2), (int) (this.y - rect.getHeight() / 2));
+		collider.setPosition(x, y);
 	}
 
 	/**
@@ -113,28 +110,18 @@ public abstract class Entity {
 	 */
 	public void render(Camera c) {
 		if(image != null) {
-			c.render(image, getRectX(), getRectY());
+			c.render(image, (int) (collider.x - collider.width / 2), (int) (collider.y - collider.height / 2));
 		}
 	}
 
 	/**
-	 * Check for collision with rectangle
-	 * 
-	 * @param r Rectangle to check against
-	 * @return True if there is a collision
-	 */
-	public boolean collides(Rectangle r) {
-		return rect.intersects(r);
-	}
-
-	/**
-	 * Check for collision with polygon
+	 * Check for collision with {@link Collider}
 	 * 
 	 * @param p Polygon to check against
 	 * @return True if there is a collision
 	 */
-	public boolean collides(Polygon p) {
-		return p.intersects(rect);
+	public boolean collides(Collider c) {
+		return collider.intersects(c);
 	}
 
 	/**
@@ -145,7 +132,7 @@ public abstract class Entity {
 	 * @return True if the point is contained
 	 */
 	public boolean contains(int x, int y) {
-		return rect.contains(x, y);
+		return collider.contains(x, y);
 	}
 
 	/**
@@ -155,7 +142,7 @@ public abstract class Entity {
 	 * @return True if the point is contained
 	 */
 	public boolean contains(Point p) {
-		return contains(p.x, p.y);
+		return collider.contains(p);
 	}
 
 	/** Returns the integer equivalent of X */
@@ -169,32 +156,32 @@ public abstract class Entity {
 	}
 
 	/**
-	 * Get the x position of the {@link #rect bounding rectangle} This will be in
-	 * the top-left corner, as opposed to centered like {@link #x}
+	 * Get the x position of the the top-left corner, as opposed to centered like
+	 * {@link #x}
 	 */
-	public int getRectX() {
-		return rect.x;
+	public double getTopLeftX() {
+		return collider.minX;
 	}
 
 	/**
-	 * Get the y position of the {@link #rect bounding rectangle} <br/>
-	 * This will be in the top-left corner, as opposed to centered like {@link #y}
+	 * Get the y position of the top-left corner, as opposed to centered like
+	 * {@link #y}
 	 */
-	public int getRectY() {
-		return rect.y;
+	public double getTopLeftY() {
+		return collider.minY; // TODO: Fix minY
 	}
 
 	/**
 	 * Get the width of the {@link #rect bounding rectangle} <br/>
 	 */
-	public int getWidth() {
-		return rect.width;
+	public double getWidth() {
+		return collider.width;
 	}
 
 	/**
 	 * Get the height of the {@link #rect bounding rectangle} <br/>
 	 */
-	public int getHeight() {
-		return rect.height;
+	public double getHeight() {
+		return collider.height;
 	}
 }
