@@ -12,7 +12,7 @@ import ca.gkelly.engine.util.Vector;
  * Generic class for creating colliders<br/>
  * has functions to handle generic polygon collision detection
  */
-public abstract class Collider implements Cloneable{
+public abstract class Collider implements Cloneable {
 
 	/** The x coordinate of the middle of the collider */
 	public double x;
@@ -32,19 +32,19 @@ public abstract class Collider implements Cloneable{
 	/** The number of vertices of the collider */
 	int vertexCount;
 
-	/** The largest x vertex of the collider */
-	public double maxX = Double.MIN_VALUE;
-	/** The smallest x vertex of the collider */
-	public double minX = Double.MAX_VALUE;
-	/** The largest y vertex of the collider */
-	public double maxY = Double.MIN_VALUE;
-	/** The smallest y vertex of the collider */
-	public double minY = Double.MAX_VALUE;
+	/** The largest x vertex of the collider, relative to {@link x} */
+	private double maxX = Double.MIN_VALUE;
+	/** The smallest x vertex of the collider, relative to {@link x} */
+	private double minX = Double.MAX_VALUE;
+	/** The largest y vertex of the collider, relative to {@link y} */
+	private double maxY = Double.MIN_VALUE;
+	/** The smallest y vertex of the collider, relative to {@link y} */
+	private double minY = Double.MAX_VALUE;
 	/** The bounding width of the collider */
 	public double width;
 	/** The bounding height of the collider */
 	public double height;
-	
+
 	/**
 	 * Set the collider vertices
 	 * 
@@ -57,16 +57,18 @@ public abstract class Collider implements Cloneable{
 		this.verticesY = verticesY;
 		this.vertexCount = vertexCount;
 
+		localVerticesX = new double[vertexCount];
+		localVerticesY = new double[vertexCount];
+
 		double xSum = 0;
 		double ySum = 0;
+		// Used for determining initial X and Y point
+		double worldMaxX = 0;
+		double worldMinX = 0;
+		double worldMaxY = 0;
+		double worldMinY = 0;
 
 		for(int i = 0;i < vertexCount;i++) {
-			// Get min/max
-			if(verticesX[i] > maxX) maxX = verticesX[i];
-			if(verticesX[i] < minX) minX = verticesX[i];
-			if(verticesY[i] > maxY) maxY = verticesY[i];
-			if(verticesY[i] < minY) minY = verticesY[i];
-
 			// Get values for midpoint
 			if(i == vertexCount - 1) {
 				xSum += (verticesX[i] + verticesX[0]) * (verticesX[i] * verticesY[0] - verticesX[0] * verticesY[i]);
@@ -77,30 +79,45 @@ public abstract class Collider implements Cloneable{
 				ySum += (verticesY[i] + verticesY[i + 1])
 						* (verticesX[i] * verticesY[i + 1] - verticesX[i + 1] * verticesY[i]);
 			}
+
+			// Set local vertices
+			localVerticesX[i] = verticesX[i] - x;
+			localVerticesY[i] = verticesY[i] - y;
+			// Get min/max
+			if(localVerticesX[i] > maxX) {
+				maxX = localVerticesX[i];
+				worldMaxX = verticesX[i];
+			}
+			if(localVerticesX[i] < minX) {
+				minX = localVerticesX[i];
+				worldMinX = verticesX[i];
+			}
+			if(localVerticesY[i] > maxY) {
+				maxY = localVerticesY[i];
+				worldMaxY = verticesY[i];
+			}
+			if(localVerticesY[i] < minY) {
+				minY = localVerticesY[i];
+				worldMinY = verticesY[i];
+			}
 		}
-		//Get rough boundaries
+		// Get rough boundaries
 		width = Math.abs(maxX - minX);
 		height = Math.abs(maxY - minY);
 		radius = Math.sqrt(Math.pow(width / 2, 2) + Math.pow(height / 2, 2));
-	
-		//Get the midpoint
-		this.x = xSum/(6 * getArea());
-		this.y = ySum/(6 * getArea());
-		
-		//If the polygon is too small, the midpoint may be placed at 0,0.
-		//This checks to if that is true, and the midpoint is nowhere near the simple midpoint
-		if(Double.isNaN(this.x)){
-			this.x = (minX+maxX)/2;
-		}
-		if(Double.isNaN(this.y)){
-			this.y = (minY+maxY)/2;
-		}
 
-		localVerticesX = new double[vertexCount];
-		localVerticesY = new double[vertexCount];
-		for(int i = 0;i < vertexCount;i++) {
-			localVerticesX[i] = verticesX[i] - x;
-			localVerticesY[i] = verticesY[i] - x;
+		// Get the midpoint
+		this.x = xSum / (6 * getArea());
+		this.y = ySum / (6 * getArea());
+
+		// If the polygon is too small, the midpoint may be placed at 0,0.
+		// This checks to if that is true, and the midpoint is nowhere near the simple
+		// midpoint
+		if(Double.isNaN(this.x)) {
+			this.x = (worldMinX + worldMaxX) / 2;
+		}
+		if(Double.isNaN(this.y)) {
+			this.y = (worldMinY + worldMaxY) / 2;
 		}
 
 	}
@@ -115,6 +132,26 @@ public abstract class Collider implements Cloneable{
 				sum += verticesX[i] * verticesY[i + 1] - verticesX[i + 1] * verticesY[i];
 		}
 		return 0.5 * sum;
+	}
+
+	/** Get the y value of the top most point */
+	public double getTop() {
+		return maxY + y;
+	}
+
+	/** Get the y value of the bottom most point */
+	public double getBottom() {
+		return minY + y;
+	}
+
+	/** Get the x value of the left most point */
+	public double getLeft() {
+		return maxX + x;
+	}
+
+	/** Get the x value of the right most point */
+	public double getRight() {
+		return minX + x;
 	}
 
 	/**
@@ -324,8 +361,7 @@ public abstract class Collider implements Cloneable{
 		Vector out = new Vector(0, 0);
 		double oldX = x;
 		double oldY = y;
-		
-		
+
 		// If there is an intersection, attempt to remedy, up to MAX_PASS times
 		while((collision = getCollisionPolygon(c)) != null && tries < MAX_TRIES) {
 			tries++;
@@ -343,19 +379,28 @@ public abstract class Collider implements Cloneable{
 				vert = Math.abs(Vector.dot(offset, Vector.UP));
 			}
 
-
-			double deltaX = collision.width * Integer.signum((int) offset.getX());
-			double deltaY = collision.height * Integer.signum((int) offset.getY());
-			Logger.log("Deltas: "+deltaX + '\t' + deltaY);
+			double deltaX = 0, deltaY = 0;
+			// Specaial handling for triangles, as the simple w+h translation wont work
+			if(collision.vertexCount == 3 && false) {
+				Logger.log(Logger.INFO, "THREE");
+				if(Integer.signum((int) offset.getX()) > 0) deltaX = Math.abs(collision.getLeft() - getLeft());
+				if(Integer.signum((int) offset.getX()) < 0) deltaX = -Math.abs(collision.getRight() - getRight());
+				if(Integer.signum((int) offset.getY()) > 0) deltaY = Math.abs(collision.getBottom() - getBottom());
+				if(Integer.signum((int) offset.getY()) < 0) deltaY = -Math.abs(collision.getTop() - getTop());
+			} else {
+				deltaX = collision.width * Integer.signum((int) offset.getX());
+				deltaY = collision.height * Integer.signum((int) offset.getY());
+			}
+			Logger.log("Deltas: " + deltaX + '\t' + deltaY);
 			// If the horizontal is further in, deal with it
 			if(horz > vert) {
 				translate(deltaX, 0);
-				out = Vector.add(out, new Vector(deltaX,0));
+				out = Vector.add(out, new Vector(deltaX, 0));
 			} else {
-				translate(0,deltaY);
-				out = Vector.add(out, new Vector(0,deltaY));
+				translate(0, deltaY);
+				out = Vector.add(out, new Vector(0, deltaY));
 			}
-			Logger.log(out.getString(Vector.STRING_RECTANGULAR));
+			Logger.log(Logger.INFO, out.getString(Vector.STRING_RECTANGULAR));
 		}
 		setPosition(oldX, oldY);
 		return out;

@@ -155,33 +155,4 @@ public abstract class Entity {
 		return (int) y;
 	}
 
-	/**
-	 * Get the x position of the the top-left corner, as opposed to centered like
-	 * {@link #x}
-	 */
-	public double getTopLeftX() {
-		return collider.minX;
-	}
-
-	/**
-	 * Get the y position of the top-left corner, as opposed to centered like
-	 * {@link #y}
-	 */
-	public double getTopLeftY() {
-		return collider.minY; // TODO: Fix minY
-	}
-
-	/**
-	 * Get the width of the {@link #rect bounding rectangle} <br/>
-	 */
-	public double getWidth() {
-		return collider.width;
-	}
-
-	/**
-	 * Get the height of the {@link #rect bounding rectangle} <br/>
-	 */
-	public double getHeight() {
-		return collider.height;
-	}
 }

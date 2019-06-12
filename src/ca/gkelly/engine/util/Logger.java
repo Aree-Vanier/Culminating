@@ -15,7 +15,7 @@ public class Logger {
 	/** Info level enable */
 	public static boolean infoEnabled = true;
 	/** Debug level enable */
-	public static boolean debugEnabled = true;
+	public static boolean debugEnabled = false;
 	/** Error level enable */
 	public static boolean errorEnabled = true;
 
