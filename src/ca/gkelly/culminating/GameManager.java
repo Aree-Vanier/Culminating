@@ -58,7 +58,8 @@ public class GameManager extends Manager {
 		for (Collider c : colliders) {
 //		Collider c = colliders[0];
 
-			PolyCollider p2 = player.collider.getCollisionPolygon(c);
+			Object raw = player.collider.getCollisionPolygon(c)[0];
+			PolyCollider p2 = (raw != null ? (PolyCollider) raw : null);
 			if (p2 != null) {
 				cam.drawPoly(p2.getPoly(), Color.green);
 				cam.drawPoint((int) p2.x, (int) p2.y, 10, Color.red);

@@ -1,12 +1,11 @@
 package ca.gkelly.engine.collision;
 
-import java.awt.Color;
 import java.awt.Point;
-import java.awt.Polygon;
 import java.util.ArrayList;
 
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
+import ca.gkelly.engine.util.Vertex;
 
 /**
  * Generic class for creating colliders<br/>
@@ -63,10 +62,10 @@ public abstract class Collider implements Cloneable {
 		double xSum = 0;
 		double ySum = 0;
 		// Used for determining initial X and Y point
-		double worldMaxX = 0;
-		double worldMinX = 0;
-		double worldMaxY = 0;
-		double worldMinY = 0;
+		double worldMaxX = Double.MIN_VALUE;
+		double worldMinX = Double.MAX_VALUE;
+		double worldMaxY = Double.MIN_VALUE;
+		double worldMinY = Double.MAX_VALUE;
 
 		for(int i = 0;i < vertexCount;i++) {
 			// Get values for midpoint
@@ -79,31 +78,14 @@ public abstract class Collider implements Cloneable {
 				ySum += (verticesY[i] + verticesY[i + 1])
 						* (verticesX[i] * verticesY[i + 1] - verticesX[i + 1] * verticesY[i]);
 			}
-
-			// Set local vertices
-			localVerticesX[i] = verticesX[i] - x;
-			localVerticesY[i] = verticesY[i] - y;
-			// Get min/max
-			if(localVerticesX[i] > maxX) {
-				maxX = localVerticesX[i];
-				worldMaxX = verticesX[i];
-			}
-			if(localVerticesX[i] < minX) {
-				minX = localVerticesX[i];
-				worldMinX = verticesX[i];
-			}
-			if(localVerticesY[i] > maxY) {
-				maxY = localVerticesY[i];
-				worldMaxY = verticesY[i];
-			}
-			if(localVerticesY[i] < minY) {
-				minY = localVerticesY[i];
-				worldMinY = verticesY[i];
-			}
+			if(verticesX[i] > worldMaxX) worldMaxX = verticesX[i];
+			if(verticesX[i] < worldMinX) worldMinX = verticesX[i];
+			if(verticesY[i] > worldMaxY) worldMaxY = verticesY[i];
+			if(verticesY[i] < worldMinY) worldMinY = verticesY[i];
 		}
 		// Get rough boundaries
-		width = Math.abs(maxX - minX);
-		height = Math.abs(maxY - minY);
+		width = Math.abs(worldMaxX - worldMinX);
+		height = Math.abs(worldMaxY - worldMinY);
 		radius = Math.sqrt(Math.pow(width / 2, 2) + Math.pow(height / 2, 2));
 
 		// Get the midpoint
@@ -118,6 +100,26 @@ public abstract class Collider implements Cloneable {
 		}
 		if(Double.isNaN(this.y)) {
 			this.y = (worldMinY + worldMaxY) / 2;
+		}
+
+		// Setup locals
+		for(int i = 0;i < vertexCount;i++) {
+			// Set local vertices
+			localVerticesX[i] = verticesX[i] - x;
+			localVerticesY[i] = verticesY[i] - y;
+			// Get min/max
+			if(localVerticesX[i] > maxX) {
+				maxX = localVerticesX[i];
+			}
+			if(localVerticesX[i] < minX) {
+				minX = localVerticesX[i];
+			}
+			if(localVerticesY[i] > maxY) {
+				maxY = localVerticesY[i];
+			}
+			if(localVerticesY[i] < minY) {
+				minY = localVerticesY[i];
+			}
 		}
 
 	}
@@ -136,22 +138,22 @@ public abstract class Collider implements Cloneable {
 
 	/** Get the y value of the top most point */
 	public double getTop() {
-		return maxY + y;
+		return minY + y;
 	}
 
 	/** Get the y value of the bottom most point */
 	public double getBottom() {
-		return minY + y;
+		return maxY + y;
 	}
 
 	/** Get the x value of the left most point */
 	public double getLeft() {
-		return maxX + x;
+		return minX + x;
 	}
 
 	/** Get the x value of the right most point */
 	public double getRight() {
-		return minX + x;
+		return maxX + x;
 	}
 
 	/**
@@ -294,9 +296,11 @@ public abstract class Collider implements Cloneable {
 	 * Get polygon representing intersection between colliders
 	 * 
 	 * @param c The {@link Collider} to check against
-	 * @return {@link PolyCollider} representing collision area
+	 * @return A object array containing: <br/>
+	 *         - {@link PolyCollider} representing collision area <br/>
+	 *         - The ignored point, should one exist
 	 */
-	public PolyCollider getCollisionPolygon(Collider c) {
+	public Object[] getCollisionPolygon(Collider c) {
 		double[][] intersections = c.getIntersections(this);
 		// Don't bother with any of this if there are no intersections
 		if(intersections.length == 0) return null;
@@ -330,8 +334,10 @@ public abstract class Collider implements Cloneable {
 
 		Logger.log(vertCount);
 
-		ArrayList<Double>[] sorted = getHull(vertX.toArray(new Double[vertX.size()]),
-				vertY.toArray(new Double[vertY.size()]), vertCount);
+		Object[] hullData = getHull(vertX.toArray(new Double[vertX.size()]), vertY.toArray(new Double[vertY.size()]),
+				vertCount);
+		@SuppressWarnings("unchecked") // I know what I return
+		ArrayList<Double>[] sorted = (ArrayList<Double>[]) hullData[0];
 		vertX = sorted[0];
 		vertY = sorted[1];
 		// Update the vertex count
@@ -344,8 +350,7 @@ public abstract class Collider implements Cloneable {
 			xp[i] = (double) vertX.get(i);
 			yp[i] = (double) vertY.get(i);
 		}
-
-		return new PolyCollider(xp, yp, vertCount);
+		return new Object[] { new PolyCollider(xp, yp, vertCount), hullData[1]};
 	}
 
 	/**
@@ -357,13 +362,16 @@ public abstract class Collider implements Cloneable {
 	public Vector getPushback(Collider c) {
 		final int MAX_TRIES = 5; // The maximum nuber of times to attempt full removal TODO move somewhere better
 		int tries = 0;
-		PolyCollider collision;
+		Object[] raw;
+		Collider collision;
 		Vector out = new Vector(0, 0);
 		double oldX = x;
 		double oldY = y;
 
 		// If there is an intersection, attempt to remedy, up to MAX_PASS times
-		while((collision = getCollisionPolygon(c)) != null && tries < MAX_TRIES) {
+		while((raw = getCollisionPolygon(c)) != null && tries < MAX_TRIES) {
+			getCollisionPolygon(c); // TODO: Remove when done debugging, this is just for breakpointing
+			collision = (Collider) raw[0];
 			tries++;
 			Vector offset = new Vector(collision.x - x, collision.y - y);
 			offset.setMag(-offset.getMag());
@@ -379,18 +387,31 @@ public abstract class Collider implements Cloneable {
 				vert = Math.abs(Vector.dot(offset, Vector.UP));
 			}
 
+			Logger.log(Logger.INFO, collision.getRight() + "\t" + collision.getTop() + "\t" + collision.getLeft() + "\t"
+					+ collision.getBottom());
+			Logger.log(Logger.INFO, getRight() + "\t" + getTop() + "\t" + getLeft() + "\t" + getBottom());
+			Logger.log(Logger.INFO, offset.getX() + "," + offset.getY());
 			double deltaX = 0, deltaY = 0;
 			// Specaial handling for triangles, as the simple w+h translation wont work
-			if(collision.vertexCount == 3 && false) {
-				Logger.log(Logger.INFO, "THREE");
-				if(Integer.signum((int) offset.getX()) > 0) deltaX = Math.abs(collision.getLeft() - getLeft());
-				if(Integer.signum((int) offset.getX()) < 0) deltaX = -Math.abs(collision.getRight() - getRight());
-				if(Integer.signum((int) offset.getY()) > 0) deltaY = Math.abs(collision.getBottom() - getBottom());
-				if(Integer.signum((int) offset.getY()) < 0) deltaY = -Math.abs(collision.getTop() - getTop());
-			} else {
-				deltaX = collision.width * Integer.signum((int) offset.getX());
-				deltaY = collision.height * Integer.signum((int) offset.getY());
-			}
+//			if(Integer.signum((int) offset.getX()) > 0) {
+//				deltaX = Math.abs(collision.getRight() - getLeft());
+//				Logger.log(Logger.INFO, "RL " + deltaX);
+//			}
+//			if(Integer.signum((int) offset.getX()) < 0) {
+//				deltaX = -Math.abs(collision.getLeft() - getRight());
+//				Logger.log(Logger.INFO, "LR " + deltaX);
+//			}
+//			if(Integer.signum((int) offset.getY()) > 0) {
+//				deltaY = Math.abs(collision.getBottom() - getTop());
+//				Logger.log(Logger.INFO, "TB " + deltaY);
+//			}
+//			if(Integer.signum((int) offset.getY()) < 0) {
+//				deltaY = -Math.abs(collision.getTop() - getBottom());
+//				Logger.log(Logger.INFO, "BT " + deltaY);
+//			}
+			
+			deltaX = collision.width * Integer.signum((int) offset.getX());
+			deltaY = collision.height * Integer.signum((int) offset.getY());
 			Logger.log("Deltas: " + deltaX + '\t' + deltaY);
 			// If the horizontal is further in, deal with it
 			if(horz > vert) {
@@ -405,6 +426,7 @@ public abstract class Collider implements Cloneable {
 		setPosition(oldX, oldY);
 		return out;
 	}
+	
 
 	@SuppressWarnings("unchecked") // Issues with ArrayList[]s
 	/**
@@ -414,10 +436,15 @@ public abstract class Collider implements Cloneable {
 	 * @param x         The list of x points
 	 * @param y         The list of y points
 	 * @param vertCount The amount of vertices
-	 * @return An ArrayList containing the ordered x and y points that form the hull
+	 * @return
+	 * @return A object array containing: <br/>
+	 *         - {@link PolyCollider} An ArrayList containing the ordered x and y
+	 *         points that form the hull <br/>
+	 *         - {@link Vertex} Representing the ignored point, should one exist
 	 */
-	private ArrayList<Double>[] getHull(Double[] x, Double[] y, int vertCount) {
-		// TODO: Allow for inlets, somehow
+	private Object[] getHull(Double[] x, Double[] y, int vertCount) {
+		Vertex ignored = null;
+
 		ArrayList<Double> vertX = new ArrayList<>();
 		ArrayList<Double> vertY = new ArrayList<>();
 
@@ -529,7 +556,12 @@ public abstract class Collider implements Cloneable {
 			usedVertices.add(bestVertex);
 		}
 
-		return new ArrayList[] { vertX, vertY };
+		if(vertexCount > vertX.size()) {
+			for(int i = 0;i < vertexCount;i++) {
+				if(!usedVertices.contains(i)) ignored = new Vertex(x[i], y[i]);
+			}
+		}
+		return new Object[] { new ArrayList[] { vertX, vertY }, ignored };
 
 	}
 
