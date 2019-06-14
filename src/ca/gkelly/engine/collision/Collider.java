@@ -25,7 +25,6 @@ public abstract class Collider implements Cloneable {
 	/** The y vertices of the collider, relative to {@link x} and {@link y} */
 	Vertex[] localVertices;
 	/** The number of vertices of the collider */
-	int vertexCount;
 
 	/** The largest x vertex of the collider, relative to {@link x} */
 	private double maxX = Double.MIN_VALUE;
@@ -61,9 +60,8 @@ public abstract class Collider implements Cloneable {
 	 */
 	public void setVertices(Vertex[] vertices) {
 		this.vertices = vertices;
-		this.vertexCount = vertices.length;
 
-		localVertices = new Vertex[vertexCount];
+		localVertices = new Vertex[vertices.length];
 
 		double xSum = 0;
 		double ySum = 0;
@@ -73,9 +71,9 @@ public abstract class Collider implements Cloneable {
 		double worldMaxY = Double.MIN_VALUE;
 		double worldMinY = Double.MAX_VALUE;
 
-		for(int i = 0;i < vertexCount;i++) {
+		for(int i = 0;i < vertices.length;i++) {
 			// Get values for midpoint
-			if(i == vertexCount - 1) {
+			if(i == vertices.length - 1) {
 				xSum += (vertices[i].x + vertices[0].x) * (vertices[i].x * vertices[0].y - vertices[0].x * vertices[i].y);
 				ySum += (vertices[i].y + vertices[0].y) * (vertices[i].x * vertices[0].y - vertices[0].x * vertices[i].y);
 			} else {
@@ -109,7 +107,7 @@ public abstract class Collider implements Cloneable {
 		}
 
 		// Setup locals
-		for(int i = 0;i < vertexCount;i++) {
+		for(int i = 0;i < vertices.length;i++) {
 			// Set local vertices
 			localVertices[i].x = vertices[i].x - x;
 			localVertices[i].y = vertices[i].y - y;
@@ -133,8 +131,8 @@ public abstract class Collider implements Cloneable {
 	/** Get the area of the polygon */
 	public double getArea() {
 		double sum = 0;
-		for(int i = 0;i < vertexCount;i++) {
-			if(i == vertexCount - 1)
+		for(int i = 0;i < vertices.length;i++) {
+			if(i == vertices.length - 1)
 				sum += vertices[i].x * vertices[0].y - vertices[0].x * vertices[i].y;
 			else
 				sum += vertices[i].x * vertices[i + 1].y - vertices[i + 1].x * vertices[i].y;
@@ -182,7 +180,7 @@ public abstract class Collider implements Cloneable {
 		this.x = x;
 		this.y = y;
 
-		for(int i = 0;i < vertexCount;i++) {
+		for(int i = 0;i < vertices.length;i++) {
 			vertices[i].x = localVertices[i].x + x;
 			vertices[i].y = localVertices[i].y + y;
 		}
@@ -201,7 +199,7 @@ public abstract class Collider implements Cloneable {
 		int i;
 		int j;
 		boolean result = false;
-		for(i = 0, j = vertexCount - 1;i < vertexCount;j = i++) {
+		for(i = 0, j = vertices.length - 1;i < vertices.length;j = i++) {
 			if((vertices[i].y > y) != (vertices[j].y > y)
 					&& (x < (vertices[j].x - vertices[i].x) * (y - vertices[i].y) / (vertices[j].y - vertices[i].y)
 							+ vertices[i].x)) {
@@ -231,7 +229,7 @@ public abstract class Collider implements Cloneable {
 	 */
 	public boolean intersects(Collider c) {
 		if(!inRange(c)) return false;
-		for(int i = 0;i < c.vertexCount;i++) {
+		for(int i = 0;i < c.vertices.length;i++) {
 			if(contains(c.vertices[i].x, c.vertices[i].y)) {
 				return true;
 			}
@@ -247,7 +245,7 @@ public abstract class Collider implements Cloneable {
 	 */
 	public boolean cointains(Collider c) {
 		if(!inRange(c)) return false;
-		for(int i = 0;i < c.vertexCount;i++) {
+		for(int i = 0;i < c.vertices.length;i++) {
 			if(!contains(c.vertices[i].x, c.vertices[i].y)) {
 				return false;
 			}
@@ -256,34 +254,34 @@ public abstract class Collider implements Cloneable {
 
 	}
 
-	public double[][] getIntersections(Collider c) {
-		if(!inRange(c)) return new double[0][];
-		ArrayList<double[]> out = new ArrayList<>();
+	public Vertex[] getIntersections(Collider c) {
+		if(!inRange(c)) return new Vertex[0];
+		ArrayList<Vertex> out = new ArrayList<>();
 
-		for(int i = 0;i < vertexCount;i++) {
+		for(int i = 0;i < vertices.length;i++) {
 			Edge e1;
-			if(i + 1 < vertexCount) { // If this is just a normal vertex, use the next one
-				e1 = new Edge(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y);
+			if(i + 1 < vertices.length) { // If this is just a normal vertex, use the next one
+				e1 = new Edge(vertices[i], vertices[i+1]);
 			} else { // If this is the last vertex, wrap to the first
-				e1 = new Edge(vertices[i].x, vertices[i].y, vertices[0].x, vertices[0].y);
+				e1 = new Edge(vertices[i], vertices[0]);
 			}
 
-			for(int j = 0;j < c.vertexCount;j++) {
+			for(int j = 0;j < c.vertices.length;j++) {
 				Edge e2;
-				if(j + 1 < c.vertexCount) { // If this is just a normal vertex, use the next one
-					e2 = new Edge(c.vertices[j].x, c.vertices[j].y, c.vertices[j+1].x, c.vertices[j+1].y);
+				if(j + 1 < c.vertices.length) { // If this is just a normal vertex, use the next one
+					e2 = new Edge(c.vertices[j], c.vertices[j+1]);
 				} else { // If this is the last c.vertex, wrap to the first
-					e2 = new Edge(c.vertices[j].x, c.vertices[j].y, c.vertices[0].x, c.vertices[0].y);
+					e2 = new Edge(c.vertices[j], c.vertices[0]);
 				}
 
-				double[] intersect = e1.getIntersect(e2);
+				Vertex intersect = e1.getIntersect(e2);
 				if(intersect != null) {
 					out.add(intersect);
 				}
 			}
 		}
 
-		return out.toArray(new double[out.size()][]);
+		return out.toArray(new Vertex[out.size()]);
 
 	}
 
@@ -291,48 +289,42 @@ public abstract class Collider implements Cloneable {
 	 * Return true if the given point is contained inside the boundary.<br/>
 	 * Override for {@link #contains(double, double)}
 	 * 
-	 * @param p The point to check
+	 * @param v The {@link vertex} to check
 	 * @return true if the point is inside the boundary, false otherwise
 	 */
-	public boolean contains(Point p) {
-		return (contains(p.x, p.y));
+	public boolean contains(Vertex v) {
+		return (contains(v.x, v.y));
 	}
 
 	/**
 	 * Get polygon representing intersection between colliders
 	 * 
 	 * @param c The {@link Collider} to check against
-	 * @return A object array containing: <br/>
-	 *         - {@link PolyCollider} representing collision area <br/>
-	 *         - The ignored point, should one exist
+	 * @return The {@link Hull} representing the collision area
 	 */
-	public Hull getCollisionPolygon(Collider c) {
-		double[][] intersections = c.getIntersections(this);
+	public Hull getCollisionHull(Collider c) {
+		Vertex[] intersections = c.getIntersections(this);
 		// Don't bother with any of this if there are no intersections
 		if(intersections.length == 0) return null;
-		ArrayList<Double> vertX = new ArrayList<Double>();
-		ArrayList<Double> vertY = new ArrayList<Double>();
+		ArrayList<Vertex> vertout = new ArrayList<Vertex>();
 		int vertCount = 0;
-		for(double[] d: intersections) {
-			vertX.add(d[0]);
-			vertY.add(d[1]);
+		for(Vertex v: intersections) {
+			vertout.add(v);
 			vertCount++;
 		}
 		boolean vertexFound = false;
-		for(int i = 0;i < vertexCount;i++) {
+		for(int i = 0;i < this.vertices.length;i++) {
 			if(c.contains(vertices[i].x, vertices[i].y)) {
 //				Logger.log("Point at " + vertices[i].x + "," + vertices[i].y);
-				vertX.add(vertices[i].x);
-				vertY.add(vertices[i].y);
+				vertout.add(new Vertex(vertices[i].x, vertices[i].y));
 				vertCount++;
 				vertexFound = true;
 			}
 		}
-		for(int i = 0;i < c.vertexCount;i++) {
+		for(int i = 0;i < c.vertices.length;i++) {
 			if(contains(c.vertices[i].x, c.vertices[i].y)) {
 //				Logger.log("Point at " + c.vertices[i].x + "," + c.vertices[i].y);
-				vertX.add(c.vertices[i].x);
-				vertY.add(c.vertices[i].y);
+				vertout.add(new Vertex(c.vertices[i].x,c.vertices[i].y));
 				vertCount++;
 				vertexFound = true;
 			}
@@ -340,22 +332,7 @@ public abstract class Collider implements Cloneable {
 
 		Logger.log(vertCount);
 
-		Object[] hullData = getHull(vertX.toArray(new Double[vertX.size()]), vertY.toArray(new Double[vertY.size()]),
-				vertCount);
-		ArrayList<Double>[] sortchromeed = (ArrayList<Double>[]) hullData[0];
-		vertX = sorted[0];
-		vertY = sorted[1];
-		// Update the vertex count
-		vertCount = vertX.size();
-
-		double[] xp = new double[vertCount];
-		double[] yp = new double[vertCount];
-		for(int i = 0;i < vertCount;i++) {
-			// Must be casted from Double to double, then to int
-			xp[i] = (double) vertX.get(i);
-			yp[i] = (double) vertY.get(i);
-		}
-		return new Hull(new PolyCollider(xp, yp, vertCount), hullData[1]);
+		return getHull(vertout.toArray(new Vertex[vertout.size()]));
 	}
 
 	/**
@@ -367,16 +344,16 @@ public abstract class Collider implements Cloneable {
 	public Vector getPushback(Collider c) {
 		final int MAX_TRIES = 5; // The maximum nuber of times to attempt full removal TODO move somewhere better
 		int tries = 0;
-		Object[] raw;
+		Hull raw;
 		Collider collision;
 		Vector out = new Vector(0, 0);
 		double oldX = x;
 		double oldY = y;
 
 		// If there is an intersection, attempt to remedy, up to MAX_PASS times
-		while((raw = getCollisionPolygon(c)) != null && tries < MAX_TRIES) {
-			getCollisionPolygon(c); // TODO: Remove when done debugging, this is just for breakpointing
-			collision = (Collider) raw[0];
+		while((raw = getCollisionHull(c)) != null && tries < MAX_TRIES) {
+			getCollisionHull(c); // TODO: Remove when done debugging, this is just for breakpointing
+			collision = (Collider) raw.poly;
 			tries++;
 			Vector offset = new Vector(collision.x - x, collision.y - y);
 			offset.setMag(-offset.getMag());
@@ -433,68 +410,54 @@ public abstract class Collider implements Cloneable {
 	}
 	
 
-	@SuppressWarnings("unchecked") // Issues with ArrayList[]s
 	/**
 	 * Get the convex hull that contains the passed points, using an approximation
 	 * of the gift wrapping algorithm
 	 * 
-	 * @param x         The list of x points
-	 * @param y         The list of y points
-	 * @param vertCount The amount of vertices
-	 * @return
-	 * @return A object array containing: <br/>
-	 *         - {@link PolyCollider} An ArrayList containing the ordered x and y
-	 *         points that form the hull <br/>
-	 *         - {@link Vertex} Representing the ignored point, should one exist
+	 * @param vertin         The list of  {@link Vertices}
+	 * @return The convex {@link Hull} made from the points
 	 */
-	private Object[] getHull(Double[] x, Double[] y, int vertCount) {
+	private Hull getHull(Vertex[] vertin) {
 		Vertex ignored = null;
 
-		ArrayList<Double> vertX = new ArrayList<>();
-		ArrayList<Double> vertY = new ArrayList<>();
+		ArrayList<Vertex> vertout = new ArrayList<>();
 
 		// Join duplicate points, as they break system
 		// The arrayLists will be used temporarily to avoid excess variables
-		for(int i = 0;i < vertCount;i++) {
+		for(int i = 0;i < vertin.length;i++) {
 			boolean add = true;
-			for(int j = 0;j < vertX.size();j++) {
-				if(vertX.get(j).equals(x[i]) && vertY.get(j).equals(y[i])) add = false;
+			for(int j = 0;j < vertout.size();j++) {
+				if(vertout.get(j).x==vertin[i].x && vertout.get(j).y == vertin[i].y) add = false;
 			}
 			if(add) {
-//				Logger.log(Logger.DEBUG, x[i] + "," + y[i], "\t", true);
-				vertX.add(x[i]);
-				vertY.add(y[i]);
+				vertout.add(vertin[i]);
 			}
 		}
-//		Logger.log(Logger.DEBUG, "", "\n", true);
 
 		// If there are 2 or less vertices, then the rest of the math is redundant
-		if(vertX.size() <= 2) {
-			return (new ArrayList[] { vertX, vertY });
+		if(vertout.size() <= 2) {
+			return (new Hull(vertout, null));
 		}
 
-		// Transfer data back to Double[]s
-		x = vertX.toArray(new Double[vertX.size()]);
-		y = vertY.toArray(new Double[vertY.size()]);
-		vertCount = x.length;
+		// Transfer data back to a Double[]
+		vertin = vertout.toArray(new Vertex[vertout.size()]);
 
-		// Reset the ArrayLists
-		vertX = new ArrayList<>();
-		vertY = new ArrayList<>();
+		// Reset the ArrayList
+		vertout = new ArrayList<>();
 
 		int start = 0; // Index of the leftmost x vertex
+		
 		// Get the leftmost vertex (using top y as tiebreak)
-		for(int i = 0;i < vertCount;i++) {
-			if(x[i] < x[start])
+		for(int i = 0;i < vertin.length;i++) {
+			if(vertin[i].x < vertin[start].x)
 				start = i;
-			else if(x[i].equals(x[start]) && y[i] < y[start]) {
+			else if(vertin[i].x == vertin[start].x && vertin[i].y < vertin[start].y) {
 				start = i;
 			}
 		}
 
 		// Add the initial vertex
-		vertX.add(x[start]);
-		vertY.add(y[start]);
+		vertout.add(vertin[start]);
 
 		int currentVertex = start;
 		int bestVertex = 0;
@@ -504,14 +467,14 @@ public abstract class Collider implements Cloneable {
 
 		// Counter to break loop if iterations exceeeds number of vertices
 		int lim = 0;
-		while(lim < vertCount) {
+		while(lim < vertin.length) {
 			lim++;
 			bestAngle = Double.MAX_VALUE;
-			for(int i = 0;i < vertCount;i++) {
+			for(int i = 0;i < vertin.length;i++) {
 				// Don't pair with itself
 				if(i == currentVertex) continue;
 				// Get the angle from down
-				angle = Vector.DOWN.getAngle(new Vector(x[i] - x[currentVertex], y[i] - y[currentVertex]), false);
+				angle = Vector.DOWN.getAngle(new Vector(vertin[i].x - vertin[currentVertex].x, vertin[i].y - vertin[currentVertex].y), false);
 
 				// Make directly down always 0
 				if(angle == Math.PI * 2) {
@@ -555,24 +518,23 @@ public abstract class Collider implements Cloneable {
 			if(bestVertex == start) // If the best vertex is the initial, then we have completed the hull
 				break;
 			// Make the best vertex the next one in the list
-			vertX.add(x[bestVertex]);
-			vertY.add(y[bestVertex]);
+			vertout.add(vertin[bestVertex]);
 			currentVertex = bestVertex;
 			usedVertices.add(bestVertex);
 		}
 
-		if(vertexCount > vertX.size()) {
-			for(int i = 0;i < vertexCount;i++) {
-				if(!usedVertices.contains(i)) ignored = new Vertex(x[i], y[i]);
+		if(vertices.length > vertout.size()) {
+			for(int i = 0;i < vertices.length;i++) {
+				if(!usedVertices.contains(i)) ignored = vertin[i];
 			}
 		}
-		return new Object[] { new ArrayList[] { vertX, vertY }, ignored };
+		return new Hull (vertout, ignored);
 
 	}
 
 	public String printVertices() {
 		String out = "";
-		for(int i = 0;i < vertexCount;i++) {
+		for(int i = 0;i < vertices.length;i++) {
 			out += "(" + vertices[i].x + "," + vertices[i].y + "), ";
 		}
 		return out;
@@ -583,31 +545,29 @@ public abstract class Collider implements Cloneable {
 class Edge {
 	double slope;
 	double b;
-	double x1, x2, y1, y2;
+	Vertex v1, v2;
 	boolean undefined = false;
 
-	Edge(double x1, double y1, double x2, double y2) {
-		this.x1 = x1;
-		this.x2 = x2;
-		this.y1 = y1;
-		this.y2 = y2;
+	Edge(Vertex v1, Vertex v2) {
+		this.v1 = v1;
+		this.v2 = v2;
 
-		if((x2 - x1) != 0) {// If the line isn't vertical
-			slope = ((y2 - y1) / (x2 - x1));
-			b = y1 - slope * (x1);
+		if((v2.x - v1.x) != 0) {// If the line isn't vertical
+			slope = ((v2.y - v1.y) / (v2.x - v1.x));
+			b = v1.y - slope * (v1.x);
 		} else { // If the line is vertical
 			undefined = true;
 		}
 	}
 
-	public double[] getIntersect(Edge e) {
+	public Vertex getIntersect(Edge e) {
 		double x, y;
 
 		if(undefined) { // If this line is vertical, the x is it's
-			x = x1;
+			x = v1.x;
 			y = e.slope * x + e.b;
 		} else if(e.undefined) { // If the other line is vertical
-			x = e.x1;
+			x = e.v1.x;
 			y = slope * x + b;
 		} else {
 			x = (e.b - b) / (slope - e.slope);
@@ -616,14 +576,20 @@ class Edge {
 
 		// If the point exists within the span of the lines
 		if(inRange(x, y) && e.inRange(x, y)) {
-			return new double[] { x, y };
+			return new Vertex(x,y);
 		} else {
 			return null;
 		}
 
 	}
 
+
 	public boolean inRange(double x, double y) {
-		return ((x <= x1 && x >= x2) || (x >= x1 && x <= x2)) && ((y <= y1 && y >= y2) || (y >= y1 && y <= y2));
+		return ((x <= v1.x && x >= v2.x) || (x >= v1.x && x <= v2.x)) && ((y <= v1.y && y >= v2.y) || (y >= v1.y && y <= v2.y));
 	}
+	
+	public boolean inRange(Vertex v) {
+		return inRange(v.x, v.y);
+	}
+	
 }
