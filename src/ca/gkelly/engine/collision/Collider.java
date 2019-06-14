@@ -1,6 +1,7 @@
 package ca.gkelly.engine.collision;
 
 import java.awt.Point;
+import java.awt.Polygon;
 import java.util.ArrayList;
 
 import ca.gkelly.engine.util.Logger;
@@ -11,7 +12,7 @@ import ca.gkelly.engine.util.Vertex;
  * Generic class for creating colliders<br/>
  * has functions to handle generic polygon collision detection
  */
-public abstract class Collider implements Cloneable {
+public class Collider implements Cloneable {
 
 	/** The x coordinate of the middle of the collider */
 	public double x;
@@ -20,7 +21,7 @@ public abstract class Collider implements Cloneable {
 	/** The distance from the middle to the extremity */
 	double radius;
 
-	/** the vertices of the collider, in world space*/
+	/** the vertices of the collider, in world space */
 	Vertex[] vertices;
 	/** The y vertices of the collider, relative to {@link x} and {@link y} */
 	Vertex[] localVertices;
@@ -39,7 +40,6 @@ public abstract class Collider implements Cloneable {
 	/** The bounding height of the collider */
 	public double height;
 
-	
 	/**
 	 * Set the collider vertices
 	 * 
@@ -47,18 +47,31 @@ public abstract class Collider implements Cloneable {
 	 * @param verticesY   The list of y vertices
 	 * @param vertexCount The amount of vertices in the shape
 	 */
-	public void setVertices(double[] verticesX, double[] verticesY, int vertexCount) {
+	public Collider(double[] verticesX, double[] verticesY, int vertexCount) {
 		Vertex[] vertices = new Vertex[vertexCount];
-		for(int i = 0; i<vertexCount; i++) {
+		for (int i = 0; i < vertexCount; i++) {
 			vertices[i] = new Vertex(verticesX[i], verticesY[i]);
 		}
 		setVertices(vertices);
 	}
-	
+
 	/**
 	 * Set the collider vertices
 	 * 
-	 * @param vertices   The list of {@link Vertex} vertices
+	 * @param vertices The list of {@link Vertex} vertices
+	 */
+	public Collider(Vertex[] vertices) {
+		setVertices(vertices);
+	}
+	
+	public Collider(ArrayList<Vertex> vertices) {
+		setVertices(vertices.toArray(new Vertex[vertices.size()]));
+	}
+
+	/**
+	 * Set the collider vertices
+	 * 
+	 * @param vertices The list of {@link Vertex} vertices
 	 */
 	public void setVertices(Vertex[] vertices) {
 		this.vertices = vertices;
@@ -73,21 +86,27 @@ public abstract class Collider implements Cloneable {
 		double worldMaxY = Double.MIN_VALUE;
 		double worldMinY = Double.MAX_VALUE;
 
-		for(int i = 0;i < vertices.length;i++) {
+		for (int i = 0; i < vertices.length; i++) {
 			// Get values for midpoint
-			if(i == vertices.length - 1) {
-				xSum += (vertices[i].x + vertices[0].x) * (vertices[i].x * vertices[0].y - vertices[0].x * vertices[i].y);
-				ySum += (vertices[i].y + vertices[0].y) * (vertices[i].x * vertices[0].y - vertices[0].x * vertices[i].y);
+			if (i == vertices.length - 1) {
+				xSum += (vertices[i].x + vertices[0].x)
+						* (vertices[i].x * vertices[0].y - vertices[0].x * vertices[i].y);
+				ySum += (vertices[i].y + vertices[0].y)
+						* (vertices[i].x * vertices[0].y - vertices[0].x * vertices[i].y);
 			} else {
-				xSum += (vertices[i].x + vertices[i+1].x)
-						* (vertices[i].x * vertices[i+1].y - vertices[i+1].x * vertices[i].y);
-				ySum += (vertices[i].y + vertices[i+1].y)
-						* (vertices[i].x * vertices[i+1].y - vertices[i+1].x * vertices[i].y);
+				xSum += (vertices[i].x + vertices[i + 1].x)
+						* (vertices[i].x * vertices[i + 1].y - vertices[i + 1].x * vertices[i].y);
+				ySum += (vertices[i].y + vertices[i + 1].y)
+						* (vertices[i].x * vertices[i + 1].y - vertices[i + 1].x * vertices[i].y);
 			}
-			if(vertices[i].x > worldMaxX) worldMaxX = vertices[i].x;
-			if(vertices[i].x < worldMinX) worldMinX = vertices[i].x;
-			if(vertices[i].y > worldMaxY) worldMaxY = vertices[i].y;
-			if(vertices[i].y < worldMinY) worldMinY = vertices[i].y;
+			if (vertices[i].x > worldMaxX)
+				worldMaxX = vertices[i].x;
+			if (vertices[i].x < worldMinX)
+				worldMinX = vertices[i].x;
+			if (vertices[i].y > worldMaxY)
+				worldMaxY = vertices[i].y;
+			if (vertices[i].y < worldMinY)
+				worldMinY = vertices[i].y;
 		}
 		// Get rough boundaries
 		width = Math.abs(worldMaxX - worldMinX);
@@ -101,28 +120,28 @@ public abstract class Collider implements Cloneable {
 		// If the polygon is too small, the midpoint may be placed at 0,0.
 		// This checks to if that is true, and the midpoint is nowhere near the simple
 		// midpoint
-		if(Double.isNaN(this.x)) {
+		if (Double.isNaN(this.x)) {
 			this.x = (worldMinX + worldMaxX) / 2;
 		}
-		if(Double.isNaN(this.y)) {
+		if (Double.isNaN(this.y)) {
 			this.y = (worldMinY + worldMaxY) / 2;
 		}
 
 		// Setup locals
-		for(int i = 0;i < vertices.length;i++) {
+		for (int i = 0; i < vertices.length; i++) {
 			// Set local vertices
 			localVertices[i] = new Vertex(vertices[i].x - x, vertices[i].y - y);
 			// Get min/max
-			if(localVertices[i].x > maxX) {
+			if (localVertices[i].x > maxX) {
 				maxX = localVertices[i].x;
 			}
-			if(localVertices[i].x < minX) {
+			if (localVertices[i].x < minX) {
 				minX = localVertices[i].x;
 			}
-			if(localVertices[i].y > maxY) {
+			if (localVertices[i].y > maxY) {
 				maxY = localVertices[i].y;
 			}
-			if(localVertices[i].y < minY) {
+			if (localVertices[i].y < minY) {
 				minY = localVertices[i].y;
 			}
 		}
@@ -132,13 +151,23 @@ public abstract class Collider implements Cloneable {
 	/** Get the area of the polygon */
 	public double getArea() {
 		double sum = 0;
-		for(int i = 0;i < vertices.length;i++) {
-			if(i == vertices.length - 1)
+		for (int i = 0; i < vertices.length; i++) {
+			if (i == vertices.length - 1)
 				sum += vertices[i].x * vertices[0].y - vertices[0].x * vertices[i].y;
 			else
 				sum += vertices[i].x * vertices[i + 1].y - vertices[i + 1].x * vertices[i].y;
 		}
 		return 0.5 * sum;
+	}
+
+	public Polygon getPoly() {
+		int[] x = new int[vertices.length];
+		int[] y = new int[vertices.length];
+		for (int i = 0; i < vertices.length; i++) {
+			x[i] = (int) vertices[i].x;
+			y[i] = (int) vertices[i].y;
+		}
+		return new Polygon(x, y, vertices.length);
 	}
 
 	/** Get the y value of the top most point */
@@ -181,7 +210,7 @@ public abstract class Collider implements Cloneable {
 		this.x = x;
 		this.y = y;
 
-		for(int i = 0;i < vertices.length;i++) {
+		for (int i = 0; i < vertices.length; i++) {
 			vertices[i].x = localVertices[i].x + x;
 			vertices[i].y = localVertices[i].y + y;
 		}
@@ -200,8 +229,8 @@ public abstract class Collider implements Cloneable {
 		int i;
 		int j;
 		boolean result = false;
-		for(i = 0, j = vertices.length - 1;i < vertices.length;j = i++) {
-			if((vertices[i].y > y) != (vertices[j].y > y)
+		for (i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+			if ((vertices[i].y > y) != (vertices[j].y > y)
 					&& (x < (vertices[j].x - vertices[i].x) * (y - vertices[i].y) / (vertices[j].y - vertices[i].y)
 							+ vertices[i].x)) {
 				result = !result;
@@ -229,9 +258,10 @@ public abstract class Collider implements Cloneable {
 	 * @return True if all any point is contained
 	 */
 	public boolean intersects(Collider c) {
-		if(!inRange(c)) return false;
-		for(int i = 0;i < c.vertices.length;i++) {
-			if(contains(c.vertices[i].x, c.vertices[i].y)) {
+		if (!inRange(c))
+			return false;
+		for (int i = 0; i < c.vertices.length; i++) {
+			if (contains(c.vertices[i].x, c.vertices[i].y)) {
 				return true;
 			}
 		}
@@ -245,9 +275,10 @@ public abstract class Collider implements Cloneable {
 	 * @return True if all points are contained
 	 */
 	public boolean cointains(Collider c) {
-		if(!inRange(c)) return false;
-		for(int i = 0;i < c.vertices.length;i++) {
-			if(!contains(c.vertices[i].x, c.vertices[i].y)) {
+		if (!inRange(c))
+			return false;
+		for (int i = 0; i < c.vertices.length; i++) {
+			if (!contains(c.vertices[i].x, c.vertices[i].y)) {
 				return false;
 			}
 		}
@@ -256,27 +287,28 @@ public abstract class Collider implements Cloneable {
 	}
 
 	public Vertex[] getIntersections(Collider c) {
-		if(!inRange(c)) return new Vertex[0];
+		if (!inRange(c))
+			return new Vertex[0];
 		ArrayList<Vertex> out = new ArrayList<>();
 
-		for(int i = 0;i < vertices.length;i++) {
+		for (int i = 0; i < vertices.length; i++) {
 			Edge e1;
-			if(i + 1 < vertices.length) { // If this is just a normal vertex, use the next one
-				e1 = new Edge(vertices[i], vertices[i+1]);
+			if (i + 1 < vertices.length) { // If this is just a normal vertex, use the next one
+				e1 = new Edge(vertices[i], vertices[i + 1]);
 			} else { // If this is the last vertex, wrap to the first
 				e1 = new Edge(vertices[i], vertices[0]);
 			}
 
-			for(int j = 0;j < c.vertices.length;j++) {
+			for (int j = 0; j < c.vertices.length; j++) {
 				Edge e2;
-				if(j + 1 < c.vertices.length) { // If this is just a normal vertex, use the next one
-					e2 = new Edge(c.vertices[j], c.vertices[j+1]);
+				if (j + 1 < c.vertices.length) { // If this is just a normal vertex, use the next one
+					e2 = new Edge(c.vertices[j], c.vertices[j + 1]);
 				} else { // If this is the last c.vertex, wrap to the first
 					e2 = new Edge(c.vertices[j], c.vertices[0]);
 				}
 
 				Vertex intersect = e1.getIntersect(e2);
-				if(intersect != null) {
+				if (intersect != null) {
 					out.add(intersect);
 				}
 			}
@@ -306,26 +338,27 @@ public abstract class Collider implements Cloneable {
 	public Hull getCollisionHull(Collider c) {
 		Vertex[] intersections = c.getIntersections(this);
 		// Don't bother with any of this if there are no intersections
-		if(intersections.length == 0) return null;
+		if (intersections.length == 0)
+			return null;
 		ArrayList<Vertex> vertout = new ArrayList<Vertex>();
 		int vertCount = 0;
-		for(Vertex v: intersections) {
+		for (Vertex v : intersections) {
 			vertout.add(v);
 			vertCount++;
 		}
 		boolean vertexFound = false;
-		for(int i = 0;i < this.vertices.length;i++) {
-			if(c.contains(vertices[i].x, vertices[i].y)) {
+		for (int i = 0; i < this.vertices.length; i++) {
+			if (c.contains(vertices[i].x, vertices[i].y)) {
 //				Logger.log("Point at " + vertices[i].x + "," + vertices[i].y);
 				vertout.add(new Vertex(vertices[i].x, vertices[i].y));
 				vertCount++;
 				vertexFound = true;
 			}
 		}
-		for(int i = 0;i < c.vertices.length;i++) {
-			if(contains(c.vertices[i].x, c.vertices[i].y)) {
+		for (int i = 0; i < c.vertices.length; i++) {
+			if (contains(c.vertices[i].x, c.vertices[i].y)) {
 //				Logger.log("Point at " + c.vertices[i].x + "," + c.vertices[i].y);
-				vertout.add(new Vertex(c.vertices[i].x,c.vertices[i].y));
+				vertout.add(new Vertex(c.vertices[i].x, c.vertices[i].y));
 				vertCount++;
 				vertexFound = true;
 			}
@@ -352,7 +385,7 @@ public abstract class Collider implements Cloneable {
 		double oldY = y;
 
 		// If there is an intersection, attempt to remedy, up to MAX_PASS times
-		while((raw = getCollisionHull(c)) != null && tries < MAX_TRIES) {
+		while ((raw = getCollisionHull(c)) != null && tries < MAX_TRIES) {
 			getCollisionHull(c); // TODO: Remove when done debugging, this is just for breakpointing
 			collision = (Collider) raw.poly;
 			tries++;
@@ -362,7 +395,7 @@ public abstract class Collider implements Cloneable {
 			double horz = Math.abs(Vector.dot(offset, Vector.LEFT));
 			double vert = Math.abs(Vector.dot(offset, Vector.UP));
 			Logger.log(horz + "\t" + vert);
-			if(Double.isNaN(horz)) {
+			if (Double.isNaN(horz)) {
 				Logger.log("nan");
 				offset.setMag(-offset.getMag());
 				// Get the projections of the offset vector (shorter = further in)
@@ -392,12 +425,12 @@ public abstract class Collider implements Cloneable {
 //				deltaY = -Math.abs(collision.getTop() - getBottom());
 //				Logger.log(Logger.INFO, "BT " + deltaY);
 //			}
-			
+
 			deltaX = collision.width * Integer.signum((int) offset.getX());
 			deltaY = collision.height * Integer.signum((int) offset.getY());
 			Logger.log("Deltas: " + deltaX + '\t' + deltaY);
 			// If the horizontal is further in, deal with it
-			if(horz > vert) {
+			if (horz > vert) {
 				translate(deltaX, 0);
 				out = Vector.add(out, new Vector(deltaX, 0));
 			} else {
@@ -409,10 +442,10 @@ public abstract class Collider implements Cloneable {
 		setPosition(oldX, oldY);
 		return out;
 	}
-	
+
 	public String printVertices() {
 		String out = "";
-		for(int i = 0;i < vertices.length;i++) {
+		for (int i = 0; i < vertices.length; i++) {
 			out += "(" + vertices[i].x + "," + vertices[i].y + "), ";
 		}
 		return out;

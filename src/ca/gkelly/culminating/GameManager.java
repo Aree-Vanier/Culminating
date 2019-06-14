@@ -13,7 +13,6 @@ import ca.gkelly.culminating.resources.PlayerResource;
 import ca.gkelly.engine.Manager;
 import ca.gkelly.engine.collision.Collider;
 import ca.gkelly.engine.collision.Hull;
-import ca.gkelly.engine.collision.PolyCollider;
 import ca.gkelly.engine.graphics.Camera;
 import ca.gkelly.engine.graphics.TileMap;
 import ca.gkelly.engine.loader.Loader;
@@ -61,7 +60,7 @@ public class GameManager extends Manager {
 //		Collider c = colliders[0];
 
 			Hull raw = player.collider.getCollisionHull(c);
-			PolyCollider p2 = raw != null ? raw.poly : null;
+			Collider p2 = raw != null ? raw.poly : null;
 			if (p2 != null) {
 				cam.drawPoly(p2.getPoly(), Color.green);
 				cam.drawPoint((int) p2.x, (int) p2.y, 10, Color.red);

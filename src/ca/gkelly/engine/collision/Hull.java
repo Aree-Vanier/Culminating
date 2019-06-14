@@ -6,14 +6,14 @@ import ca.gkelly.engine.util.Vector;
 import ca.gkelly.engine.util.Vertex;
 
 public class Hull {
-	public PolyCollider poly;
+	public Collider poly;
 	ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 	Vertex extra = null;
 
 	public Hull(ArrayList<Vertex> vertices, Vertex extra) {
 		this.vertices = vertices;
 		this.extra = extra;
-		poly = new PolyCollider(vertices);
+		poly = new Collider(vertices);
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class Hull {
 		}
 		this.vertices = vertout;
 		this.extra = ignored;
-		poly = new PolyCollider(vertout);
+		poly = new Collider(vertout);
 	}
 
 }
