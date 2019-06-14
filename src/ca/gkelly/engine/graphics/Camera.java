@@ -225,7 +225,7 @@ public class Camera {
 	 * @param y The y coordinate, in screen space
 	 * @return The coordinates, in world space
 	 */
-	public int[] worldSpace(int x, int y) {
+	public int[] worldSpace(double x, double y) {
 		int newX = (int) ((x - this.x) / zoom);
 		int newY = (int) ((y - this.y) / zoom);
 

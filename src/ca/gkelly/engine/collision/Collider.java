@@ -54,6 +54,7 @@ public abstract class Collider implements Cloneable {
 		}
 		setVertices(vertices);
 	}
+	
 	/**
 	 * Set the collider vertices
 	 * 
@@ -332,7 +333,7 @@ public abstract class Collider implements Cloneable {
 
 		Logger.log(vertCount);
 
-		return getHull(vertout.toArray(new Vertex[vertout.size()]));
+		return new Hull(vertout.toArray(new Vertex[vertout.size()]));
 	}
 
 	/**
@@ -409,129 +410,6 @@ public abstract class Collider implements Cloneable {
 		return out;
 	}
 	
-
-	/**
-	 * Get the convex hull that contains the passed points, using an approximation
-	 * of the gift wrapping algorithm
-	 * 
-	 * @param vertices         The list of  {@link Vertices}
-	 * @return The convex {@link Hull} made from the points
-	 */
-	private Hull getHull(Vertex[] vertices) {
-		Vertex ignored = null;
-
-		ArrayList<Vertex> vertout = new ArrayList<>();
-
-		// Join duplicate points, as they break system
-		// The arrayLists will be used temporarily to avoid excess variables
-		for(int i = 0;i < vertices.length;i++) {
-			boolean add = true;
-			for(int j = 0;j < vertout.size();j++) {
-				if(vertout.get(j).x==vertices[i].x && vertout.get(j).y == vertices[i].y) add = false;
-			}
-			if(add) {
-				vertout.add(vertices[i]);
-			}
-		}
-
-		// If there are 2 or less vertices, then the rest of the math is redundant
-		if(vertout.size() <= 2) {
-			return (new Hull(vertout, null));
-		}
-
-		// Transfer data back to a Double[]
-		vertices = vertout.toArray(new Vertex[vertout.size()]);
-
-		// Reset the ArrayList
-		vertout = new ArrayList<>();
-
-		int start = 0; // Index of the leftmost x vertex
-		
-		// Get the leftmost vertex (using top y as tiebreak)
-		for(int i = 0;i < vertices.length;i++) {
-			if(vertices[i].x < vertices[start].x)
-				start = i;
-			else if(vertices[i].x == vertices[start].x && vertices[i].y < vertices[start].y) {
-				start = i;
-			}
-		}
-
-		// Add the initial vertex
-		vertout.add(vertices[start]);
-
-		int currentVertex = start;
-		int bestVertex = 0;
-		double bestAngle;
-		double angle;
-		ArrayList<Integer> usedVertices = new ArrayList<>();
-
-		// Counter to break loop if iterations exceeeds number of vertices
-		int lim = 0;
-		while(lim < vertices.length) {
-			lim++;
-			bestAngle = Double.MAX_VALUE;
-			for(int i = 0;i < vertices.length;i++) {
-				// Don't pair with itself
-				if(i == currentVertex) continue;
-				// Get the angle from down
-				angle = Vector.DOWN.getAngle(new Vector(vertices[i].x - vertices[currentVertex].x, vertices[i].y - vertices[currentVertex].y), false);
-
-				// Make directly down always 0
-				if(angle == Math.PI * 2) {
-					angle = 0;
-				}
-
-				// If we are looking from the top-left vertex, we can start from straight up
-				// This prevents us from accidentally selecting a vertex directly below, which
-				// would skip all others
-				if(currentVertex == start) {
-					angle -= Math.PI;
-				}
-
-				// Shift negative values into target range
-				if(angle < 0) {
-					angle += Math.PI * 2;
-				}
-
-				// Don't reuse vertices
-				if(usedVertices.contains(i)) continue;
-
-				// We want preferences towards angles that are to the left, so greater (but not
-				// equal) to pi
-				if(bestAngle > Math.PI && angle < Math.PI && bestAngle != Double.MAX_VALUE) continue;
-
-				// If it's a better angle, save it
-				if(bestAngle < Math.PI && angle > Math.PI) { // Better left than right
-					bestAngle = angle;
-					bestVertex = i;
-				} else if(angle == 0 && bestAngle < Math.PI) { // An angle to the left is better than one straight down
-					bestAngle = angle;
-					bestVertex = i;
-				} else if(bestAngle == 0 && angle > Math.PI) {
-					bestAngle = angle;
-					bestVertex = i;
-				} else if(angle < bestAngle) {
-					bestAngle = angle;
-					bestVertex = i;
-				}
-			}
-			if(bestVertex == start) // If the best vertex is the initial, then we have completed the hull
-				break;
-			// Make the best vertex the next one in the list
-			vertout.add(vertices[bestVertex]);
-			currentVertex = bestVertex;
-			usedVertices.add(bestVertex);
-		}
-
-		if(vertices.length > vertout.size()) {
-			for(int i = 0;i < vertices.length;i++) {
-				if(!usedVertices.contains(i)) ignored = vertices[i];
-			}
-		}
-		return new Hull (vertout, ignored);
-
-	}
-
 	public String printVertices() {
 		String out = "";
 		for(int i = 0;i < vertices.length;i++) {
@@ -540,56 +418,4 @@ public abstract class Collider implements Cloneable {
 		return out;
 	}
 
-}
-
-class Edge {
-	double slope;
-	double b;
-	Vertex v1, v2;
-	boolean undefined = false;
-
-	Edge(Vertex v1, Vertex v2) {
-		this.v1 = v1;
-		this.v2 = v2;
-
-		if((v2.x - v1.x) != 0) {// If the line isn't vertical
-			slope = ((v2.y - v1.y) / (v2.x - v1.x));
-			b = v1.y - slope * (v1.x);
-		} else { // If the line is vertical
-			undefined = true;
-		}
-	}
-
-	public Vertex getIntersect(Edge e) {
-		double x, y;
-
-		if(undefined) { // If this line is vertical, the x is it's
-			x = v1.x;
-			y = e.slope * x + e.b;
-		} else if(e.undefined) { // If the other line is vertical
-			x = e.v1.x;
-			y = slope * x + b;
-		} else {
-			x = (e.b - b) / (slope - e.slope);
-			y = slope * x + b;
-		}
-
-		// If the point exists within the span of the lines
-		if(inRange(x, y) && e.inRange(x, y)) {
-			return new Vertex(x,y);
-		} else {
-			return null;
-		}
-
-	}
-
-
-	public boolean inRange(double x, double y) {
-		return ((x <= v1.x && x >= v2.x) || (x >= v1.x && x <= v2.x)) && ((y <= v1.y && y >= v2.y) || (y >= v1.y && y <= v2.y));
-	}
-	
-	public boolean inRange(Vertex v) {
-		return inRange(v.x, v.y);
-	}
-	
 }
