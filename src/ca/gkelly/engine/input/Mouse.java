@@ -1,11 +1,11 @@
 package ca.gkelly.engine.input;
 
-import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import ca.gkelly.engine.Manager;
+import ca.gkelly.engine.util.Vertex;
 
 /** Class used by {@link Manager}s to handle mouse input */
 public class Mouse implements MouseListener, MouseMotionListener {
@@ -14,7 +14,7 @@ public class Mouse implements MouseListener, MouseMotionListener {
 	public boolean left;
 	public boolean right;
 	public boolean middle;
-	public Point pos = new Point();
+	public Vertex pos = new Vertex(0,0);
 
 	Manager m;
 

@@ -22,6 +22,7 @@ import ca.gkelly.engine.collision.Collider;
 import ca.gkelly.engine.collision.PolyCollider;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Tools;
+import ca.gkelly.engine.util.Vertex;
 
 /** Class used to load and render a .tmx tilemap */
 public class TileMap {
@@ -99,9 +100,9 @@ public class TileMap {
 		map = new int[rows[0].split(",").length][rows.length];
 
 		// Get integers values for each tile
-		for (int y = 0; y < rows.length; y++) {
+		for(int y = 0;y < rows.length;y++) {
 			String[] tiles = rows[y].split(",");
-			for (int x = 0; x < tiles.length; x++) {
+			for(int x = 0;x < tiles.length;x++) {
 				Logger.log(Logger.DEBUG, tiles[x], "", true);
 				map[x][y] = Integer.parseInt(tiles[x]);
 			}
@@ -122,8 +123,8 @@ public class TileMap {
 		image = new BufferedImage(map.length * tileset.tWidth, map[0].length * tileset.tHeight,
 				BufferedImage.TYPE_3BYTE_BGR);
 		Graphics g = image.getGraphics();
-		for (int x = 0; x < map.length; x++) {
-			for (int y = 0; y < map[0].length; y++) {
+		for(int x = 0;x < map.length;x++) {
+			for(int y = 0;y < map[0].length;y++) {
 				try {
 					g.drawImage(tileset.getImage(map[x][y]), x * tileset.tWidth, y * tileset.tHeight, null);
 				} catch (IndexOutOfBoundsException e) {
@@ -138,7 +139,7 @@ public class TileMap {
 
 		Logger.log(Logger.DEBUG, layers.getLength());
 
-		for (int i = 0; i < layers.getLength(); i++) {
+		for(int i = 0;i < layers.getLength();i++) {
 			Element e = (Element) layers.item(i);
 			NodeList polyNodes = (NodeList) e.getElementsByTagName("object");
 			colliders[i] = new ColliderLayer(polyNodes, e.getAttribute("name"));
@@ -168,7 +169,7 @@ public class TileMap {
 
 		// If the values have changed, re-crop the image
 		// Otherwise just use existing
-		if (!(Arrays.equals(lastTL, tl) && Arrays.equals(lastBR, br))) {
+		if(!(Arrays.equals(lastTL, tl) && Arrays.equals(lastBR, br))) {
 			lastTL = tl;
 			lastBR = br;
 //			Logger.log("Re-render");
@@ -200,16 +201,16 @@ public class TileMap {
 	 *         <strong>null</strong> if the layer doesn't exist
 	 */
 	public Polygon getPoly(int x, int y, String layer) {
-		for (ColliderLayer c : colliders) {
-			if (c.name.equals(layer)) {
+		for(ColliderLayer c: colliders) {
+			if(c.name.equals(layer)) {
 				return (c.getPoly(x, y));
 			}
 		}
 		return null;
 	}
-	
+
 	public Collider[] getColliders(String layer) {
-		for (ColliderLayer c : colliders) {
+		for(ColliderLayer c: colliders) {
 			if(c.name.equals(layer)) {
 				return c.polygons;
 			}
@@ -233,7 +234,7 @@ class ColliderLayer {
 	ColliderLayer(NodeList polys, String name) {
 		this.name = name;
 		polygons = new PolyCollider[polys.getLength()];
-		for (int j = 0; j < polys.getLength(); j++) {
+		for(int j = 0;j < polys.getLength();j++) {
 			Element poly = (Element) polys.item(j);
 			int x = Integer.parseInt(poly.getAttribute("x"));
 			int y = Integer.parseInt(poly.getAttribute("y"));
@@ -241,14 +242,13 @@ class ColliderLayer {
 			poly = (Element) poly.getElementsByTagName("polygon").item(0);
 			String[] points = poly.getAttribute("points").split(" ");
 			// Create int[]s for x and y points
-			int[] xPoints = new int[points.length];
-			int[] yPoints = new int[points.length];
-			for (int s = 0; s < points.length; s++) {
-				xPoints[s] = (Integer.parseInt(points[s].split(",")[0])) + x;
-				yPoints[s] = (Integer.parseInt(points[s].split(",")[1])) + y;
+			Vertex[] vertices = new Vertex[points.length];
+			for(int s = 0;s < points.length;s++) {
+				vertices[s] = new Vertex((Integer.parseInt(points[s].split(",")[0])) + x,
+						(Integer.parseInt(points[s].split(",")[1])) + y);
 			}
 			// Create the corresponding polygon
-			polygons[j] = new PolyCollider(xPoints, yPoints, xPoints.length);
+			polygons[j] = new PolyCollider(vertices);
 		}
 	}
 
@@ -259,7 +259,7 @@ class ColliderLayer {
 	 * @param c   The colour to use
 	 */
 	public void render(Camera cam, Color c) {
-		for (PolyCollider collider : polygons) {
+		for(PolyCollider collider: polygons) {
 			cam.drawPoly(collider.getPoly(), c);
 		}
 	}
@@ -273,9 +273,8 @@ class ColliderLayer {
 	 *         <strong>null</strong> if no polygon contains the point
 	 */
 	public Polygon getPoly(int x, int y) {
-		for (PolyCollider p : polygons) {
-			if (p.contains(x, y))
-				return p.getPoly();
+		for(PolyCollider p: polygons) {
+			if(p.contains(x, y)) return p.getPoly();
 		}
 		return null;
 	}
@@ -314,8 +313,8 @@ class Tileset {
 		BufferedImage sheet = ImageIO.read(new File(path.substring(0, path.lastIndexOf("\\")) + "\\" + subPath));
 
 		// Load tiles from image
-		for (int y = 0; y < sheet.getHeight() / tHeight; y++) {
-			for (int x = 0; x < columns; x++) {
+		for(int y = 0;y < sheet.getHeight() / tHeight;y++) {
+			for(int x = 0;x < columns;x++) {
 				Logger.log(Logger.DEBUG, x * tWidth + "\t" + y * tHeight + "\t" + (x + (columns * y)));
 				tiles[x + (columns * y)] = sheet.getSubimage(x * tWidth, y * tHeight, tWidth, tHeight);
 			}

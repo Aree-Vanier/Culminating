@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import ca.gkelly.engine.util.Vertex;
 
 public class Hull {
-	PolyCollider poly;
+	public PolyCollider poly;
 	ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 	Vertex extra = null;
 	

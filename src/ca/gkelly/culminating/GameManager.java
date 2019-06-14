@@ -12,12 +12,14 @@ import ca.gkelly.culminating.resources.Bullet;
 import ca.gkelly.culminating.resources.PlayerResource;
 import ca.gkelly.engine.Manager;
 import ca.gkelly.engine.collision.Collider;
+import ca.gkelly.engine.collision.Hull;
 import ca.gkelly.engine.collision.PolyCollider;
 import ca.gkelly.engine.graphics.Camera;
 import ca.gkelly.engine.graphics.TileMap;
 import ca.gkelly.engine.loader.Loader;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
+import ca.gkelly.engine.util.Vertex;
 
 public class GameManager extends Manager {
 
@@ -58,8 +60,8 @@ public class GameManager extends Manager {
 		for (Collider c : colliders) {
 //		Collider c = colliders[0];
 
-			Object raw = player.collider.getCollisionHull(c)[0];
-			PolyCollider p2 = (raw != null ? (PolyCollider) raw : null);
+			Hull raw = player.collider.getCollisionHull(c);
+			PolyCollider p2 = raw != null ? raw.poly : null;
 			if (p2 != null) {
 				cam.drawPoly(p2.getPoly(), Color.green);
 				cam.drawPoint((int) p2.x, (int) p2.y, 10, Color.red);
@@ -68,9 +70,9 @@ public class GameManager extends Manager {
 				cam.drawLine((int) player.x, (int) player.y, (int) (player.x + offset.getX()),
 						(int) (player.y + offset.getY()), 5, Color.red);
 			}
-			double[][] intersects = c.getIntersections(player.collider);
-			for (double[] d : intersects) {
-				cam.drawPoint((int) d[0], (int) d[1], 5, Color.BLUE);
+			Vertex[] intersects = c.getIntersections(player.collider);
+			for (Vertex v : intersects) {
+				cam.drawPoint((int) v.x, (int) v.y, 5, Color.BLUE);
 			}
 		}
 

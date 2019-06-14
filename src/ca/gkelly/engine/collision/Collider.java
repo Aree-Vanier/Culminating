@@ -50,8 +50,9 @@ public abstract class Collider implements Cloneable {
 	public void setVertices(double[] verticesX, double[] verticesY, int vertexCount) {
 		Vertex[] vertices = new Vertex[vertexCount];
 		for(int i = 0; i<vertexCount; i++) {
-			vertices[i] = new Vertex(vertices[i].x, vertices[i].y);
+			vertices[i] = new Vertex(verticesX[i], verticesY[i]);
 		}
+		setVertices(vertices);
 	}
 	/**
 	 * Set the collider vertices
@@ -109,8 +110,7 @@ public abstract class Collider implements Cloneable {
 		// Setup locals
 		for(int i = 0;i < vertices.length;i++) {
 			// Set local vertices
-			localVertices[i].x = vertices[i].x - x;
-			localVertices[i].y = vertices[i].y - y;
+			localVertices[i] = new Vertex(vertices[i].x - x, vertices[i].y - y);
 			// Get min/max
 			if(localVertices[i].x > maxX) {
 				maxX = localVertices[i].x;
@@ -414,23 +414,23 @@ public abstract class Collider implements Cloneable {
 	 * Get the convex hull that contains the passed points, using an approximation
 	 * of the gift wrapping algorithm
 	 * 
-	 * @param vertin         The list of  {@link Vertices}
+	 * @param vertices         The list of  {@link Vertices}
 	 * @return The convex {@link Hull} made from the points
 	 */
-	private Hull getHull(Vertex[] vertin) {
+	private Hull getHull(Vertex[] vertices) {
 		Vertex ignored = null;
 
 		ArrayList<Vertex> vertout = new ArrayList<>();
 
 		// Join duplicate points, as they break system
 		// The arrayLists will be used temporarily to avoid excess variables
-		for(int i = 0;i < vertin.length;i++) {
+		for(int i = 0;i < vertices.length;i++) {
 			boolean add = true;
 			for(int j = 0;j < vertout.size();j++) {
-				if(vertout.get(j).x==vertin[i].x && vertout.get(j).y == vertin[i].y) add = false;
+				if(vertout.get(j).x==vertices[i].x && vertout.get(j).y == vertices[i].y) add = false;
 			}
 			if(add) {
-				vertout.add(vertin[i]);
+				vertout.add(vertices[i]);
 			}
 		}
 
@@ -440,7 +440,7 @@ public abstract class Collider implements Cloneable {
 		}
 
 		// Transfer data back to a Double[]
-		vertin = vertout.toArray(new Vertex[vertout.size()]);
+		vertices = vertout.toArray(new Vertex[vertout.size()]);
 
 		// Reset the ArrayList
 		vertout = new ArrayList<>();
@@ -448,16 +448,16 @@ public abstract class Collider implements Cloneable {
 		int start = 0; // Index of the leftmost x vertex
 		
 		// Get the leftmost vertex (using top y as tiebreak)
-		for(int i = 0;i < vertin.length;i++) {
-			if(vertin[i].x < vertin[start].x)
+		for(int i = 0;i < vertices.length;i++) {
+			if(vertices[i].x < vertices[start].x)
 				start = i;
-			else if(vertin[i].x == vertin[start].x && vertin[i].y < vertin[start].y) {
+			else if(vertices[i].x == vertices[start].x && vertices[i].y < vertices[start].y) {
 				start = i;
 			}
 		}
 
 		// Add the initial vertex
-		vertout.add(vertin[start]);
+		vertout.add(vertices[start]);
 
 		int currentVertex = start;
 		int bestVertex = 0;
@@ -467,14 +467,14 @@ public abstract class Collider implements Cloneable {
 
 		// Counter to break loop if iterations exceeeds number of vertices
 		int lim = 0;
-		while(lim < vertin.length) {
+		while(lim < vertices.length) {
 			lim++;
 			bestAngle = Double.MAX_VALUE;
-			for(int i = 0;i < vertin.length;i++) {
+			for(int i = 0;i < vertices.length;i++) {
 				// Don't pair with itself
 				if(i == currentVertex) continue;
 				// Get the angle from down
-				angle = Vector.DOWN.getAngle(new Vector(vertin[i].x - vertin[currentVertex].x, vertin[i].y - vertin[currentVertex].y), false);
+				angle = Vector.DOWN.getAngle(new Vector(vertices[i].x - vertices[currentVertex].x, vertices[i].y - vertices[currentVertex].y), false);
 
 				// Make directly down always 0
 				if(angle == Math.PI * 2) {
@@ -518,14 +518,14 @@ public abstract class Collider implements Cloneable {
 			if(bestVertex == start) // If the best vertex is the initial, then we have completed the hull
 				break;
 			// Make the best vertex the next one in the list
-			vertout.add(vertin[bestVertex]);
+			vertout.add(vertices[bestVertex]);
 			currentVertex = bestVertex;
 			usedVertices.add(bestVertex);
 		}
 
 		if(vertices.length > vertout.size()) {
 			for(int i = 0;i < vertices.length;i++) {
-				if(!usedVertices.contains(i)) ignored = vertin[i];
+				if(!usedVertices.contains(i)) ignored = vertices[i];
 			}
 		}
 		return new Hull (vertout, ignored);

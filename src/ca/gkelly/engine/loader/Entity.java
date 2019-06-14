@@ -1,14 +1,12 @@
 package ca.gkelly.engine.loader;
 
-import java.awt.Point;
-import java.awt.Polygon;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import ca.gkelly.engine.collision.Collider;
 import ca.gkelly.engine.collision.RectCollider;
 import ca.gkelly.engine.graphics.Camera;
 import ca.gkelly.engine.util.Vector;
+import ca.gkelly.engine.util.Vertex;
 
 /** Class used to manage basic entities */
 public abstract class Entity {
@@ -138,11 +136,11 @@ public abstract class Entity {
 	/**
 	 * Check if the rectangle contains a point
 	 * 
-	 * @param p The point to check
+	 * @param v The {@link Vertex} to check
 	 * @return True if the point is contained
 	 */
-	public boolean contains(Point p) {
-		return collider.contains(p);
+	public boolean contains(Vertex v) {
+		return collider.contains(v);
 	}
 
 	/** Returns the integer equivalent of X */

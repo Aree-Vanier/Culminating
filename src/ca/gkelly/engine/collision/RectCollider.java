@@ -14,7 +14,7 @@ public class RectCollider extends Collider {
 	}
 
 	public Rectangle getRect() {
-		return new Rectangle((int) verticesX[0], (int) verticesY[0], (int) (width),
+		return new Rectangle((int) vertices[0].x, (int) vertices[0].y, (int) (width),
 				(int) (height));
 	}
 
