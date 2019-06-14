@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Polygon;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -14,8 +13,7 @@ import ca.gkelly.culminating.resources.PlayerResource;
 import ca.gkelly.engine.Manager;
 import ca.gkelly.engine.collision.Collider;
 import ca.gkelly.engine.collision.Hull;
-import ca.gkelly.engine.collision.Poly;
-import ca.gkelly.engine.collision.RectCollider;
+import ca.gkelly.engine.collision.PolyCollider;
 import ca.gkelly.engine.graphics.Camera;
 import ca.gkelly.engine.graphics.TileMap;
 import ca.gkelly.engine.loader.Loader;
@@ -47,9 +45,7 @@ public class GameManager extends Manager {
 	public void render(Graphics g) {
 		cam.begin();
 		player.render(cam);
-		
-		Rectangle r = ((RectCollider) player.collider).getRect();
-		
+
 		for (Bullet b : new ArrayList<Bullet>(bullets)) {
 			b.render(cam);
 		}
@@ -65,7 +61,7 @@ public class GameManager extends Manager {
 //		Collider c = colliders[0];
 
 			Hull raw = player.collider.getCollisionHull(c);
-			Poly p2 = raw != null ? raw.poly : null;
+			PolyCollider p2 = raw != null ? raw.poly : null;
 			if (p2 != null) {
 				cam.drawPoly(p2.getPoly(), Color.green);
 				cam.drawPoint((int) p2.x, (int) p2.y, 10, Color.red);
@@ -79,7 +75,6 @@ public class GameManager extends Manager {
 				cam.drawPoint((int) v.x, (int) v.y, 5, Color.BLUE);
 			}
 		}
-		cam.drawRect(r.x, r.y, r.width, r.height, Color.blue);
 
 //		cam.drawRect(player.getRectX(), player.getRectY(), player.getWidth(), player.getHeight(), Color.blue);
 

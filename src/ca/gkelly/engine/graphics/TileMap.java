@@ -19,6 +19,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import ca.gkelly.engine.collision.Collider;
+import ca.gkelly.engine.collision.PolyCollider;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Tools;
 import ca.gkelly.engine.util.Vertex;
@@ -211,7 +212,7 @@ public class TileMap {
 	public Collider[] getColliders(String layer) {
 		for(ColliderLayer c: colliders) {
 			if(c.name.equals(layer)) {
-				return c.colliders;
+				return c.polygons;
 			}
 		}
 		return null;
@@ -221,7 +222,7 @@ public class TileMap {
 
 /** A class used to handle the colliders on a map */
 class ColliderLayer {
-	public Collider[] colliders;
+	public PolyCollider[] polygons;
 	String name;
 
 	/**
@@ -232,7 +233,7 @@ class ColliderLayer {
 	 */
 	ColliderLayer(NodeList polys, String name) {
 		this.name = name;
-		colliders = new Collider[polys.getLength()];
+		polygons = new PolyCollider[polys.getLength()];
 		for(int j = 0;j < polys.getLength();j++) {
 			Element poly = (Element) polys.item(j);
 			int x = Integer.parseInt(poly.getAttribute("x"));
@@ -247,7 +248,7 @@ class ColliderLayer {
 						(Integer.parseInt(points[s].split(",")[1])) + y);
 			}
 			// Create the corresponding polygon
-			colliders[j] = new Collider(vertices);
+			polygons[j] = new PolyCollider(vertices);
 		}
 	}
 
@@ -258,7 +259,7 @@ class ColliderLayer {
 	 * @param c   The colour to use
 	 */
 	public void render(Camera cam, Color c) {
-		for(Collider collider: colliders) {
+		for(PolyCollider collider: polygons) {
 			cam.drawPoly(collider.getPoly(), c);
 		}
 	}
@@ -272,8 +273,8 @@ class ColliderLayer {
 	 *         <strong>null</strong> if no polygon contains the point
 	 */
 	public Polygon getPoly(int x, int y) {
-		for(Collider c: colliders) {
-			if(c.contains(x, y)) return c.getPoly();
+		for(PolyCollider p: polygons) {
+			if(p.contains(x, y)) return p.getPoly();
 		}
 		return null;
 	}

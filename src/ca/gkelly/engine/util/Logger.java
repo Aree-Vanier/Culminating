@@ -13,7 +13,7 @@ public class Logger {
 	public static final byte ALL = 0b111;
 
 	/** Info level enable */
-	public static boolean infoEnabled = true;
+	public static boolean infoEnabled = false;
 	/** Debug level enable */
 	public static boolean debugEnabled = false;
 	/** Error level enable */

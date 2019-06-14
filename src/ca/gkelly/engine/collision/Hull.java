@@ -6,14 +6,14 @@ import ca.gkelly.engine.util.Vector;
 import ca.gkelly.engine.util.Vertex;
 
 public class Hull {
-	public Poly poly;
+	public PolyCollider poly;
 	ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 	Vertex extra = null;
 
 	public Hull(ArrayList<Vertex> vertices, Vertex extra) {
 		this.vertices = vertices;
 		this.extra = extra;
-		poly = new Poly(vertices);
+		poly = new PolyCollider(vertices);
 	}
 
 	/**
@@ -106,6 +106,7 @@ public class Hull {
 					// We want preferences towards angles that are to the left, so greater (but not
 					// equal) to pi
 					if (bestAngle > Math.PI && angle < Math.PI && bestAngle != Double.MAX_VALUE)
+						continue;
 
 					// If it's a better angle, save it
 					if (bestAngle < Math.PI && angle > Math.PI) { // Better left than right
@@ -140,7 +141,7 @@ public class Hull {
 		}
 		this.vertices = vertout;
 		this.extra = ignored;
-		poly = new Poly(vertout);
+		poly = new PolyCollider(vertout);
 	}
 
 }
