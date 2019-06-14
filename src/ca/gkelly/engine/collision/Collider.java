@@ -20,14 +20,10 @@ public abstract class Collider implements Cloneable {
 	/** The distance from the middle to the extremity */
 	double radius;
 
-	/** The x vertices of the collider, in world space */
-	double[] verticesX;
-	/** The y vertices of the collider, in world space */
-	double[] verticesY;
-	/** The x vertices of the collider, relative to {@link x} */
-	double[] localVerticesX;
-	/** The y vertices of the collider, relative to {@link y} */
-	double[] localVerticesY;
+	/** the vertices of the collider, in world space*/
+	Vertex[] vertices;
+	/** The y vertices of the collider, relative to {@link x} and {@link y} */
+	Vertex[] localVertices;
 	/** The number of vertices of the collider */
 	int vertexCount;
 
@@ -44,6 +40,7 @@ public abstract class Collider implements Cloneable {
 	/** The bounding height of the collider */
 	public double height;
 
+	
 	/**
 	 * Set the collider vertices
 	 * 
@@ -52,12 +49,21 @@ public abstract class Collider implements Cloneable {
 	 * @param vertexCount The amount of vertices in the shape
 	 */
 	public void setVertices(double[] verticesX, double[] verticesY, int vertexCount) {
-		this.verticesX = verticesX;
-		this.verticesY = verticesY;
-		this.vertexCount = vertexCount;
+		Vertex[] vertices = new Vertex[vertexCount];
+		for(int i = 0; i<vertexCount; i++) {
+			vertices[i] = new Vertex(vertices[i].x, vertices[i].y);
+		}
+	}
+	/**
+	 * Set the collider vertices
+	 * 
+	 * @param vertices   The list of {@link Vertex} vertices
+	 */
+	public void setVertices(Vertex[] vertices) {
+		this.vertices = vertices;
+		this.vertexCount = vertices.length;
 
-		localVerticesX = new double[vertexCount];
-		localVerticesY = new double[vertexCount];
+		localVertices = new Vertex[vertexCount];
 
 		double xSum = 0;
 		double ySum = 0;
@@ -70,18 +76,18 @@ public abstract class Collider implements Cloneable {
 		for(int i = 0;i < vertexCount;i++) {
 			// Get values for midpoint
 			if(i == vertexCount - 1) {
-				xSum += (verticesX[i] + verticesX[0]) * (verticesX[i] * verticesY[0] - verticesX[0] * verticesY[i]);
-				ySum += (verticesY[i] + verticesY[0]) * (verticesX[i] * verticesY[0] - verticesX[0] * verticesY[i]);
+				xSum += (vertices[i].x + vertices[0].x) * (vertices[i].x * vertices[0].y - vertices[0].x * vertices[i].y);
+				ySum += (vertices[i].y + vertices[0].y) * (vertices[i].x * vertices[0].y - vertices[0].x * vertices[i].y);
 			} else {
-				xSum += (verticesX[i] + verticesX[i + 1])
-						* (verticesX[i] * verticesY[i + 1] - verticesX[i + 1] * verticesY[i]);
-				ySum += (verticesY[i] + verticesY[i + 1])
-						* (verticesX[i] * verticesY[i + 1] - verticesX[i + 1] * verticesY[i]);
+				xSum += (vertices[i].x + vertices[i+1].x)
+						* (vertices[i].x * vertices[i+1].y - vertices[i+1].x * vertices[i].y);
+				ySum += (vertices[i].y + vertices[i+1].y)
+						* (vertices[i].x * vertices[i+1].y - vertices[i+1].x * vertices[i].y);
 			}
-			if(verticesX[i] > worldMaxX) worldMaxX = verticesX[i];
-			if(verticesX[i] < worldMinX) worldMinX = verticesX[i];
-			if(verticesY[i] > worldMaxY) worldMaxY = verticesY[i];
-			if(verticesY[i] < worldMinY) worldMinY = verticesY[i];
+			if(vertices[i].x > worldMaxX) worldMaxX = vertices[i].x;
+			if(vertices[i].x < worldMinX) worldMinX = vertices[i].x;
+			if(vertices[i].y > worldMaxY) worldMaxY = vertices[i].y;
+			if(vertices[i].y < worldMinY) worldMinY = vertices[i].y;
 		}
 		// Get rough boundaries
 		width = Math.abs(worldMaxX - worldMinX);
@@ -105,20 +111,20 @@ public abstract class Collider implements Cloneable {
 		// Setup locals
 		for(int i = 0;i < vertexCount;i++) {
 			// Set local vertices
-			localVerticesX[i] = verticesX[i] - x;
-			localVerticesY[i] = verticesY[i] - y;
+			localVertices[i].x = vertices[i].x - x;
+			localVertices[i].y = vertices[i].y - y;
 			// Get min/max
-			if(localVerticesX[i] > maxX) {
-				maxX = localVerticesX[i];
+			if(localVertices[i].x > maxX) {
+				maxX = localVertices[i].x;
 			}
-			if(localVerticesX[i] < minX) {
-				minX = localVerticesX[i];
+			if(localVertices[i].x < minX) {
+				minX = localVertices[i].x;
 			}
-			if(localVerticesY[i] > maxY) {
-				maxY = localVerticesY[i];
+			if(localVertices[i].y > maxY) {
+				maxY = localVertices[i].y;
 			}
-			if(localVerticesY[i] < minY) {
-				minY = localVerticesY[i];
+			if(localVertices[i].y < minY) {
+				minY = localVertices[i].y;
 			}
 		}
 
@@ -129,9 +135,9 @@ public abstract class Collider implements Cloneable {
 		double sum = 0;
 		for(int i = 0;i < vertexCount;i++) {
 			if(i == vertexCount - 1)
-				sum += verticesX[i] * verticesY[0] - verticesX[0] * verticesY[i];
+				sum += vertices[i].x * vertices[0].y - vertices[0].x * vertices[i].y;
 			else
-				sum += verticesX[i] * verticesY[i + 1] - verticesX[i + 1] * verticesY[i];
+				sum += vertices[i].x * vertices[i + 1].y - vertices[i + 1].x * vertices[i].y;
 		}
 		return 0.5 * sum;
 	}
@@ -177,8 +183,8 @@ public abstract class Collider implements Cloneable {
 		this.y = y;
 
 		for(int i = 0;i < vertexCount;i++) {
-			verticesX[i] = localVerticesX[i] + x;
-			verticesY[i] = localVerticesY[i] + y;
+			vertices[i].x = localVertices[i].x + x;
+			vertices[i].y = localVertices[i].y + y;
 		}
 	}
 
@@ -196,9 +202,9 @@ public abstract class Collider implements Cloneable {
 		int j;
 		boolean result = false;
 		for(i = 0, j = vertexCount - 1;i < vertexCount;j = i++) {
-			if((verticesY[i] > y) != (verticesY[j] > y)
-					&& (x < (verticesX[j] - verticesX[i]) * (y - verticesY[i]) / (verticesY[j] - verticesY[i])
-							+ verticesX[i])) {
+			if((vertices[i].y > y) != (vertices[j].y > y)
+					&& (x < (vertices[j].x - vertices[i].x) * (y - vertices[i].y) / (vertices[j].y - vertices[i].y)
+							+ vertices[i].x)) {
 				result = !result;
 			}
 		}
@@ -226,7 +232,7 @@ public abstract class Collider implements Cloneable {
 	public boolean intersects(Collider c) {
 		if(!inRange(c)) return false;
 		for(int i = 0;i < c.vertexCount;i++) {
-			if(contains(c.verticesX[i], c.verticesY[i])) {
+			if(contains(c.vertices[i].x, c.vertices[i].y)) {
 				return true;
 			}
 		}
@@ -242,7 +248,7 @@ public abstract class Collider implements Cloneable {
 	public boolean cointains(Collider c) {
 		if(!inRange(c)) return false;
 		for(int i = 0;i < c.vertexCount;i++) {
-			if(!contains(c.verticesX[i], c.verticesY[i])) {
+			if(!contains(c.vertices[i].x, c.vertices[i].y)) {
 				return false;
 			}
 		}
@@ -257,17 +263,17 @@ public abstract class Collider implements Cloneable {
 		for(int i = 0;i < vertexCount;i++) {
 			Edge e1;
 			if(i + 1 < vertexCount) { // If this is just a normal vertex, use the next one
-				e1 = new Edge(verticesX[i], verticesY[i], verticesX[i + 1], verticesY[i + 1]);
+				e1 = new Edge(vertices[i].x, vertices[i].y, vertices[i+1].x, vertices[i+1].y);
 			} else { // If this is the last vertex, wrap to the first
-				e1 = new Edge(verticesX[i], verticesY[i], verticesX[0], verticesY[0]);
+				e1 = new Edge(vertices[i].x, vertices[i].y, vertices[0].x, vertices[0].y);
 			}
 
 			for(int j = 0;j < c.vertexCount;j++) {
 				Edge e2;
 				if(j + 1 < c.vertexCount) { // If this is just a normal vertex, use the next one
-					e2 = new Edge(c.verticesX[j], c.verticesY[j], c.verticesX[j + 1], c.verticesY[j + 1]);
+					e2 = new Edge(c.vertices[j].x, c.vertices[j].y, c.vertices[j+1].x, c.vertices[j+1].y);
 				} else { // If this is the last c.vertex, wrap to the first
-					e2 = new Edge(c.verticesX[j], c.verticesY[j], c.verticesX[0], c.verticesY[0]);
+					e2 = new Edge(c.vertices[j].x, c.vertices[j].y, c.vertices[0].x, c.vertices[0].y);
 				}
 
 				double[] intersect = e1.getIntersect(e2);
@@ -300,7 +306,7 @@ public abstract class Collider implements Cloneable {
 	 *         - {@link PolyCollider} representing collision area <br/>
 	 *         - The ignored point, should one exist
 	 */
-	public Object[] getCollisionPolygon(Collider c) {
+	public Hull getCollisionPolygon(Collider c) {
 		double[][] intersections = c.getIntersections(this);
 		// Don't bother with any of this if there are no intersections
 		if(intersections.length == 0) return null;
@@ -314,19 +320,19 @@ public abstract class Collider implements Cloneable {
 		}
 		boolean vertexFound = false;
 		for(int i = 0;i < vertexCount;i++) {
-			if(c.contains(verticesX[i], verticesY[i])) {
-//				Logger.log("Point at " + verticesX[i] + "," + verticesY[i]);
-				vertX.add(verticesX[i]);
-				vertY.add(verticesY[i]);
+			if(c.contains(vertices[i].x, vertices[i].y)) {
+//				Logger.log("Point at " + vertices[i].x + "," + vertices[i].y);
+				vertX.add(vertices[i].x);
+				vertY.add(vertices[i].y);
 				vertCount++;
 				vertexFound = true;
 			}
 		}
 		for(int i = 0;i < c.vertexCount;i++) {
-			if(contains(c.verticesX[i], c.verticesY[i])) {
-//				Logger.log("Point at " + c.verticesX[i] + "," + c.verticesY[i]);
-				vertX.add(c.verticesX[i]);
-				vertY.add(c.verticesY[i]);
+			if(contains(c.vertices[i].x, c.vertices[i].y)) {
+//				Logger.log("Point at " + c.vertices[i].x + "," + c.vertices[i].y);
+				vertX.add(c.vertices[i].x);
+				vertY.add(c.vertices[i].y);
 				vertCount++;
 				vertexFound = true;
 			}
@@ -336,8 +342,7 @@ public abstract class Collider implements Cloneable {
 
 		Object[] hullData = getHull(vertX.toArray(new Double[vertX.size()]), vertY.toArray(new Double[vertY.size()]),
 				vertCount);
-		@SuppressWarnings("unchecked") // I know what I return
-		ArrayList<Double>[] sorted = (ArrayList<Double>[]) hullData[0];
+		ArrayList<Double>[] sortchromeed = (ArrayList<Double>[]) hullData[0];
 		vertX = sorted[0];
 		vertY = sorted[1];
 		// Update the vertex count
@@ -350,7 +355,7 @@ public abstract class Collider implements Cloneable {
 			xp[i] = (double) vertX.get(i);
 			yp[i] = (double) vertY.get(i);
 		}
-		return new Object[] { new PolyCollider(xp, yp, vertCount), hullData[1]};
+		return new Hull(new PolyCollider(xp, yp, vertCount), hullData[1]);
 	}
 
 	/**
@@ -568,7 +573,7 @@ public abstract class Collider implements Cloneable {
 	public String printVertices() {
 		String out = "";
 		for(int i = 0;i < vertexCount;i++) {
-			out += "(" + verticesX[i] + "," + verticesY[i] + "), ";
+			out += "(" + vertices[i].x + "," + vertices[i].y + "), ";
 		}
 		return out;
 	}
