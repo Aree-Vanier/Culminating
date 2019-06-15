@@ -1,6 +1,5 @@
 package ca.gkelly.engine.graphics;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
@@ -8,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,12 +17,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import ca.gkelly.engine.collision.Collider;
-import ca.gkelly.engine.collision.Collider;
+import ca.gkelly.engine.collision.ColliderLayer;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Tools;
-import ca.gkelly.engine.util.Vertex;
 
-/** Class used to load and render a .tmx tilemap */
+/** Class used to load and render a .tmx tilemap 
+ * @see https://doc.mapeditor.org/en/stable/reference/tmx-map-format/*/
 public class TileMap {
 
 	BufferedImage[] tiles;
@@ -220,115 +218,5 @@ public class TileMap {
 
 }
 
-/** A class used to handle the colliders on a map */
-class ColliderLayer {
-	public Collider[] polygons;
-	String name;
 
-	/**
-	 * Create the collider layer
-	 * 
-	 * @param polys The list of polygons
-	 * @param name  The name to used for identification
-	 */
-	ColliderLayer(NodeList polys, String name) {
-		this.name = name;
-		polygons = new Collider[polys.getLength()];
-		for(int j = 0;j < polys.getLength();j++) {
-			Element poly = (Element) polys.item(j);
-			int x = Integer.parseInt(poly.getAttribute("x"));
-			int y = Integer.parseInt(poly.getAttribute("y"));
 
-			poly = (Element) poly.getElementsByTagName("polygon").item(0);
-			String[] points = poly.getAttribute("points").split(" ");
-			// Create int[]s for x and y points
-			Vertex[] vertices = new Vertex[points.length];
-			for(int s = 0;s < points.length;s++) {
-				vertices[s] = new Vertex((Integer.parseInt(points[s].split(",")[0])) + x,
-						(Integer.parseInt(points[s].split(",")[1])) + y);
-			}
-			// Create the corresponding polygon
-			polygons[j] = new Collider(vertices);
-		}
-	}
-
-	/**
-	 * Draw the polygons to the screen
-	 * 
-	 * @param cam The camera to use
-	 * @param c   The colour to use
-	 */
-	public void render(Camera cam, Color c) {
-		for(Collider collider: polygons) {
-			cam.drawPoly(collider.getPoly(), c);
-		}
-	}
-
-	/**
-	 * Get the polygon that contains the point
-	 * 
-	 * @param x The x value of the point
-	 * @param y The y value of the point
-	 * @return The polygon that contains the point<br/>
-	 *         <strong>null</strong> if no polygon contains the point
-	 */
-	public Polygon getPoly(int x, int y) {
-		for(Collider p: polygons) {
-			if(p.contains(x, y)) return p.getPoly();
-		}
-		return null;
-	}
-}
-
-/** A class used to handle loading and management of a collider layer */
-class Tileset {
-	/** Width of a tile */
-	int tWidth;
-	/** Height of a tile */
-	int tHeight;
-	/** Number of tiles in the set */
-	private int tCount;
-	/** Number of columns in the source */
-	private int columns;
-
-	private BufferedImage[] tiles;
-
-	/**
-	 * Load a tileset
-	 * 
-	 * @param e    The tileset xml element
-	 * @param path The path to the tileset image
-	 */
-	Tileset(Element e, String path) throws IOException {
-		// Get attributes from xml
-		tWidth = Integer.parseInt(e.getAttribute("tilewidth"));
-		tHeight = Integer.parseInt(e.getAttribute("tileheight"));
-		tCount = Integer.parseInt(e.getAttribute("tilecount"));
-		columns = Integer.parseInt(e.getAttribute("columns"));
-//		String subPath = ((Element) e.getFirstChild()).getAttribute("source");
-		String subPath = "tiles.png"; // TODO: Why?
-
-		tiles = new BufferedImage[tCount];
-		Logger.log(path.substring(0, path.lastIndexOf("\\")) + "\\" + subPath);
-		BufferedImage sheet = ImageIO.read(new File(path.substring(0, path.lastIndexOf("\\")) + "\\" + subPath));
-
-		// Load tiles from image
-		for(int y = 0;y < sheet.getHeight() / tHeight;y++) {
-			for(int x = 0;x < columns;x++) {
-				Logger.log(Logger.DEBUG, x * tWidth + "\t" + y * tHeight + "\t" + (x + (columns * y)));
-				tiles[x + (columns * y)] = sheet.getSubimage(x * tWidth, y * tHeight, tWidth, tHeight);
-			}
-		}
-
-	}
-
-	/**
-	 * Get the image associate with a specific tile ID
-	 * 
-	 * @param ID The ID of the tile
-	 * @return The image associated with the selected tile
-	 */
-	BufferedImage getImage(int ID) {
-		return tiles[ID - 1];
-	}
-}
