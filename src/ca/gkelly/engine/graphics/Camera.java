@@ -108,10 +108,20 @@ public class Camera {
 	 * @param c      The color to use
 	 */
 	public void drawPoint(int x, int y, int radius, Color c) {
-		// TODO: Onscreen check
 		g.setColor(c);
 		Vertex pos = screenSpace(x, y);
 		g.fillOval((int) pos.x - radius / 2, (int) pos.y - radius / 2, (int) (radius), (int) (radius));
+	}
+
+	/**
+	 * Draw a {@link Vertex} to the world
+	 * 
+	 * @param v      The {@link Vertex}
+	 * @param radius The radius
+	 * @param c      The color to use
+	 */
+	public void drawPoint(Vertex v, int radius, Color c) {
+		drawPoint((int) v.x, (int) v.y, radius, c);
 	}
 
 	/**
@@ -125,7 +135,6 @@ public class Camera {
 	 * @param c     The color to use
 	 */
 	public void drawLine(int x1, int y1, int x2, int y2, float width, Color c) {
-		// TODO: Onscreen check
 		g.setColor(c);
 		Vertex pos1 = screenSpace(x1, y1);
 		Vertex pos2 = screenSpace(x2, y2);

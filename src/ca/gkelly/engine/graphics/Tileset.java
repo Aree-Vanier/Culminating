@@ -35,8 +35,8 @@ class Tileset {
 		tHeight = Integer.parseInt(e.getAttribute("tileheight"));
 		tCount = Integer.parseInt(e.getAttribute("tilecount"));
 		columns = Integer.parseInt(e.getAttribute("columns"));
-//		String subPath = ((Element) e.getFirstChild()).getAttribute("source");
-		String subPath = "tiles.png"; // TODO: Why?
+		String subPath = ((Element) e.getChildNodes().item(1)).getAttribute("source");
+		Logger.log(subPath);
 
 		tiles = new BufferedImage[tCount];
 		Logger.log(path.substring(0, path.lastIndexOf("\\")) + "\\" + subPath);
