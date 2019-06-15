@@ -179,6 +179,12 @@ public class Logger {
 		return "Error";
 	}
 
+	/**
+	 * Inserts an epoch time to replace <code>{EPOCH}</code> in string
+	 * 
+	 * @param message The message to insert into
+	 * @return The message with times inserted
+	 */
 	private static String insertTime(String message) {
 		String[] stamps = message.split("\\{");
 		message = "";

@@ -184,7 +184,6 @@ public class Collider extends Poly {
 		final int MAX_TRIES = 5; // The maximum nuber of times to attempt full removal TODO move somewhere better
 		int tries = 0;
 		Hull raw;
-		Collider collision;
 		Vector out = new Vector(0, 0);
 		double oldX = x;
 		double oldY = y;

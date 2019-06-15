@@ -4,7 +4,6 @@ import java.awt.Color;
 
 import ca.gkelly.engine.graphics.Camera;
 import ca.gkelly.engine.loader.PhysicsEntity;
-import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
 
 public class Bullet extends PhysicsEntity {

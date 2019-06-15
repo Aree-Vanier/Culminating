@@ -12,6 +12,7 @@ public class Game {
 	static GameManager gm;
 
 	public static void main(String[] args) {
+		@SuppressWarnings("rawtypes")
 		HashMap<String, Class> resources = new HashMap<>();
 		resources.put("player", PlayerResource.class);
 

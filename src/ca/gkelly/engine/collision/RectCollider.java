@@ -1,6 +1,5 @@
 package ca.gkelly.engine.collision;
 
-import ca.gkelly.engine.util.Vector;
 import java.awt.Rectangle;
 
 public class RectCollider extends Collider {

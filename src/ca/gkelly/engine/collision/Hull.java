@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 import ca.gkelly.engine.graphics.Camera;
-import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
 import ca.gkelly.engine.util.Vertex;
 
@@ -126,7 +125,7 @@ public class Hull {
 						bestAngle = angle;
 						bestVertex = i;
 					}
-				} 
+				}
 				// If the best vertex is the initial, then we have completed the hull
 				if (bestVertex == start) {
 					usedVertices.add(start);
@@ -150,15 +149,40 @@ public class Hull {
 		poly = new Collider(vertout);
 	}
 
-	public void render(Camera c) {
+	/**
+	 * Render the hull, as well as midpoint, extra point, vertices and intersection
+	 * poly if passed
+	 * 
+	 * @param c             The camera to render to
+	 * @param intersections The intersection hull, will be ignored if
+	 *                      <code>null</code>
+	 */
+	public void render(Camera c, Hull intersections) {
+		// Draw self
 		c.drawPoly(poly.getPoly(), Color.green);
+		// Draw midpoint
 		c.drawPoint((int) poly.x, (int) poly.y, 10, Color.red);
+		// Draw extra
 		if (extra != null) {
 			c.drawPoint((int) extra.x, (int) extra.y, 10, Color.magenta);
 		}
+		// Draw intersections poly, if it's not just a line
+		if (intersections != null && intersections.vertices.size() > 2) {
+			c.drawPoly(intersections.poly.getPoly(), Color.orange);
+		}
+		// Draw vertices
 		for (Vertex v : vertices) {
 			c.drawPoint((int) v.x, (int) v.y, 5, Color.BLUE);
 		}
+	}
+
+	/**
+	 * Render the hull, as well as midpoint, extra point and vertices
+	 * 
+	 * @param c The camera to render to
+	 */
+	public void render(Camera c) {
+		render(c, null);
 	}
 
 }

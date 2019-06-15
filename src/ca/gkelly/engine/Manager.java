@@ -17,7 +17,7 @@ import ca.gkelly.engine.input.Mouse;
 public abstract class Manager {
 
 	/** Target framerate to be maintained by {@link Window} */
-	public int targetFramerate = 50;
+	public int targetFramerate = 60;
 
 	/** Mouse event handler */
 	public Mouse mouse = new Mouse(this);
@@ -38,7 +38,7 @@ public abstract class Manager {
 
 	/** Called when the window is closed */
 	public void onClose() {
-		// By default call interrupt
+		// By default call normal end code
 		end();
 	}
 

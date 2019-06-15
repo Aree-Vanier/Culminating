@@ -1,6 +1,5 @@
 package ca.gkelly.engine.loader;
 
-import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
 
 /** Entity with simple physics calculations */

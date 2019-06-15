@@ -18,7 +18,6 @@ import ca.gkelly.engine.graphics.TileMap;
 import ca.gkelly.engine.loader.Loader;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
-import ca.gkelly.engine.util.Vertex;
 
 public class GameManager extends Manager {
 
@@ -49,30 +48,28 @@ public class GameManager extends Manager {
 			b.render(cam);
 		}
 
-		int[] pos = cam.worldSpace(mouse.pos.x, mouse.pos.y);
-		Polygon p = map.getPoly(pos[0], pos[1], "colliders");
-		if (p != null) { 
-			cam.drawPoly(p, Color.black);
-		}
+		// This code is used to demonstrate collision detection polygons, it does not
+		// affect positions
+		{
+			int[] pos = cam.worldSpace(mouse.pos.x, mouse.pos.y);
+			Polygon p = map.getPoly(pos[0], pos[1], "colliders");
+			if (p != null) {
+				cam.drawPoly(p, Color.black);
+			}
 
-		Collider[] colliders = map.getColliders("colliders");
-		for (Collider c : colliders) {
-			Hull raw = player.collider.getCollisionHull(c);
-			Collider p2 = raw != null ? raw.poly : null;
-			if (p2 != null) {
-				raw.render(cam);
-				Vector offset = new Vector(p2.x - player.x, p2.y - player.y);
-				offset.setMag(-offset.getMag());
-				cam.drawLine((int) player.x, (int) player.y, (int) (player.x + offset.getX()),
-						(int) (player.y + offset.getY()), 5, Color.red);
-				if (new Hull(player.collider.getIntersections(c)).poly.getPoly() != null)
-					cam.drawPoly(new Hull(player.collider.getIntersections(c)).poly.getPoly(), Color.ORANGE);
+			Collider[] colliders = map.getColliders("colliders");
+			for (Collider c : colliders) {
+				Hull raw = player.collider.getCollisionHull(c);
+				Collider p2 = raw != null ? raw.poly : null;
+				if (p2 != null) {
+					raw.render(cam, new Hull(player.collider.getIntersections(c)));
+					Vector offset = new Vector(p2.x - player.x, p2.y - player.y);
+					offset.setMag(-offset.getMag());
+					cam.drawLine((int) player.x, (int) player.y, (int) (player.x + offset.getX()),
+							(int) (player.y + offset.getY()), 5, Color.red);
+				}
 			}
 		}
-
-//		cam.drawRect(player.getRectX(), player.getRectY(), player.getWidth(), player.getHeight(), Color.blue);
-
-//		cam.drawPoint((int) player.rc.x, (int) player.rc.y, 15, Color.pink);
 
 		cam.finish(g);
 		Logger.newLine(Logger.DEBUG);
@@ -86,7 +83,6 @@ public class GameManager extends Manager {
 			Polygon p = map.getPoly(b.getX(), b.getY(), "colliders");
 			if (p != null) {
 				bullets.remove(b);
-//				cam.drawPoly(p, Color.blue);
 			}
 		}
 
@@ -115,8 +111,6 @@ public class GameManager extends Manager {
 	@Override
 	public void onMousePress(MouseEvent e) {
 		int[] pos = cam.worldSpace(e.getX(), e.getY());
-		// Logger.log(Logger.INFO, new
-		// Vector(pos[0]-player.x,pos[1]-player.y).normalized().getString(Vector.STRING_RECTANGULAR));
 
 		if (player.contains(pos[0], pos[1])) {
 			return;

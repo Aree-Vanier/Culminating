@@ -14,11 +14,17 @@ import ca.gkelly.engine.util.Logger;
  * Paint, Update and Input will be passed to the active {@link Manager}
  */
 public class Window extends JFrame implements Runnable {
+
+	private static final long serialVersionUID = -6870685415903486630L;
+	
+	/**The active {@link Manager} */
 	Manager manager;
 	Thread t;
 	boolean runThread = true;
 
+	/**Deltatime for {@link #t}, can be referenced by any class*/
 	public static int deltaTime = 0;
+	/**Used for calculating {@link #deltaTime}*/
 	private long lastTime = 0;
 
 	/**

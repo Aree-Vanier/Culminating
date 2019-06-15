@@ -1,10 +1,7 @@
 package ca.gkelly.culminating;
 
-import java.awt.Shape;
-
 import ca.gkelly.culminating.resources.PlayerResource;
 import ca.gkelly.engine.collision.Collider;
-import ca.gkelly.engine.collision.RectCollider;
 import ca.gkelly.engine.loader.Entity;
 
 public class Player extends Entity{

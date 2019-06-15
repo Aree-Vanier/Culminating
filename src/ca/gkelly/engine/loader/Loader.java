@@ -1,6 +1,5 @@
 package ca.gkelly.engine.loader;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,8 +7,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javax.imageio.ImageIO;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -19,13 +16,15 @@ import ca.gkelly.engine.util.Logger;
 /**
  * Class used to load .json resource files, and create {@link Resource}
  * instances out of them <br/>
- * All functions are to be used in a static context
+ * All functions are to be used in a static context<br/>
+ * To use, {@link #init(String, HashMap) init()} must be called
  */
 public class Loader {
 
 	/** A collection of all loaded resources, sorted by type */
 	public static HashMap<String, ArrayList<Resource>> resources = new HashMap<>();
 	/** A collection of all resource classes, sorted by type */
+	@SuppressWarnings("rawtypes")
 	public static HashMap<String, Class> resourceClasses = new HashMap<>();
 
 	/** The directory containing the resource files */
@@ -45,6 +44,7 @@ public class Loader {
 	 *                </strong>&nbsp<code>.class</code> of
 	 *                {@link Resource}-extending class
 	 */
+	@SuppressWarnings("rawtypes")
 	public static void init(String dir, HashMap<String, Class> classes) {
 		directory = dir;
 		resourceClasses = classes;
@@ -138,6 +138,7 @@ public class Loader {
 
 		Logger.log("Type: " + type);
 		// Get the class to instantiate
+		@SuppressWarnings("unchecked")
 		Class<Resource> c = resourceClasses.get(type);
 		Logger.log(c.getSimpleName());
 		// Create instance
