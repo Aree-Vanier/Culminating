@@ -1,10 +1,9 @@
-package ca.gkelly.engine.input;
+package ca.gkelly.engine;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import ca.gkelly.engine.Manager;
 import ca.gkelly.engine.util.Vertex;
 
 /** Class used by {@link Manager}s to handle mouse input */
@@ -70,8 +69,8 @@ public class Mouse implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		pos.x = e.getX();
-		pos.y = e.getY();
+		pos.x = e.getX() - m.getWindow().getInsets().left;
+		pos.y = e.getY() - m.getWindow().getInsets().top;
 		m.onMouseMoved(e);
 	}
 

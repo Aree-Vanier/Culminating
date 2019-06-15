@@ -1,12 +1,14 @@
-package ca.gkelly.engine.graphics;
+package ca.gkelly.engine;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
-import ca.gkelly.engine.Manager;
+import ca.gkelly.engine.graphics.DisplayMode;
 import ca.gkelly.engine.util.Logger;
 
 /**
@@ -23,9 +25,12 @@ public class Window extends JFrame implements Runnable {
 	Manager manager;
 	Thread update;
 	boolean runThread = true;
+	
+	/**Backbuffer used for rendering*/
+	BufferedImage buffer;
 
 	/**Deltatime for {@link #update}, can be referenced by any class*/
-	public static int deltaTime = 0;
+	public int deltaTime = 0;
 	/**Used for calculating {@link #deltaTime}*/
 	private long lastTime = 0;
 
@@ -95,8 +100,9 @@ public class Window extends JFrame implements Runnable {
 	public void paint(Graphics g) {
 		if (manager == null)
 			return;
-
-		manager.render(g);
+		buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+		manager.render((Graphics2D) buffer.getGraphics());
+		g.drawImage(buffer, getInsets().left, getInsets().top, null);
 	}
 
 	@Override
@@ -126,7 +132,7 @@ public class Window extends JFrame implements Runnable {
 			removeMouseMotionListener(manager.mouse);
 			removeKeyListener(manager.keyboard);
 		}
-		m.init(getContentPane());
+		m.init(this);
 		manager = m;
 		addMouseListener(manager.mouse);
 		addMouseMotionListener(manager.mouse);

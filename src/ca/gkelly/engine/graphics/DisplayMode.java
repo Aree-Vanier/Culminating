@@ -1,5 +1,7 @@
 package ca.gkelly.engine.graphics;
 
+import ca.gkelly.engine.Window;
+
 /** Class to be used to set display options for {@link Window}s */
 public class DisplayMode {
 	/** Indicates that the window will be windowed */

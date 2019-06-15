@@ -1,13 +1,14 @@
-package ca.gkelly.culminating;
+package ca.gkelly.culminating.managers;
 
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import ca.gkelly.culminating.Player;
 import ca.gkelly.culminating.resources.Bullet;
 import ca.gkelly.culminating.resources.PlayerResource;
 import ca.gkelly.engine.Manager;
@@ -38,7 +39,7 @@ public class GameManager extends Manager {
 	}
 
 	@Override
-	public void render(Graphics g) {
+	public void render(Graphics2D g) {
 		cam.begin();
 		player.render(cam);
 

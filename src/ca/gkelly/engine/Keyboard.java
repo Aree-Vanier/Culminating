@@ -1,10 +1,8 @@
-package ca.gkelly.engine.input;
+package ca.gkelly.engine;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-
-import ca.gkelly.engine.Manager;
 
 /** Class used by {@link Manager}s to handle keyboard input */
 public class Keyboard implements KeyListener {
@@ -31,7 +29,7 @@ public class Keyboard implements KeyListener {
 		if (!pressed.contains(e.getKeyCode())) {
 			pressed.add(e.getKeyCode());
 		}
-		m.onKeyPressed(e);
+		m.onKeyPress(e);
 	}
 
 	@Override
@@ -39,7 +37,7 @@ public class Keyboard implements KeyListener {
 		if (pressed.contains(e.getKeyCode())) {
 			pressed.remove((Object) e.getKeyCode());
 		}
-		m.onKeyReleased(e);
+		m.onKeyRelease(e);
 	}
 
 }

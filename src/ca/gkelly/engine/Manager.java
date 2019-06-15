@@ -1,13 +1,9 @@
 package ca.gkelly.engine;
 
 import java.awt.Container;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-
-import ca.gkelly.engine.graphics.Window;
-import ca.gkelly.engine.input.Keyboard;
-import ca.gkelly.engine.input.Mouse;
 
 /**
  * Abstract class to be extended to create managers<br/>
@@ -18,62 +14,76 @@ public abstract class Manager {
 
 
 	/** Mouse event handler */
-	public Mouse mouse = new Mouse(this);
+	protected Mouse mouse = new Mouse(this);
 	/** Keyboard event handler */
-	public Keyboard keyboard = new Keyboard(this);
-
+	protected Keyboard keyboard = new Keyboard(this);
+	/** Parent window instance, cannot be changed without re-init*/
+	private Window window;
+	
 	/** Called when the manager is initialized 
-	 * @param container The container parent*/
-	public abstract void init(Container container);
+	 * @param w The {@link Window} parent*/
+	public final void init(Window w) {
+		window = w;
+		init(w.getContentPane());
+	}
+	
+	/** The overridden initializer, called by {@link #init(Window)}
+	 * @param c The container parent*/
+	protected abstract void init(Container c);
 
 	/** Called periodically by {@link Window} on main thread */
-	public abstract void render(Graphics g);
+	protected abstract void render(Graphics2D g);
 
 	/** Called periodically by {@link Window} on separate thread */
-	public abstract void update();
+	protected abstract void update();
 
 	/** Called when the manager is ended */
-	public abstract void end();
+	protected abstract void end();
 
 	/** Called when the window is closed */
-	public void onClose() {
+	protected void onClose() {
 		// By default call normal end code
 		end();
 	}
 
 	/** Called by {@link #mouse} when the mouse is clicked */
-	public void onClick(MouseEvent e) {
+	protected void onClick(MouseEvent e) {
 
 	}
 
 	/** Called by {@link #mouse} when the mouse is pressed */
-	public void onMousePress(MouseEvent e) {
+	protected void onMousePress(MouseEvent e) {
 
 	}
 
 	/** Called by {@link #mouse} when the mouse is released */
-	public void onMouseRelease(MouseEvent e) {
+	protected void onMouseRelease(MouseEvent e) {
 
 	}
 
 	/** Called by {@link #mouse} when the mouse is moved */
-	public void onMouseMoved(MouseEvent e) {
+	protected void onMouseMoved(MouseEvent e) {
 
 	}
 
 	/** Called by {@link #keyboard} when a key is typed */
-	public void onKeyTyped(KeyEvent e) {
+	protected void onKeyTyped(KeyEvent e) {
 
 	}
 
 	/** Called by {@link #keyboard} when a key is pressed */
-	public void onKeyPressed(KeyEvent e) {
+	protected void onKeyPress(KeyEvent e) {
 
 	}
 
 	/** Called by {@link #keyboard} when a key is released */
-	public void onKeyReleased(KeyEvent e) {
+	protected void onKeyRelease(KeyEvent e) {
 
 	}
 
+	/** Get the parent window instance*/
+	public final Window getWindow() {
+		return window;
+	}
+	
 }
