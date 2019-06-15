@@ -61,7 +61,7 @@ public class ColliderLayer {
 	 * @return The polygon that contains the point<br/>
 	 *         <strong>null</strong> if no polygon contains the point
 	 */
-	public Polygon getPoly(int x, int y) {
+	public Polygon getPoly(double x, double y) {
 		for(Collider p: polygons) {
 			if(p.contains(x, y)) return p.getPoly();
 		}

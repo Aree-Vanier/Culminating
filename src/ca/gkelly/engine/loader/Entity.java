@@ -129,10 +129,10 @@ public abstract class Entity {
 	 * @param y Y position of point
 	 * @return True if the point is contained
 	 */
-	public boolean contains(int x, int y) {
+	public boolean contains(double x, double y) {
 		return collider.contains(x, y);
 	}
-
+	
 	/**
 	 * Check if the rectangle contains a point
 	 * 

@@ -18,6 +18,7 @@ import ca.gkelly.engine.graphics.TileMap;
 import ca.gkelly.engine.loader.Loader;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
+import ca.gkelly.engine.util.Vertex;
 
 public class GameManager extends Manager {
 
@@ -51,8 +52,8 @@ public class GameManager extends Manager {
 		// This code is used to demonstrate collision detection polygons, it does not
 		// affect positions
 		{
-			int[] pos = cam.worldSpace(mouse.pos.x, mouse.pos.y);
-			Polygon p = map.getPoly(pos[0], pos[1], "colliders");
+			Vertex pos = cam.worldSpace(mouse.pos);
+			Polygon p = map.getPoly(pos.x, pos.y, "colliders");
 			if (p != null) {
 				cam.drawPoly(p, Color.black);
 			}
@@ -110,13 +111,13 @@ public class GameManager extends Manager {
 
 	@Override
 	public void onMousePress(MouseEvent e) {
-		int[] pos = cam.worldSpace(e.getX(), e.getY());
+		Vertex pos = cam.worldSpace(e.getX(), e.getY());
 
-		if (player.contains(pos[0], pos[1])) {
+		if (player.contains(pos)) {
 			return;
 		}
 
-		Vector vel = new Vector(pos[0] - player.x, pos[1] - player.y);
+		Vector vel = new Vector(pos.x - player.x, pos.y - player.y);
 		vel.setMag(3);
 
 		Vector extraVel = player.getVelocity().getAtAngle(vel.getAngle(false));

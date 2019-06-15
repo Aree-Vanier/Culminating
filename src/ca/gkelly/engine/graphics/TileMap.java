@@ -5,7 +5,6 @@ import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,9 +19,14 @@ import ca.gkelly.engine.collision.Collider;
 import ca.gkelly.engine.collision.ColliderLayer;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Tools;
+import ca.gkelly.engine.util.Vertex;
 
-/** Class used to load and render a .tmx tilemap 
- * @see <a href="https://doc.mapeditor.org/en/stable/reference/tmx-map-format/">https://doc.mapeditor.org/en/stable/reference/tmx-map-format/</a>*/
+/**
+ * Class used to load and render a .tmx tilemap
+ * 
+ * @see <a href=
+ *      "https://doc.mapeditor.org/en/stable/reference/tmx-map-format/">https://doc.mapeditor.org/en/stable/reference/tmx-map-format/</a>
+ */
 public class TileMap {
 
 	BufferedImage[] tiles;
@@ -42,9 +46,9 @@ public class TileMap {
 	BufferedImage cameraRender;
 
 	/** Last Top-Left position of camera, used to check need for re-render */
-	int[] lastTL = { -1, -1 };
+	Vertex lastTL = new Vertex(-1, -1);
 	/** Last Bottom-Right position of camera, used to check need for re-render */
-	int[] lastBR = { -1, -1 };
+	Vertex lastBR = new Vertex(-1, -1);
 
 	/** Polygon collider layers used on map */
 	ColliderLayer[] colliders;
@@ -98,9 +102,9 @@ public class TileMap {
 		map = new int[rows[0].split(",").length][rows.length];
 
 		// Get integers values for each tile
-		for(int y = 0;y < rows.length;y++) {
+		for (int y = 0; y < rows.length; y++) {
 			String[] tiles = rows[y].split(",");
-			for(int x = 0;x < tiles.length;x++) {
+			for (int x = 0; x < tiles.length; x++) {
 				Logger.log(Logger.DEBUG, tiles[x], "", true);
 				map[x][y] = Integer.parseInt(tiles[x]);
 			}
@@ -121,8 +125,8 @@ public class TileMap {
 		image = new BufferedImage(map.length * tileset.tWidth, map[0].length * tileset.tHeight,
 				BufferedImage.TYPE_3BYTE_BGR);
 		Graphics g = image.getGraphics();
-		for(int x = 0;x < map.length;x++) {
-			for(int y = 0;y < map[0].length;y++) {
+		for (int x = 0; x < map.length; x++) {
+			for (int y = 0; y < map[0].length; y++) {
 				try {
 					g.drawImage(tileset.getImage(map[x][y]), x * tileset.tWidth, y * tileset.tHeight, null);
 				} catch (IndexOutOfBoundsException e) {
@@ -137,7 +141,7 @@ public class TileMap {
 
 		Logger.log(Logger.DEBUG, layers.getLength());
 
-		for(int i = 0;i < layers.getLength();i++) {
+		for (int i = 0; i < layers.getLength(); i++) {
 			Element e = (Element) layers.item(i);
 			NodeList polyNodes = (NodeList) e.getElementsByTagName("object");
 			colliders[i] = new ColliderLayer(polyNodes, e.getAttribute("name"));
@@ -149,33 +153,32 @@ public class TileMap {
 	/**
 	 * Get a cropped version of the map
 	 * 
-	 * @param tl Top-left
-	 * @param br Bottom-right
+	 * @param tl Top-left {@link Vertex}
+	 * @param br Bottom-right {@link Vertex}
 	 * 
 	 * @return Array containing:<br/>
 	 *         - <strong>[0]:</strong> {@link BufferedImage} Cropped Image<br/>
 	 *         - <strong>[1]:</strong> {@link int} X offset<br/>
 	 *         - <strong>[2]:</strong> {@link int} Y offset
 	 */
-	public Object[] render(int[] tl, int[] br) {
+	public Object[] render(Vertex tl, Vertex br) {
 
 		int margin = 10;
-		tl[0] = Tools.minmax(tl[0], margin, image.getWidth() - margin);
-		br[0] = Tools.minmax(br[0], margin, image.getWidth() - margin);
-		tl[1] = Tools.minmax(tl[1], margin, image.getHeight() - margin);
-		br[1] = Tools.minmax(br[1], margin, image.getHeight() - margin);
+		tl.x = Tools.minmax(tl.x, margin, image.getWidth() - margin);
+		br.x = Tools.minmax(br.x, margin, image.getWidth() - margin);
+		tl.y = Tools.minmax(tl.y, margin, image.getHeight() - margin);
+		br.y = Tools.minmax(br.y, margin, image.getHeight() - margin);
 
 		// If the values have changed, re-crop the image
 		// Otherwise just use existing
-		if(!(Arrays.equals(lastTL, tl) && Arrays.equals(lastBR, br))) {
+		if (!(lastTL.equals(tl) && lastBR.equals(br))) {
 			lastTL = tl;
 			lastBR = br;
-//			Logger.log("Re-render");
-			cameraRender = image.getSubimage(tl[0] - margin, tl[1] - margin, br[0] - tl[0] + 2 * margin,
-					br[1] - tl[1] + 2 * margin);
+			cameraRender = image.getSubimage((int) (tl.x - margin), (int) (tl.y - margin),
+					(int) (br.x - tl.x + 2 * margin), (int) (br.y - tl.y + 2 * margin));
 		}
 
-		return (new Object[] { cameraRender, tl[0] - margin, tl[1] - margin });
+		return (new Object[] { cameraRender, tl.x - margin, tl.y - margin });
 	}
 
 	/**
@@ -198,18 +201,36 @@ public class TileMap {
 	 *         <strong>null</strong> if no polygon contains the point
 	 *         <strong>null</strong> if the layer doesn't exist
 	 */
-	public Polygon getPoly(int x, int y, String layer) {
-		for(ColliderLayer c: colliders) {
-			if(c.name.equals(layer)) {
+	public Polygon getPoly(double x, double y, String layer) {
+		for (ColliderLayer c : colliders) {
+			if (c.name.equals(layer)) {
 				return (c.getPoly(x, y));
 			}
 		}
 		return null;
 	}
 
+	/**
+	 * Get the polygon that contains the {@link Vertex}, from the selected layer
+	 * 
+	 * @param v     The {@link Vertex} to check
+	 * @param layer The layer to search
+	 * @return The polygon that contains the point<br/>
+	 *         <strong>null</strong> if no polygon contains the point
+	 *         <strong>null</strong> if the layer doesn't exist
+	 */
+	public Polygon getPoly(Vertex v, String layer) {
+		for (ColliderLayer c : colliders) {
+			if (c.name.equals(layer)) {
+				return (c.getPoly(v.x, v.y));
+			}
+		}
+		return null;
+	}
+
 	public Collider[] getColliders(String layer) {
-		for(ColliderLayer c: colliders) {
-			if(c.name.equals(layer)) {
+		for (ColliderLayer c : colliders) {
+			if (c.name.equals(layer)) {
 				return c.polygons;
 			}
 		}
@@ -217,6 +238,3 @@ public class TileMap {
 	}
 
 }
-
-
-

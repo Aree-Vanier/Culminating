@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Tools;
+import ca.gkelly.engine.util.Vertex;
 
 /**
  * 2D world-space camera, allows translation and zoom<br/>
@@ -77,7 +78,7 @@ public class Camera {
 
 		// Render the map
 		Object[] mapRender = map.render(worldSpace(0, 0), worldSpace(buffer.getWidth(), buffer.getHeight()));
-		render((BufferedImage) mapRender[0], (int) mapRender[1], (int) mapRender[2]);
+		render((BufferedImage) mapRender[0], (int) (double) mapRender[1], (int) (double) mapRender[2]);
 //		Logger.log("Map rendered in {REND}");
 
 	}
@@ -90,11 +91,11 @@ public class Camera {
 	 * @param y     The y position of the image
 	 */
 	public void render(BufferedImage image, int x, int y) {
-		if(onScreen(x, y, image.getWidth(), image.getHeight())) {
+		if (onScreen(x, y, image.getWidth(), image.getHeight())) {
 //			drawRect(x, y, x + image.getWidth(), x + image.getHeight(), Color.PINK);
-			int[] pos = screenSpace(x, y);
+			Vertex pos = screenSpace(x, y);
 			g.drawImage(image.getScaledInstance((int) (image.getWidth() * zoom), (int) (image.getHeight() * zoom),
-					Image.SCALE_FAST), pos[0], pos[1], null);
+					Image.SCALE_FAST), (int) pos.x, (int) pos.y, null);
 		}
 	}
 
@@ -109,8 +110,8 @@ public class Camera {
 	public void drawPoint(int x, int y, int radius, Color c) {
 		// TODO: Onscreen check
 		g.setColor(c);
-		int[] pos = screenSpace(x, y);
-		g.fillOval(pos[0] - radius / 2, pos[1] - radius / 2, (int) (radius), (int) (radius));
+		Vertex pos = screenSpace(x, y);
+		g.fillOval((int) pos.x - radius / 2, (int) pos.y - radius / 2, (int) (radius), (int) (radius));
 	}
 
 	/**
@@ -126,12 +127,24 @@ public class Camera {
 	public void drawLine(int x1, int y1, int x2, int y2, float width, Color c) {
 		// TODO: Onscreen check
 		g.setColor(c);
-		int[] pos1 = screenSpace(x1, y1);
-		int[] pos2 = screenSpace(x2, y2);
+		Vertex pos1 = screenSpace(x1, y1);
+		Vertex pos2 = screenSpace(x2, y2);
 		Stroke oldStroke = g.getStroke();
 		g.setStroke(new BasicStroke((float) (width * zoom)));
-		g.drawLine(pos1[0], pos1[1], pos2[0], pos2[1]);
+		g.drawLine((int) pos1.x, (int) pos1.y, (int) pos2.x, (int) pos2.y);
 		g.setStroke(oldStroke);
+	}
+
+	/**
+	 * Draw a line to the world
+	 * 
+	 * @param v1    The start {@link Vertex}
+	 * @param v2    The stop {@link Vertex}
+	 * @param width The width of the line
+	 * @param c     The color to use
+	 */
+	public void drawLine(Vertex v1, Vertex v2, float width, Color c) {
+		drawLine((int) v1.x, (int) v1.y, (int) v2.x, (int) v2.y, width, c);
 	}
 
 	/**
@@ -144,10 +157,10 @@ public class Camera {
 	 * @param c      The color to use
 	 */
 	public void drawRect(int x, int y, int width, int height, Color c) {
-		if(onScreen(x, y, width, height)) {
+		if (onScreen(x, y, width, height)) {
 			g.setColor(c);
-			int[] pos = screenSpace(x, y);
-			g.drawRect(pos[0], pos[1], (int) (width * zoom), (int) (height * zoom));
+			Vertex pos = screenSpace(x, y);
+			g.drawRect((int) pos.x, (int) pos.y, (int) (width * zoom), (int) (height * zoom));
 		}
 	}
 
@@ -164,12 +177,13 @@ public class Camera {
 
 		boolean onScreen = false;
 
-		for(int i = 0;i < nPoints;i++) {
-			if(onScreen(xPoints[i], yPoints[i])) onScreen = true;
-			xPoints[i] = screenSpace(p.xpoints[i], p.ypoints[i])[0];
-			yPoints[i] = screenSpace(p.xpoints[i], p.ypoints[i])[1];
+		for (int i = 0; i < nPoints; i++) {
+			if (onScreen(xPoints[i], yPoints[i]))
+				onScreen = true;
+			xPoints[i] = (int) screenSpace(p.xpoints[i], p.ypoints[i]).x;
+			yPoints[i] = (int) screenSpace(p.xpoints[i], p.ypoints[i]).y;
 		}
-		if(onScreen) {
+		if (onScreen) {
 			g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 175));
 			g.fillPolygon(xPoints, yPoints, nPoints);
 			g.setColor(c);
@@ -187,8 +201,6 @@ public class Camera {
 	public void finish(Graphics g) {
 		g.drawImage(buffer.getSubimage(0, 0, window.getWidth(), window.getHeight()), 0, 0, null);
 		Logger.log("Rendered in {REND}");
-//		Logger.log(x + "," + y + "  " + buffer.getWidth() + "," + buffer.getHeight() + "  " + worldSpace(centreX, 0)[0]
-//				+ "," + worldSpace(0, centreY)[1] + "  " + zoom);
 	}
 
 	/**
@@ -200,7 +212,7 @@ public class Camera {
 	 * @param height Rectangle height
 	 * @return Whether the rectangle is on the screen
 	 */
-	private boolean onScreen(int x, int y, int width, int height) {
+	public boolean onScreen(int x, int y, int width, int height) {
 		return onScreen(x, y) || onScreen(x + width, y) || onScreen(x, y + height) || onScreen(x + width, y + height);
 	}
 
@@ -211,10 +223,18 @@ public class Camera {
 	 * @param y Y value of the point
 	 * @return Whether the point is on the screen
 	 */
-	private boolean onScreen(int x, int y) {
-//		Logger.log(minX + "\t" + maxX + "\t" + minY + "\t" + maxY);
-//		Logger.log(screenSpace(x, 0)[0] + "\t" + screenSpace(0, y)[1]);
+	public boolean onScreen(double x, double y) {
 		return (x > minX || x < maxX) && (y > minY || y < minY);
+	}
+
+	/**
+	 * Determines if a {@link Vertex} is on the screen
+	 * 
+	 * @param v The {@link Vertex} to check
+	 * @return Whether the {@link Vertex} is on the screen
+	 */
+	public boolean onScreen(Vertex v) {
+		return onScreen(v.x, v.y);
 	}
 
 	/**
@@ -224,11 +244,18 @@ public class Camera {
 	 * @param y The y coordinate, in screen space
 	 * @return The coordinates, in world space
 	 */
-	public int[] worldSpace(double x, double y) {
-		int newX = (int) ((x - this.x) / zoom);
-		int newY = (int) ((y - this.y) / zoom);
+	public Vertex worldSpace(double x, double y) {
+		return new Vertex((x - this.x) / zoom, (y - this.y) / zoom);
+	}
 
-		return new int[] { newX, newY };
+	/**
+	 * Project a {@link Vertex} to World space
+	 * 
+	 * @param v The {@link Vertex}, in screen space
+	 * @return The coordinates, in world space
+	 */
+	public Vertex worldSpace(Vertex v) {
+		return worldSpace(v.x, v.y);
 	}
 
 	/**
@@ -238,11 +265,18 @@ public class Camera {
 	 * @param y The y coordinate, in world space
 	 * @return The coordinates, in screen space
 	 */
-	public int[] screenSpace(int x, int y) {
-		int newX = (int) (x * zoom) + this.x;
-		int newY = (int) (y * zoom) + this.y;
+	public Vertex screenSpace(double x, double y) {
+		return new Vertex((x * zoom) + this.x, (y * zoom) + this.y);
+	}
 
-		return new int[] { newX, newY };
+	/***
+	 * Unproject a {@link Vertex} to window space
+	 * 
+	 * @param v The {@link Vertex}, in world space
+	 * @return The coordinates, in screen space
+	 */
+	public Vertex screenSpace(Vertex v) {
+		return screenSpace(v.x, v.y);
 	}
 
 	/** Get the width of the camera buffer */
@@ -286,7 +320,8 @@ public class Camera {
 	public void setPosition(int x, int y, double zoom) {
 		rawX = x;
 		rawY = y;
-		if(buffer == null) return;
+		if (buffer == null)
+			return;
 		this.zoom = Tools.minmax(zoom, MIN_ZOOM, MAX_ZOOM);
 		this.x = (int) ((-x + buffer.getWidth() / 2));
 		this.y = (int) ((-y + buffer.getHeight() / 2));
