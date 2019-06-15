@@ -94,6 +94,12 @@ public class Collider extends Poly {
 
 	}
 
+	/**
+	 * Get all intersections between the edges of colliders
+	 * 
+	 * @param c The other collider to check against
+	 * @return An array containing the intersection {@link Vertex Vertices}
+	 */
 	public Vertex[] getIntersections(Collider c) {
 		if (!inRange(c))
 			return new Vertex[0];
@@ -199,6 +205,7 @@ public class Collider extends Poly {
 			tries++;
 			Vector offset = new Vector(collision.x - x, collision.y - y);
 			offset.setMag(-offset.getMag());
+
 			// Get the projections of the offset vector (shorter = further in)
 			double horz = Math.abs(Vector.dot(offset, Vector.LEFT));
 			double vert = Math.abs(Vector.dot(offset, Vector.UP));
@@ -216,26 +223,36 @@ public class Collider extends Poly {
 			Logger.log(Logger.INFO, getRight() + "\t" + getTop() + "\t" + getLeft() + "\t" + getBottom());
 			Logger.log(Logger.INFO, offset.getX() + "," + offset.getY());
 			double deltaX = 0, deltaY = 0;
-			// Specaial handling for triangles, as the simple w+h translation wont work
-//			if(Integer.signum((int) offset.getX()) > 0) {
-//				deltaX = Math.abs(collision.getRight() - getLeft());
-//				Logger.log(Logger.INFO, "RL " + deltaX);
-//			}
-//			if(Integer.signum((int) offset.getX()) < 0) {
-//				deltaX = -Math.abs(collision.getLeft() - getRight());
-//				Logger.log(Logger.INFO, "LR " + deltaX);
-//			}
-//			if(Integer.signum((int) offset.getY()) > 0) {
-//				deltaY = Math.abs(collision.getBottom() - getTop());
-//				Logger.log(Logger.INFO, "TB " + deltaY);
-//			}
-//			if(Integer.signum((int) offset.getY()) < 0) {
-//				deltaY = -Math.abs(collision.getTop() - getBottom());
-//				Logger.log(Logger.INFO, "BT " + deltaY);
-//			}
+			// Prevent cases where the extra point doesn't exist, but the normal code also
+			// won't work
+			if (raw.extra == null && collision.vertices.length % 2 == 1) {
+				return new Vector(0, 0);
+			}
+			// Specaial handling for hulls with a unused midpoint, as the simple w/h
+			// translation wont work
+			if (raw.extra != null) {
+				Vertex v = raw.extra;
+				if (Integer.signum((int) offset.getX()) > 0) {
+					deltaX = Math.abs(collision.getLeft() - v.x);
+					Logger.log(Logger.INFO, "RL " + deltaX);
+				}
+				if (Integer.signum((int) offset.getX()) < 0) {
+					deltaX = -Math.abs(collision.getRight() - v.x);
+					Logger.log(Logger.INFO, "LR " + deltaX);
+				}
+				if (Integer.signum((int) offset.getY()) > 0) {
+					deltaY = Math.abs(collision.getTop() - v.y);
+					Logger.log(Logger.INFO, "TB " + deltaY);
+				}
+				if (Integer.signum((int) offset.getY()) < 0) {
+					deltaY = -Math.abs(collision.getBottom() - v.y);
+					Logger.log(Logger.INFO, "BT " + deltaY);
+				}
+			} else {
 
-			deltaX = collision.width * Integer.signum((int) offset.getX());
-			deltaY = collision.height * Integer.signum((int) offset.getY());
+				deltaX = collision.width * Integer.signum((int) offset.getX());
+				deltaY = collision.height * Integer.signum((int) offset.getY());
+			}
 			Logger.log("Deltas: " + deltaX + '\t' + deltaY);
 			// If the horizontal is further in, deal with it
 			if (horz > vert) {
@@ -248,7 +265,7 @@ public class Collider extends Poly {
 			Logger.log(Logger.INFO, out.getString(Vector.STRING_RECTANGULAR));
 		}
 		setPosition(oldX, oldY);
-		return out;
+		return new Vector(out.getX(), out.getY());
 	}
 
 }

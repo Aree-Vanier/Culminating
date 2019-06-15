@@ -60,16 +60,11 @@ public class GameManager extends Manager {
 			Hull raw = player.collider.getCollisionHull(c);
 			Collider p2 = raw != null ? raw.poly : null;
 			if (p2 != null) {
-				cam.drawPoly(p2.getPoly(), Color.green);
-				cam.drawPoint((int) p2.x, (int) p2.y, 10, Color.red);
+				raw.render(cam);
 				Vector offset = new Vector(p2.x-player.x, p2.y-player.y);
 				offset.setMag(-offset.getMag());
 				cam.drawLine((int) player.x, (int) player.y, (int) (player.x + offset.getX()),
 						(int) (player.y + offset.getY()), 5, Color.red);
-			}
-			Vertex[] intersects = c.getIntersections(player.collider);
-			for (Vertex v : intersects) {
-				cam.drawPoint((int) v.x, (int) v.y, 5, Color.BLUE);
 			}
 		}
 

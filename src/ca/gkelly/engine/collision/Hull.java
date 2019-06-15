@@ -1,7 +1,9 @@
 package ca.gkelly.engine.collision;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
+import ca.gkelly.engine.graphics.Camera;
 import ca.gkelly.engine.util.Vector;
 import ca.gkelly.engine.util.Vertex;
 
@@ -142,6 +144,17 @@ public class Hull {
 		this.vertices = vertout;
 		this.extra = ignored;
 		poly = new Collider(vertout);
+	}
+
+	public void render(Camera c) {
+		c.drawPoly(poly.getPoly(), Color.green);
+		c.drawPoint((int) poly.x, (int) poly.y, 10, Color.red);
+		for (Vertex v : vertices) {
+			c.drawPoint((int) v.x, (int) v.y, 5, Color.BLUE);
+		}
+		if (extra != null) {
+			c.drawPoint((int) extra.x, (int) extra.y, 10, Color.magenta);
+		}
 	}
 
 }

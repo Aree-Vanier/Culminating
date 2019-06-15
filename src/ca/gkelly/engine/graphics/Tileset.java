@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
 import ca.gkelly.engine.util.Logger;
 
 /** A class used to handle loading and management of a collider layer */
-public class Tileset {
+class Tileset {
 	/** Width of a tile */
 	int tWidth;
 	/** Height of a tile */
