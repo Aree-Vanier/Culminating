@@ -57,8 +57,6 @@ public class GameManager extends Manager {
 
 		Collider[] colliders = map.getColliders("colliders");
 		for (Collider c : colliders) {
-//		Collider c = colliders[0];
-
 			Hull raw = player.collider.getCollisionHull(c);
 			Collider p2 = raw != null ? raw.poly : null;
 			if (p2 != null) {
