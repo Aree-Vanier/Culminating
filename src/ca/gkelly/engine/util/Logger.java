@@ -13,9 +13,9 @@ public class Logger {
 	public static final byte ALL = 0b111;
 
 	/** Info level enable */
-	public static boolean infoEnabled = false;
+	public static boolean infoEnabled = true;
 	/** Debug level enable */
-	public static boolean debugEnabled = false;
+	public static boolean debugEnabled = true;
 	/** Error level enable */
 	public static boolean errorEnabled = true;
 

@@ -27,9 +27,6 @@ public class Hull {
 	 * @return The convex {@link Hull} made from the points
 	 */
 	public Hull(Vertex[] vertices) {
-		if(vertices.length > 4) {
-			Logger.log("break");
-		}
 		Vertex ignored = null;
 
 		ArrayList<Vertex> vertout = new ArrayList<>();
