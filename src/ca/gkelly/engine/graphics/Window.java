@@ -16,13 +16,15 @@ import ca.gkelly.engine.util.Logger;
 public class Window extends JFrame implements Runnable {
 
 	private static final long serialVersionUID = -6870685415903486630L;
-	
+
+	/** Target framerate to be maintained by {@link Window} */
+	public int targetFramerate = 60;
 	/**The active {@link Manager} */
 	Manager manager;
-	Thread t;
+	Thread update;
 	boolean runThread = true;
 
-	/**Deltatime for {@link #t}, can be referenced by any class*/
+	/**Deltatime for {@link #update}, can be referenced by any class*/
 	public static int deltaTime = 0;
 	/**Used for calculating {@link #deltaTime}*/
 	private long lastTime = 0;
@@ -31,16 +33,17 @@ public class Window extends JFrame implements Runnable {
 	 * Create a new window, a {@link Manager} will need to be set for functionality
 	 * 
 	 * @param d {@link DisplayMode} specifying window dimensions and mode
+	 * @param m {@link Manager} to be used
 	 */
-	public Window(DisplayMode d) {
+	public Window(DisplayMode d, Manager m) {
 		if (d.mode == DisplayMode.WINDOWED) {
 			setSize(d.width, d.height);
 		}
 
 		setVisible(true);
 
-		t = new Thread(this);
-		t.start();
+		update = new Thread(this);
+		update.start();
 
 		// Set up this way to call manager.close() before closing
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -77,17 +80,15 @@ public class Window extends JFrame implements Runnable {
 			public void windowActivated(WindowEvent e) {
 			}
 		});
+		if(m!=null)
+			setManager(m);
 	}
-
-	/**
-	 * Create a new window, with an associated {@link Manager}
-	 * 
-	 * @param d {@link DisplayMode} specifying window dimensions and mode
-	 * @param m {@link Manager} to be used
-	 */
-	public Window(DisplayMode d, Manager m) {
-		this(d);
-		setManager(m);
+	
+	/**Called to start the render process, will hang thread*/
+	public void begin() {
+		while(true) {
+			repaint();
+		}
 	}
 
 	@Override
@@ -104,8 +105,6 @@ public class Window extends JFrame implements Runnable {
 			calculateDeltaTime();
 			if (manager != null) {
 				manager.update();
-				// TODO: Find a better way
-				repaint();
 			} else {
 				Logger.log(Logger.INFO, "Manager is null");
 			}
@@ -149,10 +148,8 @@ public class Window extends JFrame implements Runnable {
 	 * Called after {@link Manager#update()}
 	 */
 	private void sleepUntilDeltaTime() {
-		if (manager == null)
-			return;
 		try {
-			Thread.sleep((1000 / manager.targetFramerate) - (System.currentTimeMillis() - lastTime));
+			Thread.sleep((1000 / targetFramerate) - (System.currentTimeMillis() - lastTime));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {

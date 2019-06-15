@@ -21,5 +21,6 @@ public class Game {
 
 		gm = new GameManager(args);
 		w = new Window(new DisplayMode(DisplayMode.WINDOWED, 640, 480), gm);
+		w.begin();
 	}
 }

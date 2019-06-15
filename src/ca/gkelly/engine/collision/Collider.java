@@ -14,6 +14,8 @@ public class Collider extends Poly {
 
 	/** The distance from the middle to the extremity */
 	double radius;
+	/** The maximum number of times to attempt full collision removal */
+	final int MAX_COLLISION_TRIES = 5;
 
 	/**
 	 * Create the collider with passed vertices
@@ -38,8 +40,8 @@ public class Collider extends Poly {
 	/**
 	 * Create the collider with passed vertices
 	 * 
-	 * @param verticesX The list of x vertices
-	 * @param verticesY The list of y vertices
+	 * @param verticesX   The list of x vertices
+	 * @param verticesY   The list of y vertices
 	 * @param vertexCount The number of vertices
 	 */
 	public Collider(double[] verticesX, double[] verticesY, int vertexCount) {
@@ -181,7 +183,6 @@ public class Collider extends Poly {
 	 * @return Pushback vector, null if no collision with c
 	 */
 	public Vector getPushback(Collider c) {
-		final int MAX_TRIES = 5; // The maximum nuber of times to attempt full removal TODO move somewhere better
 		int tries = 0;
 		Hull raw;
 		Vector out = new Vector(0, 0);
@@ -189,8 +190,7 @@ public class Collider extends Poly {
 		double oldY = y;
 
 		// If there is an intersection, attempt to remedy, up to MAX_PASS times
-		while ((raw = getCollisionHull(c)) != null && tries < MAX_TRIES) {
-			getCollisionHull(c); // TODO: Remove when done debugging, this is just for breakpointing
+		while ((raw = getCollisionHull(c)) != null && tries < MAX_COLLISION_TRIES) {
 			tries++;
 			Vector offset = new Vector(raw.poly.x - x, raw.poly.y - y);
 			offset.setMag(-offset.getMagnitude());

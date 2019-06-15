@@ -154,9 +154,4 @@ public class Loader {
 
 		br.close();
 	}
-
-	// TODO:Dispose of assets
-	public static void dispose() {
-	}
-
 }

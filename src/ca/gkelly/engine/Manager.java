@@ -16,8 +16,6 @@ import ca.gkelly.engine.input.Mouse;
  */
 public abstract class Manager {
 
-	/** Target framerate to be maintained by {@link Window} */
-	public int targetFramerate = 60;
 
 	/** Mouse event handler */
 	public Mouse mouse = new Mouse(this);
