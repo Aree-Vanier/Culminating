@@ -201,7 +201,8 @@ public class Logger {
 		return message;
 	}
 
-	/** Output a blank line, when selected level is enabled */
+	/** Output a blank line, when selected level is enabled 
+	 * @param type The log level to print with*/
 	public static void newLine(byte type) {
 		if ((type & ALL) == ALL) {
 		} else if (((type & ERROR) == ERROR && errorEnabled)) {

@@ -23,9 +23,9 @@ public abstract class Entity {
 	 */
 	public Collider collider;
 
-	/** X coordinate of the centre of the {@link #rect bounding rectangle} */
+	/** X coordinate of the centre of the {@link #collider} */
 	public double x;
-	/** Y coordinate of the centre of the {@link #rect bounding rectangle} */
+	/** Y coordinate of the centre of the {@link #collider} */
 	public double y;
 
 	/** Previous X coordinate, used to calculate velocity */
@@ -115,7 +115,7 @@ public abstract class Entity {
 	/**
 	 * Check for collision with {@link Collider}
 	 * 
-	 * @param p Polygon to check against
+	 * @param c {@link Collider} to check against
 	 * @return True if there is a collision
 	 */
 	public boolean collides(Collider c) {

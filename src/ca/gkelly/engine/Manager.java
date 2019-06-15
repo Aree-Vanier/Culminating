@@ -24,7 +24,8 @@ public abstract class Manager {
 	/** Keyboard event handler */
 	public Keyboard keyboard = new Keyboard(this);
 
-	/** Called when the manager is initialized */
+	/** Called when the manager is initialized 
+	 * @param container The container parent*/
 	public abstract void init(Container container);
 
 	/** Called periodically by {@link Window} on main thread */

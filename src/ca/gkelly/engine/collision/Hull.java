@@ -12,6 +12,12 @@ public class Hull {
 	ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 	Vertex extra = null;
 
+	/**
+	 * Create a Hull with ordered vertices
+	 * 
+	 * @param vertices The ordered list of {@link Vertex Vertices}
+	 * @param extra   The possible skipped vertex, can be null
+	 */
 	public Hull(ArrayList<Vertex> vertices, Vertex extra) {
 		this.vertices = vertices;
 		this.extra = extra;
@@ -22,7 +28,7 @@ public class Hull {
 	 * Get the convex hull that contains the passed points, using an approximation
 	 * of the gift wrapping algorithm
 	 * 
-	 * @param vertices The list of {@link Vertices}
+	 * @param vertices The list of {@link Vertex Vertices}
 	 * @return The convex {@link Hull} made from the points
 	 */
 	public Hull(Vertex[] vertices) {

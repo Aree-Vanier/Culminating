@@ -22,7 +22,7 @@ import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Tools;
 
 /** Class used to load and render a .tmx tilemap 
- * @see https://doc.mapeditor.org/en/stable/reference/tmx-map-format/*/
+ * @see <a href="https://doc.mapeditor.org/en/stable/reference/tmx-map-format/">https://doc.mapeditor.org/en/stable/reference/tmx-map-format/</a>*/
 public class TileMap {
 
 	BufferedImage[] tiles;

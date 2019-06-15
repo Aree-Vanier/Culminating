@@ -18,9 +18,7 @@ public class Collider extends Poly {
 	/**
 	 * Create the collider with passed vertices
 	 * 
-	 * @param verticesX   The list of x vertices
-	 * @param verticesY   The list of y vertices
-	 * @param vertexCount The amount of vertices in the shape
+	 * @param vertices The list of {@link Vertex} vertices
 	 */
 	public Collider(Vertex[] vertices) {
 		super(vertices);
@@ -40,7 +38,9 @@ public class Collider extends Poly {
 	/**
 	 * Create the collider with passed vertices
 	 * 
-	 * @param vertices The list of {@link Vertex} vertices
+	 * @param verticesX The list of x vertices
+	 * @param verticesY The list of y vertices
+	 * @param vertexCount The number of vertices
 	 */
 	public Collider(double[] verticesX, double[] verticesY, int vertexCount) {
 		super(verticesX, verticesY, vertexCount);
@@ -136,7 +136,7 @@ public class Collider extends Poly {
 	 * Return true if the given point is contained inside the boundary.<br/>
 	 * Override for {@link #contains(double, double)}
 	 * 
-	 * @param v The {@link vertex} to check
+	 * @param v The {@link Vertex} to check
 	 * @return true if the point is inside the boundary, false otherwise
 	 */
 	public boolean contains(Vertex v) {
@@ -193,14 +193,14 @@ public class Collider extends Poly {
 			getCollisionHull(c); // TODO: Remove when done debugging, this is just for breakpointing
 			tries++;
 			Vector offset = new Vector(raw.poly.x - x, raw.poly.y - y);
-			offset.setMag(-offset.getMag());
+			offset.setMag(-offset.getMagnitude());
 
 			// Get the projections of the offset vector (shorter = further in)
 			double horz = Math.abs(Vector.dot(offset, Vector.LEFT));
 			double vert = Math.abs(Vector.dot(offset, Vector.UP));
 			if (Double.isNaN(horz)) {
 				Logger.log("nan");
-				offset.setMag(-offset.getMag());
+				offset.setMag(-offset.getMagnitude());
 				// Get the projections of the offset vector (shorter = further in)
 				horz = Math.abs(Vector.dot(offset, Vector.LEFT));
 				vert = Math.abs(Vector.dot(offset, Vector.UP));

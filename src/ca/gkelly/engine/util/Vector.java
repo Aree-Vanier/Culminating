@@ -21,7 +21,7 @@ public class Vector {
 	 * To be passed to {@link #getString(int) getString()}, indicates that the
 	 * output will be full components
 	 */
-	public static final int STRING_RECTANGULAR = 1;
+	public static final int STRING_COMPONENT = 1;
 	/**
 	 * To be passed to {@link #getString(int) getString()}, indicates that the
 	 * output will be polar coordinates
@@ -99,7 +99,7 @@ public class Vector {
 	}
 
 	/** Get the magnitude of the vector */
-	public double getMag() {
+	public double getMagnitude() {
 		return magnitude;
 	}
 
@@ -120,12 +120,12 @@ public class Vector {
 	}
 
 	/** Get the normalized x component */
-	public double getNormalX() {
+	public double getNormalizedX() {
 		return x;
 	}
 
 	/** Get the normalized y component */
-	public double getNormalY() {
+	public double getNormalizedY() {
 		return y;
 	}
 
@@ -172,14 +172,14 @@ public class Vector {
 	 * 
 	 * @param mode The info to output<br/>
 	 *             - {@link #STRING_NORMALIZED} Contains normalized X and Y<br/>
-	 *             - {@link #STRING_RECTANGULAR} Contains full X and Y<br/>
+	 *             - {@link #STRING_COMPONENT} Contains full X and Y components<br/>
 	 *             - {@link #STRING_POLAR} Contains angle from up and length
 	 */
 	public String getString(int mode) {
 		switch (mode) {
 		case STRING_NORMALIZED:
 			return "(" + x + "," + y + ")";
-		case STRING_RECTANGULAR:
+		case STRING_COMPONENT:
 			return "(" + getX() + "," + getY() + ")";
 		case STRING_POLAR:
 			return "(" + getAngle(false) + "," + magnitude + ")";
@@ -227,7 +227,7 @@ public class Vector {
 	/**
 	 * Multiply a vector by a scalar
 	 * 
-	 * @param v1 The vector to multiply
+	 * @param v The vector to multiply
 	 * @param s  The scalar to multiply
 	 * @return The product vector
 	 */
@@ -238,7 +238,7 @@ public class Vector {
 	/**
 	 * Divide a vector by a scalar
 	 * 
-	 * @param v1 The vector divisor
+	 * @param v The vector divisor
 	 * @param s  The scalar dividend
 	 * @return The quotient vector
 	 */

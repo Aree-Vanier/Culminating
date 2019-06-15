@@ -10,7 +10,7 @@ public abstract class Resource {
 	/**
 	 * Called by {@link Loader} when loading the resource
 	 * 
-	 * @param path The path to the resource
+	 * @param f The file containing the resource
 	 * @param json The resource's JSON contents
 	 */
 	abstract public void load(File f, JSONObject json);

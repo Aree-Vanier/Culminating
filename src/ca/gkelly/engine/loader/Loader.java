@@ -33,18 +33,18 @@ public class Loader {
 	/** Flag to indicate weather the loader is initialized */
 	public static boolean initialized = false;
 
+	@SuppressWarnings("rawtypes")
 	/**
 	 * Initialize the loader, must be called before {@link #load()}
 	 * 
 	 * @param dir     Directory containing resource files
 	 * @param classes Hashmap with the following structure:<br/>
-	 *                &nbsp&nbsp&nbsp&nbsp<strong>[String]:</strong> Resource type
+	 *                &nbsp;&nbsp;&nbsp;&nbsp;<strong>[String]:</strong> Resource type
 	 *                indentifier<br/>
-	 *                &nbsp&nbsp&nbsp&nbsp<strong>[Class]:
-	 *                </strong>&nbsp<code>.class</code> of
+	 *                &nbsp;&nbsp;&nbsp;&nbsp;<strong>[Class]:
+	 *                </strong>&nbsp;<code>.class</code> of
 	 *                {@link Resource}-extending class
 	 */
-	@SuppressWarnings("rawtypes")
 	public static void init(String dir, HashMap<String, Class> classes) {
 		directory = dir;
 		resourceClasses = classes;

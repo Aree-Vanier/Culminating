@@ -64,7 +64,7 @@ public class GameManager extends Manager {
 				if (p2 != null) {
 					raw.render(cam, new Hull(player.collider.getIntersections(c)));
 					Vector offset = new Vector(p2.x - player.x, p2.y - player.y);
-					offset.setMag(-offset.getMag());
+					offset.setMag(-offset.getMagnitude());
 					cam.drawLine((int) player.x, (int) player.y, (int) (player.x + offset.getX()),
 							(int) (player.y + offset.getY()), 5, Color.red);
 				}

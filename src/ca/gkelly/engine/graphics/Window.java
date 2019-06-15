@@ -115,7 +115,7 @@ public class Window extends JFrame implements Runnable {
 
 	/**
 	 * Set the active manager <br/>
-	 * This will call {@link Manager#interrupt interrupt()} on the old manager and
+	 * This will call {@link Manager#end end()} on the old manager and
 	 * {@link Manager#init init()} on the new one
 	 * 
 	 * @param m New manager
