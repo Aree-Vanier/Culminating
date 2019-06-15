@@ -6,10 +6,11 @@ import ca.gkelly.culminating.resources.PlayerResource;
 import ca.gkelly.engine.graphics.DisplayMode;
 import ca.gkelly.engine.graphics.Window;
 import ca.gkelly.engine.loader.Loader;
+import ca.gkelly.engine.util.Logger;
 
 public class Game {
 	static Window w;
-	static GameManager gm;
+	static GameManager gm = new GameManager();
 
 	public static void main(String[] args) {
 		@SuppressWarnings("rawtypes")
@@ -18,8 +19,7 @@ public class Game {
 
 		Loader.init(args[0], resources);
 		Loader.load();
-
-		gm = new GameManager(args);
+		
 		w = new Window(new DisplayMode(DisplayMode.WINDOWED, 640, 480), gm);
 		w.begin();
 	}

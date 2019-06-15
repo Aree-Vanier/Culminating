@@ -11,6 +11,7 @@ import java.util.HashMap;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import ca.gkelly.engine.graphics.TileMap;
 import ca.gkelly.engine.util.Logger;
 
 /**
@@ -26,6 +27,9 @@ public class Loader {
 	/** A collection of all resource classes, sorted by type */
 	@SuppressWarnings("rawtypes")
 	public static HashMap<String, Class> resourceClasses = new HashMap<>();
+
+	/** A collection of all {@link TileMaps}, with filenames as identifiers*/
+	public static HashMap<String, TileMap> maps = new HashMap<>();
 
 	/** The directory containing the resource files */
 	public static String directory;
@@ -101,13 +105,13 @@ public class Loader {
 
 		files = new File(directory + "\\maps").listFiles();
 
-		// TODO: Figure out maps
-//		for(File f : files) {
-//			//Only read map files
-//			if(f.getName().endsWith(".tmx")) {
-//				maps.add(new TmxMapLoader().load(getResourcePath(f.getPath())));
-//			}
-//		}
+		for(File f : files) {
+			//Only read map files
+			if(f.getName().endsWith(".tmx")) {
+				maps.put(f.getName().substring(0, f.getName().lastIndexOf(".")), new TileMap((f.getPath())));
+				Logger.log(f.getName().substring(0, f.getName().lastIndexOf(".")));
+			}
+		}
 
 		Logger.log(Logger.INFO, "Loaded in {LOAD}");
 	}
