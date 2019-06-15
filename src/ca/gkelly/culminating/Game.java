@@ -11,8 +11,8 @@ import ca.gkelly.engine.loader.Loader;
 
 public class Game {
 	static Window window;
-	static GameManager gm = new GameManager();
-	static MenuManager mm = new MenuManager();
+	public static GameManager gm = new GameManager();
+	public static MenuManager mm = new MenuManager();
 
 	public static void main(String[] args) {
 		@SuppressWarnings("rawtypes")
@@ -22,7 +22,7 @@ public class Game {
 		Loader.init(args[0], resources);
 		Loader.load();
 		
-		window = new Window(new DisplayMode(DisplayMode.WINDOWED, 640, 480), gm);
+		window = new Window(new DisplayMode(DisplayMode.WINDOWED, 640, 480), mm);
 		window.begin();
 	}
 }
