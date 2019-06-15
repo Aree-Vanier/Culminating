@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 import ca.gkelly.engine.graphics.Camera;
+import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
 import ca.gkelly.engine.util.Vertex;
 
@@ -26,6 +27,9 @@ public class Hull {
 	 * @return The convex {@link Hull} made from the points
 	 */
 	public Hull(Vertex[] vertices) {
+		if(vertices.length > 4) {
+			Logger.log("break");
+		}
 		Vertex ignored = null;
 
 		ArrayList<Vertex> vertout = new ArrayList<>();
@@ -125,9 +129,12 @@ public class Hull {
 						bestAngle = angle;
 						bestVertex = i;
 					}
-				}
-				if (bestVertex == start) // If the best vertex is the initial, then we have completed the hull
+				} 
+				// If the best vertex is the initial, then we have completed the hull
+				if (bestVertex == start) {
+					usedVertices.add(start);
 					break;
+				}
 				// Make the best vertex the next one in the list
 				vertout.add(vertices[bestVertex]);
 				currentVertex = bestVertex;
@@ -149,11 +156,11 @@ public class Hull {
 	public void render(Camera c) {
 		c.drawPoly(poly.getPoly(), Color.green);
 		c.drawPoint((int) poly.x, (int) poly.y, 10, Color.red);
-		for (Vertex v : vertices) {
-			c.drawPoint((int) v.x, (int) v.y, 5, Color.BLUE);
-		}
 		if (extra != null) {
 			c.drawPoint((int) extra.x, (int) extra.y, 10, Color.magenta);
+		}
+		for (Vertex v : vertices) {
+			c.drawPoint((int) v.x, (int) v.y, 5, Color.BLUE);
 		}
 	}
 

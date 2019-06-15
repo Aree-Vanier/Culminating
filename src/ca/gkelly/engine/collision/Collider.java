@@ -201,9 +201,8 @@ public class Collider extends Poly {
 		// If there is an intersection, attempt to remedy, up to MAX_PASS times
 		while ((raw = getCollisionHull(c)) != null && tries < MAX_TRIES) {
 			getCollisionHull(c); // TODO: Remove when done debugging, this is just for breakpointing
-			collision = (Collider) raw.poly;
 			tries++;
-			Vector offset = new Vector(collision.x - x, collision.y - y);
+			Vector offset = new Vector(raw.poly.x - x, raw.poly.y - y);
 			offset.setMag(-offset.getMag());
 
 			// Get the projections of the offset vector (shorter = further in)
@@ -218,54 +217,82 @@ public class Collider extends Poly {
 				vert = Math.abs(Vector.dot(offset, Vector.UP));
 			}
 
-			Logger.log(Logger.INFO, collision.getRight() + "\t" + collision.getTop() + "\t" + collision.getLeft() + "\t"
-					+ collision.getBottom());
-			Logger.log(Logger.INFO, getRight() + "\t" + getTop() + "\t" + getLeft() + "\t" + getBottom());
-			Logger.log(Logger.INFO, offset.getX() + "," + offset.getY());
-			double deltaX = 0, deltaY = 0;
-			// Prevent cases where the extra point doesn't exist, but the normal code also
-			// won't work
-			if (raw.extra == null && collision.vertices.length % 2 == 1) {
-				return new Vector(0, 0);
-			}
-			// Specaial handling for hulls with a unused midpoint, as the simple w/h
-			// translation wont work
-			if (raw.extra != null) {
-				Vertex v = raw.extra;
-				if (Integer.signum((int) offset.getX()) > 0) {
-					deltaX = Math.abs(collision.getLeft() - v.x);
-					Logger.log(Logger.INFO, "RL " + deltaX);
-				}
-				if (Integer.signum((int) offset.getX()) < 0) {
-					deltaX = -Math.abs(collision.getRight() - v.x);
-					Logger.log(Logger.INFO, "LR " + deltaX);
-				}
-				if (Integer.signum((int) offset.getY()) > 0) {
-					deltaY = Math.abs(collision.getTop() - v.y);
-					Logger.log(Logger.INFO, "TB " + deltaY);
-				}
-				if (Integer.signum((int) offset.getY()) < 0) {
-					deltaY = -Math.abs(collision.getBottom() - v.y);
-					Logger.log(Logger.INFO, "BT " + deltaY);
-				}
-			} else {
+			// Get the deltas to apply
+			Vector delta = getDeltas(c, raw.poly, offset, raw.extra);
+			Logger.log("Deltas: " + delta.getX() + '\t' + delta.getY());
 
-				deltaX = collision.width * Integer.signum((int) offset.getX());
-				deltaY = collision.height * Integer.signum((int) offset.getY());
-			}
-			Logger.log("Deltas: " + deltaX + '\t' + deltaY);
 			// If the horizontal is further in, deal with it
 			if (horz > vert) {
-				translate(deltaX, 0);
-				out = Vector.add(out, new Vector(deltaX, 0));
+				translate(delta.getX(), 0);
+				out = Vector.add(out, new Vector(delta.getX(), 0));
 			} else {
-				translate(0, deltaY);
-				out = Vector.add(out, new Vector(0, deltaY));
+				translate(0, delta.getY());
+				out = Vector.add(out, new Vector(0, delta.getY()));
 			}
 			Logger.log(Logger.INFO, out.getString(Vector.STRING_RECTANGULAR));
 		}
 		setPosition(oldX, oldY);
 		return new Vector(out.getX(), out.getY());
+	}
+
+	private Vector getDeltas(Collider other, Collider collision, Vector offset, Vertex extra) {
+		Logger.log(Logger.INFO, collision.getRight() + "\t" + collision.getTop() + "\t" + collision.getLeft() + "\t"
+				+ collision.getBottom());
+		Logger.log(Logger.INFO, getRight() + "\t" + getTop() + "\t" + getLeft() + "\t" + getBottom());
+		Logger.log(Logger.INFO, offset.getX() + "," + offset.getY());
+		double deltaX = 0, deltaY = 0;
+		Hull h;
+		// Specaial handling for hulls with a unused midpoint, as the simple w/h
+		// translation wont work
+		Logger.log(Logger.ERROR, collision.vertices.length);
+		if ((collision.vertices.length == 4 || collision.vertices.length == 5) && extra != null) {
+			Logger.log(Logger.ERROR, collision.getString() + ", " + extra.getString());
+		}
+		if (extra != null) {
+			Logger.log(Logger.ERROR, "Extra");
+			if (offset.getX() > 0) {
+				deltaX = Math.abs(collision.getLeft() - extra.x);
+				Logger.log(Logger.INFO, "RL " + deltaX);
+			}
+			if (offset.getX() < 0) {
+				deltaX = -Math.abs(collision.getRight() - extra.x);
+				Logger.log(Logger.INFO, "LR " + deltaX);
+			}
+			if (offset.getY() > 0) {
+				deltaY = Math.abs(collision.getTop() - extra.y);
+				Logger.log(Logger.INFO, "TB " + deltaY);
+			}
+			if (offset.getY() < 0) {
+				deltaY = -Math.abs(collision.getBottom() - extra.y);
+				Logger.log(Logger.INFO, "BT " + deltaY);
+			}
+		} else if (collision.vertices.length % 2 == 1 && (h = new Hull(getIntersections(other))).vertices.size() > 2) { 
+			// If there are an odd number of vertices, and the hull isn't just a line, then extra handling may be required
+			// Get the hull formed by the intersection points only, not the contained points (see if statement)
+			
+			// Move by the distance between the two hulls
+			if (offset.getX() > 0) {
+				deltaX = Math.abs(collision.getLeft() - h.poly.getLeft());
+				Logger.log(Logger.INFO, "RL " + deltaX);
+			}
+			if (offset.getX() < 0) {
+				deltaX = -Math.abs(collision.getRight() - h.poly.getRight());
+				Logger.log(Logger.INFO, "LR " + deltaX);
+			}
+			if (offset.getY() > 0) {
+				deltaY = Math.abs(collision.getTop() - h.poly.getTop());
+				Logger.log(Logger.ERROR, "TB " + collision.getTop() + "," + h.poly.getTop());
+			}
+			if (offset.getY() < 0) {
+				deltaY = -Math.abs(collision.getBottom() - h.poly.getBottom());
+				Logger.log(Logger.INFO, "BT " + deltaY);
+			}
+		} else {
+			//If none of the edge cases are true, the just move by the dimensions of the collision polygon
+			deltaX = collision.width * Integer.signum((int) offset.getX());
+			deltaY = collision.height * Integer.signum((int) offset.getY());
+		}
+		return new Vector(deltaX, deltaY);
 	}
 
 }

@@ -8,5 +8,9 @@ public class Vertex {
 		this.x = x;
 		this.y = y;
 	}
+	
+	public String getString() {
+		return "("+x+","+y+")";
+	}
 
 }

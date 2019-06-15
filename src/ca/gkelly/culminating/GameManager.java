@@ -37,7 +37,7 @@ public class GameManager extends Manager {
 		cam = new Camera(container, map);
 		cam.setPosition(0, 0, 1.25);
 
-		player = new Player((PlayerResource) Loader.resources.get("player").get(0), 100, 100);
+		player = new Player((PlayerResource) Loader.resources.get("player").get(0), 100, 900);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class GameManager extends Manager {
 
 		int[] pos = cam.worldSpace(mouse.pos.x, mouse.pos.y);
 		Polygon p = map.getPoly(pos[0], pos[1], "colliders");
-		if (p != null) {
+		if (p != null) { 
 			cam.drawPoly(p, Color.black);
 		}
 
@@ -61,10 +61,12 @@ public class GameManager extends Manager {
 			Collider p2 = raw != null ? raw.poly : null;
 			if (p2 != null) {
 				raw.render(cam);
-				Vector offset = new Vector(p2.x-player.x, p2.y-player.y);
+				Vector offset = new Vector(p2.x - player.x, p2.y - player.y);
 				offset.setMag(-offset.getMag());
 				cam.drawLine((int) player.x, (int) player.y, (int) (player.x + offset.getX()),
 						(int) (player.y + offset.getY()), 5, Color.red);
+				if (new Hull(player.collider.getIntersections(c)).poly.getPoly() != null)
+					cam.drawPoly(new Hull(player.collider.getIntersections(c)).poly.getPoly(), Color.ORANGE);
 			}
 		}
 

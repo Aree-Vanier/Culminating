@@ -239,11 +239,11 @@ class Poly {
 	}
 
 	/** Get a string representation of the vertices */
-	public String printVertices() {
+	public String getString() {
 		String out = "";
 		for (int i = 0; i < vertices.length; i++) {
-			out += "(" + vertices[i].x + "," + vertices[i].y + "), ";
+			out += vertices[i].getString() + ", ";
 		}
-		return out;
+		return out.substring(0, out.length()-2);
 	}
 }
