@@ -47,8 +47,8 @@ public class UIPosition {
 	/**
 	 * Create the position, with top-left alignment
 	 * 
-	 * @param offX The x offset
-	 * @param offY The y offset
+	 * @param x The x offset
+	 * @param y The y offset
 	 */
 	public UIPosition(int x, int y) {
 		this(x, y, LEFT, TOP);

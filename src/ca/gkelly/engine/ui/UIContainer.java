@@ -9,7 +9,7 @@ import ca.gkelly.engine.ui.structs.UIDimensions;
 import ca.gkelly.engine.ui.structs.UIPosition;
 import ca.gkelly.engine.util.Vertex;
 
-/** Container to house other {@link UIElements} */
+/** Container to house other {@link UIElement}s */
 public class UIContainer extends UIElement {
 
 	/** List of children {@link UIElement}s */
@@ -57,7 +57,7 @@ public class UIContainer extends UIElement {
 		}
 	}
 
-	/** Get a list of children {@link UIElements} */
+	/** Get a list of children {@link UIElement}s */
 	public ArrayList<UIElement> getChildren() {
 		return children;
 	}

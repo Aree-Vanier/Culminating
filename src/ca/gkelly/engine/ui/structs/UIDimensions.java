@@ -1,6 +1,8 @@
 package ca.gkelly.engine.ui.structs;
 
-/** Used to manage dimensions for {@link UIElements} */
+import ca.gkelly.engine.ui.UIElement;
+
+/** Used to manage dimensions for {@link UIElement}s */
 public class UIDimensions {
 	/** Shorthand for default padding and non-fixed width */
 	public static final UIDimensions DEFAULT = new UIDimensions(UISet.DEFAULT);
@@ -26,7 +28,7 @@ public class UIDimensions {
 	/**
 	 * Create the dimension with specified padding
 	 * 
-	 * @param The padding to use
+	 * @param padding The padding to use
 	 */
 	public UIDimensions(UISet padding) {
 		this.padding = padding;
@@ -35,9 +37,9 @@ public class UIDimensions {
 	/**
 	 * Create the dimension, with specified width and height
 	 * 
-	 * @param The padding to use
-	 * @param The fixed width to use, pass {@link #UNFIXED} to leave unfixed
-	 * @param The fixed height to use, pass {@link #UNFIXED} to leave unfixed
+	 * @param padding The padding to use
+	 * @param width The fixed width to use, pass {@link #UNFIXED} to leave unfixed
+	 * @param height The fixed height to use, pass {@link #UNFIXED} to leave unfixed
 	 */
 	public UIDimensions(UISet padding, int width, int height) {
 		this.padding = padding;
@@ -86,7 +88,7 @@ public class UIDimensions {
 	}
 
 	/**
-	 * Set the height of the dimension, will not work if {@link #heightWidth} is
+	 * Set the height of the dimension, will not work if {@link #fixedHeight} is
 	 * true
 	 * 
 	 * @param h The height to use
@@ -101,7 +103,7 @@ public class UIDimensions {
 
 	/**
 	 * Set the fixed height<br/>
-	 * This will set {@link #heightWidth} to be true
+	 * This will set {@link #fixedHeight} to be true
 	 * 
 	 * @param h The height to use
 	 */

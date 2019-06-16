@@ -4,7 +4,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-/** Used to manage and render borders on {@link UIElements} */
+import ca.gkelly.engine.ui.UIElement;
+
+/** Used to manage and render borders on {@link UIElement}s */
 public class UIBorder {
 	/** Shorthand for a 0-width (invisible) border */
 	public static UIBorder NONE = new UIBorder(0, Color.WHITE);

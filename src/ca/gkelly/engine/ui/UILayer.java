@@ -47,7 +47,7 @@ public class UILayer extends UIContainer {
 	/**
 	 * Set the height, this will override fixed height
 	 * 
-	 * @param width The new height
+	 * @param height The new height
 	 */
 	public void setHeight(int height) {
 		dimens.setFixedHeight(height);

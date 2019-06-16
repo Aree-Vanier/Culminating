@@ -23,12 +23,12 @@ public class UIText extends UIElement {
 	/**
 	 * Create the element
 	 * 
-	 * @param p      The position data
-	 * @param dimens The dimensional data
-	 * @param text   The text to render
-	 * @param c      The background colour
-	 * @param f      The font to use
-	 * @param fc     The colour of the font
+	 * @param p    The position data
+	 * @param d    The dimensional data
+	 * @param text The text to render
+	 * @param c    The background colour
+	 * @param f    The font to use
+	 * @param fc   The colour of the font
 	 */
 	public UIText(UIPosition p, UIDimensions d, String text, Color c, Font f, Color fc) {
 		super(p, d, c);
@@ -40,10 +40,10 @@ public class UIText extends UIElement {
 	/**
 	 * Create the element, with white background and black font
 	 * 
-	 * @param p      The position data
-	 * @param dimens The dimensional data
-	 * @param text   The text to render
-	 * @param f      The font to use
+	 * @param p    The position data
+	 * @param d    The dimensional data
+	 * @param text The text to render
+	 * @param f    The font to use
 	 */
 	public UIText(UIPosition p, UIDimensions d, String text, Font f) {
 		this(p, d, text, Color.WHITE, f, Color.BLACK);

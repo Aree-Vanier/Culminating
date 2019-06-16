@@ -93,7 +93,7 @@ public abstract class Manager {
 
 	/** Called when the window is resized */
 	protected void onResize() {
-		
+
 	}
 
 }

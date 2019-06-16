@@ -16,7 +16,7 @@ public class Hull {
 	 * Create a Hull with ordered vertices
 	 * 
 	 * @param vertices The ordered list of {@link Vertex Vertices}
-	 * @param extra   The possible skipped vertex, can be null
+	 * @param extra    The possible skipped vertex, can be null
 	 */
 	public Hull(ArrayList<Vertex> vertices, Vertex extra) {
 		this.vertices = vertices;

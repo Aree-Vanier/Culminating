@@ -36,7 +36,8 @@ public abstract class Entity {
 	/**
 	 * Instantiate the entity, assigns image and creates basic rectangle
 	 * 
-	 * @param image The image to be used
+	 * @param width The width of the entity
+	 * @param height The height of the entity
 	 */
 	protected Entity(int width, int height) {
 		collider = new RectCollider(-width / 2, -height / 2, width, height);
@@ -59,7 +60,7 @@ public abstract class Entity {
 	 * 
 	 * @param x The x distance
 	 * @param y The y distance
-	 * @param s The shapes to check for collision against, requires {@link #rect}
+	 * @param colliders The {@link Collider}s to check for collision against, requires {@link #collider}
 	 */
 	protected void move(double x, double y, Collider[] colliders) {
 		this.x += x;

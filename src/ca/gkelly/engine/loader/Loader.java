@@ -28,7 +28,7 @@ public class Loader {
 	@SuppressWarnings("rawtypes")
 	public static HashMap<String, Class> resourceClasses = new HashMap<>();
 
-	/** A collection of all {@link TileMaps}, with filenames as identifiers*/
+	/** A collection of all {@link TileMap}s, with filenames as identifiers*/
 	public static HashMap<String, TileMap> maps = new HashMap<>();
 
 	/** The directory containing the resource files */
