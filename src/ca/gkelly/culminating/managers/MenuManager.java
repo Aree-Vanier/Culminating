@@ -7,6 +7,7 @@ import ca.gkelly.engine.ui.UIButton;
 import ca.gkelly.engine.ui.UIManager;
 import ca.gkelly.engine.ui.UIText;
 import ca.gkelly.engine.ui.structs.UIPosition;
+import ca.gkelly.engine.util.Logger;
 
 public class MenuManager extends UIManager {
 
@@ -26,9 +27,10 @@ public class MenuManager extends UIManager {
 
 	@Override
 	protected void onClick(Clickable c) {
-		if(c == play)
+		if (c == play) {
+			Logger.log(Logger.INFO, "Play");
 			getWindow().setManager(new GameManager());
+		}
 	}
-
 
 }

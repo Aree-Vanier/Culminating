@@ -10,9 +10,12 @@ import ca.gkelly.engine.ui.structs.UIDimensions;
 import ca.gkelly.engine.ui.structs.UIPosition;
 import ca.gkelly.engine.ui.structs.UISet;
 
+/** Special manager for use with UI systems */
 public abstract class UIManager extends Manager {
 
+	/** The associated UI layer */
 	private UILayer ui;
+	/** Used for scaling */
 	private double widthPercent, heightPercent;
 
 	@Override
@@ -22,31 +25,57 @@ public abstract class UIManager extends Manager {
 		heightPercent = 1;
 		init();
 	}
-	
+
+	/** Called upon initialization */
 	protected abstract void init();
 
+	/**
+	 * Set the {@link #ui UILayer} position
+	 * 
+	 * @param p The new position
+	 */
 	public void setPosition(UIPosition p) {
 		ui.setPosition(p);
 	}
-	
+
+	/**
+	 * Add a child {@link UIElement} to the {@link #ui UILayer}
+	 * 
+	 * @param e the element
+	 */
 	public void addChild(UIElement e) {
 		ui.addChild(e);
 	}
-	
+
+	/**
+	 * Remove a child {@link UIElement} from the {@link #ui UILayer}
+	 * 
+	 * @param e The element
+	 */
 	public void removeChild(UIElement e) {
 		ui.removeChild(e);
 	}
-	
-	public void setDiemns(UIDimensions d) {
+
+	/**
+	 * Set the dimensions of the {@link #ui UILayer}
+	 * 
+	 * @param d The new dimensions
+	 */
+	public void setDimens(UIDimensions d) {
 		ui.setDimens(d);
-		widthPercent = getWindow().getWidth()/d.getTotalWidth();
-		heightPercent = getWindow().getHeight()/d.getTotalHeight();
+		widthPercent = getWindow().getWidth() / d.getTotalWidth();
+		heightPercent = getWindow().getHeight() / d.getTotalHeight();
 	}
-	
+
+	/**
+	 * Set the background colour of the {@link #ui UILayer}
+	 * 
+	 * @param c The new colour
+	 */
 	public void setColour(Color c) {
 		ui.setBackground(c);
 	}
-	
+
 	@Override
 	protected void render(Graphics2D g) {
 		ui.render(g);
@@ -74,12 +103,17 @@ public abstract class UIManager extends Manager {
 			onClick(c);
 	}
 
+	/**
+	 * Called if a {@link UIElement} is clicked
+	 * 
+	 * @param c The element that was clicked
+	 */
 	protected abstract void onClick(Clickable c);
 
 	@Override
 	protected void onResize() {
-		ui.setWidth((int) (getWindow().getWidth()*widthPercent));
-		ui.setHeight((int) (getWindow().getHeight()*heightPercent));
+		ui.setWidth((int) (getWindow().getWidth() * widthPercent));
+		ui.setHeight((int) (getWindow().getHeight() * heightPercent));
 	}
 
 }
