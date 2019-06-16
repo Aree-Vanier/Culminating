@@ -49,7 +49,7 @@ public abstract class UIElement {
 	}
 	
 	public void render(Graphics2D g, UIContainer c) {
-		pos.getPos(g, this, c);
+		pos.updatePos(this, c);
 		g.setColor(bgColour);
 		g.fillRect(pos.x, pos.y, dimens.getTotalWidth(), dimens.getTotalHeight());
 		border.render(g, pos.x, pos.y, dimens.getTotalWidth(), dimens.getTotalHeight());

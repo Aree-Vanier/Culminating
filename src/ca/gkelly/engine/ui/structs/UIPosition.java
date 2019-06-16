@@ -5,20 +5,40 @@ import java.awt.Graphics;
 import ca.gkelly.engine.ui.UIContainer;
 import ca.gkelly.engine.ui.UIElement;
 
+/** Handles the position of a {@link UIElement} */
 public class UIPosition {
-	
-	public static UIPosition DEFAULT = new UIPosition(0,0);
-	
+
+	/** Shorthand for top-left position */
+	public static UIPosition DEFAULT = new UIPosition(0, 0);
+
+	/** Align left */
 	public static final int LEFT = 0;
+	/** Align top */
 	public static final int TOP = 0;
+	/** Align centre */
 	public static final int CENTRE = 1;
+	/** Align right */
 	public static final int RIGHT = 2;
+	/** Align bottom */
 	public static final int BOTTOM = 2;
 
+	/** Positional Offset */
 	public int offsetX, offsetY;
-	public int horizontal, vertical;
+	/** Horizontal alignment */
+	private int horizontal;
+	/** Vertical alignment */
+	private int vertical;
+	/** Actual position */
 	public int x, y;
 
+	/**
+	 * Create the position
+	 * 
+	 * @param offX The x offset
+	 * @param offY The y offset
+	 * @param horz The horizontal alignment
+	 * @param vert The vertical alignment
+	 */
 	public UIPosition(int offX, int offY, int horz, int vert) {
 		horizontal = horz;
 		vertical = vert;
@@ -26,11 +46,20 @@ public class UIPosition {
 		offsetY = offY;
 	}
 
+	/**
+	 * Create the position, with top-left alignment
+	 * 
+	 * @param offX The x offset
+	 * @param offY The y offset
+	 */
 	public UIPosition(int x, int y) {
 		this(x, y, LEFT, TOP);
 	}
 
-	public void getPos(Graphics g, UIElement e, UIContainer c) {
+	/**Update the {@link #x} and {@link y} values
+	 * @param e The {@link UIElement} that uses this position
+	 * @param c The parent {@link UIContainer}*/
+	public void updatePos(UIElement e, UIContainer c) {
 		// Get horizontal position
 		if (horizontal == LEFT)
 			x = offsetX;
@@ -46,6 +75,7 @@ public class UIPosition {
 		if (vertical == BOTTOM)
 			y = c.dimens.getTotalHeight() - e.dimens.getTotalHeight() + offsetY;
 
+		//Add the parent's position
 		x += c.pos.x;
 		y += c.pos.y;
 	}
