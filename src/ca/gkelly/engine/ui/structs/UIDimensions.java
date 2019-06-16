@@ -2,7 +2,7 @@ package ca.gkelly.engine.ui.structs;
 
 /** Used to manage dimensions for {@link UIElements} */
 public class UIDimensions {
-	/** Shorthand for default values */
+	/** Shorthand for default padding and non-fixed width */
 	public static final UIDimensions DEFAULT = new UIDimensions(UISet.DEFAULT);
 
 	/** The padding around the element */

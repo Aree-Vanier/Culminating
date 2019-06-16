@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 
 /** Used to manage and render borders on {@link UIElements} */
 public class UIBorder {
-	/** Shorthand for a 0-width border */
+	/** Shorthand for a 0-width (invisible) border */
 	public static UIBorder NONE = new UIBorder(0, Color.WHITE);
 
 	/** The width of the border */
