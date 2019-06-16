@@ -44,7 +44,7 @@ public class UIPosition {
 		if (vertical == CENTRE)
 			y = c.dimens.getTotalHeight() / 2 - e.dimens.getTotalHeight() / 2 + offsetY;
 		if (vertical == BOTTOM)
-			y = c.dimens.getTotalHeight() - e.dimens.getTotalHeight() - offsetY;
+			y = c.dimens.getTotalHeight() - e.dimens.getTotalHeight() + offsetY;
 
 		x += c.pos.x;
 		y += c.pos.y;

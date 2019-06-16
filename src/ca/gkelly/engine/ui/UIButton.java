@@ -7,7 +7,6 @@ import ca.gkelly.engine.collision.RectCollider;
 import ca.gkelly.engine.ui.structs.UIBorder;
 import ca.gkelly.engine.ui.structs.UIDimensions;
 import ca.gkelly.engine.ui.structs.UIPosition;
-import ca.gkelly.engine.util.Vertex;
 
 public class UIButton extends UIText implements Clickable{
 

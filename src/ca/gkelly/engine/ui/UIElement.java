@@ -3,7 +3,6 @@ package ca.gkelly.engine.ui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.util.ArrayList;
 
 import ca.gkelly.engine.ui.structs.UIBorder;
 import ca.gkelly.engine.ui.structs.UIDimensions;

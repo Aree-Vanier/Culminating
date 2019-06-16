@@ -9,8 +9,8 @@ public class UIDimensions {
 	private int width =  0;
 	private int height = 0;
 	
-	public boolean fixedWidth = false;
-	public boolean fixedHeight = false;
+	private boolean fixedWidth = false;
+	private boolean fixedHeight = false;
 	
 	public UIDimensions() {
 		padding = UISet.DEFAULT;
@@ -37,6 +37,15 @@ public class UIDimensions {
 			width = w;
 	}
 	
+	public void setFixedWidth(int w) {
+		fixedWidth = true;
+		width = w;
+	}
+	
+	public void unfixWidth() {
+		fixedWidth = false;
+	}
+	
 	public int getWidth() {
 		return width;
 	}
@@ -44,6 +53,15 @@ public class UIDimensions {
 	public void setHeight(int h) {
 		if(!fixedHeight)
 			height = h;
+	}
+	
+	public void setFixedHeight(int h) {
+		fixedHeight = true;
+		height = h;
+	}
+	
+	public void unfixHeight() {
+		fixedWidth = false;
 	}
 	
 	public int getHeight() {

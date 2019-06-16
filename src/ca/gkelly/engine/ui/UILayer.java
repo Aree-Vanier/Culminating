@@ -21,11 +21,11 @@ public class UILayer extends UIContainer{
 	}
 	
 	public void setWidth(int width) {
-		setWidth(width);
+		dimens.setFixedWidth(width);
 	}
 	
 	public void setHeight(int height) {
-		setHeight(height);
+		dimens.setFixedHeight(height);
 	}
 
 }
