@@ -1,44 +1,37 @@
 package ca.gkelly.culminating.managers;
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
+import java.awt.Font;
 
-import ca.gkelly.culminating.Game;
-import ca.gkelly.engine.Manager;
+import ca.gkelly.engine.ui.Clickable;
+import ca.gkelly.engine.ui.UIButton;
+import ca.gkelly.engine.ui.UIManager;
+import ca.gkelly.engine.ui.UIText;
+import ca.gkelly.engine.ui.structs.UIPosition;
+import ca.gkelly.engine.util.Logger;
 
-public class MenuManager extends Manager {
+public class MenuManager extends UIManager {
+
+	Font titleFont = new Font("Consolas", Font.PLAIN, 50);
+
+	UIText title;
+	UIButton play;
 
 	@Override
-	protected void init(Container c) {
 
+	protected void init() {
+		title = new UIText(new UIPosition(50, 25), "Graphics Engine Demo", titleFont);
+		addChild(title);
+
+		play = new UIButton(new UIPosition(0, -50, UIPosition.CENTRE, UIPosition.BOTTOM), "Start", titleFont);
+		addChild(play);
 	}
 
 	@Override
-	protected void render(Graphics2D g) {
-		g.setColor(Color.black);
-		g.fillRect(0, 0, getWindow().getWidth(), getWindow().getHeight());
-		g.setColor(Color.white);
-		g.drawString("Graphics Engine Demo", 50, 25);
-
-		g.drawString("Press SPACE to begin", getWindow().getHeight()/2 - g.getFontMetrics().stringWidth("Press SPACE to begin")/2, getWindow().getHeight()-50);
-	}
-
-	@Override
-	protected void update() {
-		
-	}
-
-	@Override
-	public void end() {
-
-	}
-
-	@Override
-	protected void onKeyPress(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-			getWindow().setManager(Game.gm);
+	protected void onClick(Clickable c) {
+		if (c == play) {
+			Logger.log(Logger.INFO, "Play");
+			getWindow().setManager(new GameManager());
 		}
 	}
+
 }

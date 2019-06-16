@@ -12,23 +12,28 @@ import java.awt.event.MouseEvent;
  */
 public abstract class Manager {
 
-
 	/** Mouse event handler */
 	protected Mouse mouse = new Mouse(this);
 	/** Keyboard event handler */
 	protected Keyboard keyboard = new Keyboard(this);
-	/** Parent window instance, cannot be changed without re-init*/
+	/** Parent window instance, cannot be changed without re-init */
 	private Window window;
-	
-	/** Called when the manager is initialized 
-	 * @param w The {@link Window} parent*/
+
+	/**
+	 * Called when the manager is initialized
+	 * 
+	 * @param w The {@link Window} parent
+	 */
 	public final void init(Window w) {
 		window = w;
 		init(w.getContentPane());
 	}
-	
-	/** The overridden initializer, called by {@link #init(Window)}
-	 * @param c The container parent*/
+
+	/**
+	 * The overridden initializer, called by {@link #init(Window)}
+	 * 
+	 * @param c The container parent
+	 */
 	protected abstract void init(Container c);
 
 	/** Called periodically by {@link Window} on main thread */
@@ -81,9 +86,14 @@ public abstract class Manager {
 
 	}
 
-	/** Get the parent window instance*/
+	/** Get the parent window instance */
 	public final Window getWindow() {
 		return window;
 	}
-	
+
+	/** Called when the window is resized */
+	protected void onResize() {
+		
+	}
+
 }

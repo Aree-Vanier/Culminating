@@ -2,6 +2,8 @@ package ca.gkelly.engine;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
@@ -85,6 +87,30 @@ public class Window extends JFrame implements Runnable {
 			public void windowActivated(WindowEvent e) {
 			}
 		});
+		
+		addComponentListener(new ComponentListener() {
+			
+			@Override
+			public void componentShown(ComponentEvent e) {
+				
+			}
+			
+			@Override
+			public void componentResized(ComponentEvent e) {
+				manager.onResize();
+			}
+			
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				
+			}
+			
+			@Override
+			public void componentHidden(ComponentEvent e) {
+				
+			}
+		});
+		
 		if(m!=null)
 			setManager(m);
 	}
@@ -95,7 +121,7 @@ public class Window extends JFrame implements Runnable {
 			repaint();
 		}
 	}
-
+	
 	@Override
 	public void paint(Graphics g) {
 		if (manager == null)
@@ -138,7 +164,7 @@ public class Window extends JFrame implements Runnable {
 		addMouseMotionListener(manager.mouse);
 		addKeyListener(manager.keyboard);
 	}
-
+	
 	/**
 	 * Calculates new {@link #deltaTime} value<br/>
 	 * Called before {@link Manager#update()}
