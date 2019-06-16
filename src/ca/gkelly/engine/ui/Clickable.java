@@ -7,7 +7,6 @@ public interface Clickable {
 	public default boolean isMouseOver(Vertex v) {
 		return isMouseOver((int) v.x, (int) v.y);
 	}
-	public void onClick();
 	public void onHover();
 	public void onExit();
 }

@@ -1,6 +1,8 @@
 package ca.gkelly.engine.ui.structs;
 
-public class UIDimens {
+public class UIDimensions {
+	
+	public static final UIDimensions DEFAULT = new UIDimensions();
 	
 	public UISet padding;
 	
@@ -10,15 +12,15 @@ public class UIDimens {
 	public boolean fixedWidth = false;
 	public boolean fixedHeight = false;
 	
-	public UIDimens() {
-		padding = new UISet(5,5,5,5);
+	public UIDimensions() {
+		padding = UISet.DEFAULT;
 	}
 	
-	public UIDimens(UISet padding) {
+	public UIDimensions(UISet padding) {
 		this.padding = padding;
 	}
 	
-	public UIDimens(UISet padding, int width, int height) {
+	public UIDimensions(UISet padding, int width, int height) {
 		this.padding = padding;
 		if(width != -1) {
 			this.width = width;

@@ -6,6 +6,9 @@ import ca.gkelly.engine.ui.UIContainer;
 import ca.gkelly.engine.ui.UIElement;
 
 public class UIPosition {
+	
+	public static UIPosition DEFAULT = new UIPosition(0,0);
+	
 	public static final int LEFT = 0;
 	public static final int TOP = 0;
 	public static final int CENTRE = 1;
@@ -24,7 +27,7 @@ public class UIPosition {
 	}
 
 	public UIPosition(int x, int y) {
-		this(LEFT, TOP, x, y);
+		this(x, y, LEFT, TOP);
 	}
 
 	public void getPos(Graphics g, UIElement e, UIContainer c) {

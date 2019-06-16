@@ -4,7 +4,7 @@ package ca.gkelly.engine.ui.structs;
 public class UISet{
 	
 	public static final UISet NONE = new UISet(0,0,0,0);
-	public static final UISet DEFAULT = new UISet(5,5,5,5	);
+	public static final UISet DEFAULT = new UISet(5,5,5,5);
 	
 	public int left;
 	public int top;
