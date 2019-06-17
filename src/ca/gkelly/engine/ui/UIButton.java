@@ -55,7 +55,7 @@ public class UIButton extends UIText {
 	 * @param f    The font to use
 	 */
 	public UIButton(UIPosition p, String text, Font f) {
-		this(p, UIDimensions.DEFAULT, text, f, Color.LIGHT_GRAY);
+		this(p, new UIDimensions(), text, f, Color.LIGHT_GRAY);
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class UIButton extends UIText {
 	 * @param f    The font to use
 	 */
 	public UIButton(String text, Font f) {
-		this(UIPosition.DEFAULT, text, f);
+		this(new UIPosition(), text, f);
 	}
 
 	/**

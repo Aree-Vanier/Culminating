@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import ca.gkelly.engine.Mouse;
 import ca.gkelly.engine.ui.structs.UIDimensions;
 import ca.gkelly.engine.ui.structs.UIPosition;
+import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vertex;
 
 /** Container to house other {@link UIElement}s */
@@ -102,6 +103,8 @@ public class UIContainer extends UIElement {
 				return e;
 			}
 		}
+		if(isMouseOver(m.pos)) // If the mouse is over this, but not sub elements, prevent below items from being clicked
+			return this;
 		return null;
 	}
 

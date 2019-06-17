@@ -8,8 +8,6 @@ import ca.gkelly.engine.ui.UIElement;
 
 /** Used to manage and render borders on {@link UIElement}s */
 public class UIBorder {
-	/** Shorthand for a 0-width (invisible) border */
-	public static UIBorder NONE = new UIBorder(0, Color.WHITE);
 
 	/** The width of the border */
 	public int width;
@@ -25,6 +23,11 @@ public class UIBorder {
 	public UIBorder(int w, Color c) {
 		width = w;
 		colour = c;
+	}
+
+	/** Create a a 0-width (invisible) border */
+	public UIBorder() {
+		this(0, Color.WHITE);
 	}
 
 	/**

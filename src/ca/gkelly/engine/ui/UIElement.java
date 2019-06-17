@@ -17,7 +17,7 @@ public abstract class UIElement {
 	/** The dimensions of the element */
 	public UIDimensions dimens;
 	/** The border around the element, defaults to {@link UIBorder#NONE} */
-	public UIBorder border = UIBorder.NONE;
+	public UIBorder border = new UIBorder();
 
 	/** The background colour of the element */
 	Color bgColour;
@@ -54,7 +54,7 @@ public abstract class UIElement {
 	 * @param p The position data
 	 */
 	public UIElement(UIPosition p) {
-		this(p, UIDimensions.DEFAULT);
+		this(p, new UIDimensions());
 	}
 
 	/**
@@ -62,7 +62,7 @@ public abstract class UIElement {
 	 * {@link UIPosition#DEFAULT}
 	 */
 	public UIElement() {
-		this(UIPosition.DEFAULT);
+		this(new UIPosition());
 	}
 
 	/**
@@ -137,8 +137,6 @@ public abstract class UIElement {
 		// Reset the stroke
 		g.setStroke(new BasicStroke(1));
 	}
-	
-
 
 	/**
 	 * Determine if the mouse if over the element
@@ -163,11 +161,11 @@ public abstract class UIElement {
 
 	/** Called when the mouse is over the element */
 	public void onHover() {
-		
+
 	}
 
 	/** Called when the mouse is not over the element */
 	public void onNotHover() {
-		
+
 	}
 }

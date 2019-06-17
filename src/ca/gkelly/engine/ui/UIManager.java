@@ -20,7 +20,7 @@ public abstract class UIManager extends Manager {
 
 	@Override
 	protected final void init(Container c) {
-		ui = new UILayer(0, 0, new UIDimensions(UISet.NONE, c.getWidth(), c.getHeight()), Color.WHITE);
+		ui = new UILayer(0, 0, new UIDimensions(new UISet(), c.getWidth(), c.getHeight()), Color.WHITE);
 		widthPercent = 1;
 		heightPercent = 1;
 		init();

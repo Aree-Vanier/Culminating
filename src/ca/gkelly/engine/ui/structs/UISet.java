@@ -2,11 +2,7 @@ package ca.gkelly.engine.ui.structs;
 
 /** A set of 4 values for use with UI */
 public class UISet {
-	/** A set with all 0s */
-	public static final UISet NONE = new UISet(0);
-	/** A set with all 5s */
-	public static final UISet DEFAULT = new UISet(5, 5, 5, 5);
-
+	
 	/** The left component */
 	public int left;
 	/** The top component */
@@ -30,7 +26,7 @@ public class UISet {
 		right = r;
 		bottom = b;
 	}
-	
+
 	/**
 	 * Create the set with the specified values
 	 * 
@@ -48,5 +44,12 @@ public class UISet {
 	 */
 	public UISet(int a) {
 		this(a, a, a, a);
+	}
+
+	/**
+	 * Create the set with all 0s
+	 */
+	public UISet() {
+		this(0, 0, 0, 0);
 	}
 }

@@ -4,8 +4,6 @@ import ca.gkelly.engine.ui.UIElement;
 
 /** Used to manage dimensions for {@link UIElement}s */
 public class UIDimensions {
-	/** Shorthand for default padding and non-fixed width */
-	public static final UIDimensions DEFAULT = new UIDimensions(UISet.DEFAULT);
 
 	/** The padding around the element */
 	public UISet padding;
@@ -26,6 +24,26 @@ public class UIDimensions {
 	private boolean fixedHeight = false;
 
 	/**
+	 * Create the dimension, with specified width and height
+	 * 
+	 * @param padding The padding to use
+	 * @param width   The fixed width to use, pass {@link #UNFIXED} to leave unfixed
+	 * @param height  The fixed height to use, pass {@link #UNFIXED} to leave
+	 *                unfixed
+	 */
+	public UIDimensions(UISet padding, int width, int height) {
+		this.padding = padding;
+		if(width != -1) {
+			this.width = width;
+			fixedWidth = true;
+		}
+		if(height != -1) {
+			this.height = height;
+			fixedHeight = true;
+		}
+	}
+
+	/**
 	 * Create the dimension with specified padding
 	 * 
 	 * @param padding The padding to use
@@ -35,22 +53,10 @@ public class UIDimensions {
 	}
 
 	/**
-	 * Create the dimension, with specified width and height
-	 * 
-	 * @param padding The padding to use
-	 * @param width The fixed width to use, pass {@link #UNFIXED} to leave unfixed
-	 * @param height The fixed height to use, pass {@link #UNFIXED} to leave unfixed
+	 * Create the dimension with {@link UISet#DEFAULT} padding
 	 */
-	public UIDimensions(UISet padding, int width, int height) {
-		this.padding = padding;
-		if (width != -1) {
-			this.width = width;
-			fixedWidth = true;
-		}
-		if (height != -1) {
-			this.height = height;
-			fixedHeight = true;
-		}
+	public UIDimensions() {
+		this(new UISet(5));
 	}
 
 	/**
@@ -60,8 +66,7 @@ public class UIDimensions {
 	 * @return false if the width could not be set
 	 */
 	public boolean setWidth(int w) {
-		if (fixedWidth)
-			return false;
+		if(fixedWidth) return false;
 		width = w;
 		return true;
 	}
@@ -95,8 +100,7 @@ public class UIDimensions {
 	 * @return false if the height could not be set
 	 */
 	public boolean setHeight(int h) {
-		if (fixedHeight)
-			return false;
+		if(fixedHeight) return false;
 		height = h;
 		return true;
 	}

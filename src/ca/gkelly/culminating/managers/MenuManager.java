@@ -35,11 +35,12 @@ public class MenuManager extends UIManager {
 		play = new UIButton(new UIPosition(0, -50, UIPosition.CENTRE, UIPosition.BOTTOM), "Start", titleFont);
 		addChild(play);
 		
-		instructions = new UIContainer(new UIPosition(0, 0, UIPosition.CENTRE, UIPosition.CENTRE), new UIDimensions(UISet.DEFAULT, 300,250), Color.white);
+		instructions = new UIContainer(new UIPosition(0, 0, UIPosition.CENTRE, UIPosition.CENTRE), new UIDimensions(new UISet(5), 300,250), Color.white);
 		instructions.setBorder(new UIBorder(5, Color.BLACK));
 		instructions.setVisible(false);
 		addChild(instructions);
 	}
+	
 
 	@Override
 	protected void onClick(UIElement e) {

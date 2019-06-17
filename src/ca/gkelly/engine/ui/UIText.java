@@ -58,7 +58,7 @@ public class UIText extends UIElement {
 	 * @param f    The font to use
 	 */
 	public UIText(UIPosition p, String text, Font f) {
-		this(p, UIDimensions.DEFAULT, text, f);
+		this(p, new UIDimensions(), text, f);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class UIText extends UIElement {
 	 * @param f    The font to use
 	 */
 	public UIText(String text, Font f) {
-		this(UIPosition.DEFAULT, text, f);
+		this(new UIPosition(), text, f);
 	}
 
 	/**

@@ -6,9 +6,6 @@ import ca.gkelly.engine.ui.UIElement;
 /** Handles the position of a {@link UIElement} */
 public class UIPosition {
 
-	/** Shorthand for top-left position */
-	public static UIPosition DEFAULT = new UIPosition(0, 0);
-
 	/** Align left */
 	public static final int LEFT = 0;
 	/** Align top */
@@ -54,26 +51,28 @@ public class UIPosition {
 		this(x, y, LEFT, TOP);
 	}
 
-	/**Update the {@link #x} and {@link y} values
+	/** Create a top-left position */
+	public UIPosition() {
+		this(0, 0);
+	}
+
+	/**
+	 * Update the {@link #x} and {@link y} values
+	 * 
 	 * @param e The {@link UIElement} that uses this position
-	 * @param c The parent {@link UIContainer}*/
+	 * @param c The parent {@link UIContainer}
+	 */
 	public void updatePos(UIElement e, UIContainer c) {
 		// Get horizontal position
-		if (horizontal == LEFT)
-			x = offsetX;
-		if (horizontal == CENTRE)
-			x = c.dimens.getTotalWidth() / 2 - e.dimens.getTotalWidth() / 2 + offsetX;
-		if (horizontal == RIGHT)
-			x = c.dimens.getTotalWidth() - e.dimens.getTotalWidth() - offsetX;
+		if(horizontal == LEFT) x = offsetX;
+		if(horizontal == CENTRE) x = c.dimens.getTotalWidth() / 2 - e.dimens.getTotalWidth() / 2 + offsetX;
+		if(horizontal == RIGHT) x = c.dimens.getTotalWidth() - e.dimens.getTotalWidth() - offsetX;
 		// Get vertical position
-		if (vertical == TOP)
-			y = offsetY;
-		if (vertical == CENTRE)
-			y = c.dimens.getTotalHeight() / 2 - e.dimens.getTotalHeight() / 2 + offsetY;
-		if (vertical == BOTTOM)
-			y = c.dimens.getTotalHeight() - e.dimens.getTotalHeight() + offsetY;
+		if(vertical == TOP) y = offsetY;
+		if(vertical == CENTRE) y = c.dimens.getTotalHeight() / 2 - e.dimens.getTotalHeight() / 2 + offsetY;
+		if(vertical == BOTTOM) y = c.dimens.getTotalHeight() - e.dimens.getTotalHeight() + offsetY;
 
-		//Add the parent's position
+		// Add the parent's position
 		x += c.pos.x;
 		y += c.pos.y;
 	}
