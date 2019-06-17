@@ -15,6 +15,8 @@ public class MenuManager extends UIManager {
 
 	UIText title;
 	UIButton play;
+	
+	
 
 	@Override
 

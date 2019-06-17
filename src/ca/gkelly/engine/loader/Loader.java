@@ -25,8 +25,7 @@ public class Loader {
 	/** A collection of all loaded resources, sorted by type */
 	public static HashMap<String, ArrayList<Resource>> resources = new HashMap<>();
 	/** A collection of all resource classes, sorted by type */
-	@SuppressWarnings("rawtypes")
-	public static HashMap<String, Class> resourceClasses = new HashMap<>();
+	public static HashMap<String, Class<? extends Resource>> resourceClasses = new HashMap<>();
 
 	/** A collection of all {@link TileMap}s, with filenames as identifiers*/
 	public static HashMap<String, TileMap> maps = new HashMap<>();
@@ -37,7 +36,6 @@ public class Loader {
 	/** Flag to indicate weather the loader is initialized */
 	public static boolean initialized = false;
 
-	@SuppressWarnings("rawtypes")
 	/**
 	 * Initialize the loader, must be called before {@link #load()}
 	 * 
@@ -49,7 +47,7 @@ public class Loader {
 	 *                </strong>&nbsp;<code>.class</code> of
 	 *                {@link Resource}-extending class
 	 */
-	public static void init(String dir, HashMap<String, Class> classes) {
+	public static void init(String dir, HashMap<String, Class<? extends Resource>> classes) {
 		directory = dir;
 		resourceClasses = classes;
 		initialized = true;
@@ -142,11 +140,10 @@ public class Loader {
 
 		Logger.log("Type: " + type);
 		// Get the class to instantiate
-		@SuppressWarnings("unchecked")
-		Class<Resource> c = resourceClasses.get(type);
+		Class<? extends Resource> c = resourceClasses.get(type);
 		Logger.log(c.getSimpleName());
 		// Create instance
-		Resource r = c.newInstance();
+		Resource r = c.getDeclaredConstructor().newInstance();
 		r.load(file, rootJSON);
 		// If there is not an entry for this type, add it
 		if (!resources.containsKey(type)) {

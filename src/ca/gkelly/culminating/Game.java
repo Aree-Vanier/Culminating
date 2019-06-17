@@ -8,6 +8,7 @@ import ca.gkelly.culminating.resources.PlayerResource;
 import ca.gkelly.engine.Window;
 import ca.gkelly.engine.graphics.DisplayMode;
 import ca.gkelly.engine.loader.Loader;
+import ca.gkelly.engine.loader.Resource;
 
 public class Game {
 	static Window window;
@@ -15,8 +16,7 @@ public class Game {
 	public static MenuManager mm = new MenuManager();
 
 	public static void main(String[] args) {
-		@SuppressWarnings("rawtypes")
-		HashMap<String, Class> resources = new HashMap<>();
+		HashMap<String, Class<? extends Resource>> resources = new HashMap<>();
 		resources.put("player", PlayerResource.class);
 
 		Loader.init(args[0], resources);
