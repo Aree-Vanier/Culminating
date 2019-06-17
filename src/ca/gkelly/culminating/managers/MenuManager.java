@@ -17,9 +17,10 @@ import ca.gkelly.engine.util.Logger;
 public class MenuManager extends UIManager {
 
 	Font titleFont = new Font("Consolas", Font.PLAIN, 50);
-
+	Font subFont = new Font("Consolas", Font.PLAIN, 30);
+	
 	UIText title;
-	UIButton play, inst;
+	UIButton play, showInst, hideInst;
 
 	UIContainer instructions;
 	
@@ -29,8 +30,8 @@ public class MenuManager extends UIManager {
 		addChild(title);
 		
 
-		inst = new UIButton(new UIPosition(0, -150, UIPosition.CENTRE, UIPosition.BOTTOM), "Instructions", titleFont);
-		addChild(inst);
+		showInst = new UIButton(new UIPosition(0, -150, UIPosition.CENTRE, UIPosition.BOTTOM), "Instructions", titleFont);
+		addChild(showInst);
 
 		play = new UIButton(new UIPosition(0, -50, UIPosition.CENTRE, UIPosition.BOTTOM), "Start", titleFont);
 		addChild(play);
@@ -38,6 +39,15 @@ public class MenuManager extends UIManager {
 		instructions = new UIContainer(new UIPosition(0, 0, UIPosition.CENTRE, UIPosition.CENTRE), new UIDimensions(new UISet(5), 300,250), Color.white);
 		instructions.setBorder(new UIBorder(5, Color.BLACK));
 		instructions.setVisible(false);
+		
+		instructions.addChild(new UIText(new UIPosition (0,10,UIPosition.CENTRE, UIPosition.TOP), "Instructions", subFont));
+		instructions.addChild(new UIText(new UIPosition (0,90,UIPosition.CENTRE, UIPosition.TOP), "Use WASD to move", subFont));
+		instructions.addChild(new UIText(new UIPosition (0,130,UIPosition.CENTRE, UIPosition.TOP), "Click to shoot", subFont));
+		
+		hideInst = new UIButton(new UIPosition (0,-15, UIPosition.CENTRE, UIPosition.BOTTOM), "Close", subFont);
+		instructions.addChild(hideInst);
+		
+		
 		addChild(instructions);
 	}
 	
@@ -48,7 +58,7 @@ public class MenuManager extends UIManager {
 			Logger.log(Logger.INFO, "Play");
 			getWindow().setManager(new GameManager());
 		}
-		if(e == inst) {
+		if(e == showInst) {
 			instructions.setVisible(true);
 		}
 	}

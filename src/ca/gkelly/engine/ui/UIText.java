@@ -50,7 +50,7 @@ public class UIText extends UIElement {
 	}
 
 	/**
-	 * Create the element, with {@link UIDimensions#DEFAULT}, a white background and
+	 * Create the element, with {@link UIDimensions#UIDimensions()}, a white background and
 	 * black font
 	 * 
 	 * @param p    The position data
@@ -62,8 +62,8 @@ public class UIText extends UIElement {
 	}
 
 	/**
-	 * Create the element, with {@link UIPosition#DEFAULT},
-	 * {@link UIDimensions#DEFAULT}, a white background and black font
+	 * Create the element, with {@link UIPosition#UIDimensions()},
+	 * {@link UIDimensions#UIDimensions()}, a white background and black font
 	 * 
 	 * @param text The text to render
 	 * @param f    The font to use
