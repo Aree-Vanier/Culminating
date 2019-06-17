@@ -93,7 +93,7 @@ public abstract class UIManager extends Manager {
 
 	@Override
 	protected final void onMouseMoved(MouseEvent e) {
-		ui.onMouseMove(mouse.pos);
+		ui.onMouseMove(mouse.pos, null);
 	}
 
 	@Override

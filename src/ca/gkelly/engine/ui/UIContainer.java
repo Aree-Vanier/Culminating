@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import ca.gkelly.engine.Mouse;
 import ca.gkelly.engine.ui.structs.UIDimensions;
 import ca.gkelly.engine.ui.structs.UIPosition;
-import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vertex;
 
 /** Container to house other {@link UIElement}s */
@@ -65,22 +64,37 @@ public class UIContainer extends UIElement {
 	}
 
 	/**
-	 * Called upon mouse motion, runs hover code on all child elements
+	 * Called upon mouse move, finds which element was clicked
 	 * 
-	 * @param v The {@link Vertex} of the mouse position
+	 * @param v The {@link Vertex} mouse posititon
+	 * @param top The current top-level hovered element
 	 */
-	public void onMouseMove(Vertex v) {
+	public UIElement onMouseMove(Vertex v, UIElement top) {
+		// Iterate backward to start at highest-rendered level
 		for(int i = children.size() - 1;i >= 0;i--) {
 			UIElement e = children.get(i);
-			if(e instanceof UIContainer) {
-				((UIContainer) e).onMouseMove(v);
+			if(!e.getVisible())// Only check for visible elements
+				continue;
+			
+			if(e instanceof UIContainer) {// Iterate through nested
+				top = ((UIContainer) e).onMouseMove(v, top);
 			}
-			if(e.isMouseOver(v))
+			
+			//If the top element has not yet been found
+			if(top == null && e.isMouseOver(v)) {
 				e.onHover();
-			else {
+				top = e;
+			}else {
 				e.onNotHover();
 			}
 		}
+		if(isMouseOver(v) && top == null) {// If the mouse is over this, but not sub elements, prevent below items from being hovered
+			onHover();
+			top = this;
+		} else {
+			onNotHover();
+		}
+		return top;
 	}
 
 	/**
