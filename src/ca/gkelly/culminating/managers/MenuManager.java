@@ -3,9 +3,9 @@ package ca.gkelly.culminating.managers;
 import java.awt.Color;
 import java.awt.Font;
 
-import ca.gkelly.engine.ui.Clickable;
 import ca.gkelly.engine.ui.UIButton;
 import ca.gkelly.engine.ui.UIContainer;
+import ca.gkelly.engine.ui.UIElement;
 import ca.gkelly.engine.ui.UIManager;
 import ca.gkelly.engine.ui.UIText;
 import ca.gkelly.engine.ui.structs.UIBorder;
@@ -37,14 +37,18 @@ public class MenuManager extends UIManager {
 		
 		instructions = new UIContainer(new UIPosition(0, 0, UIPosition.CENTRE, UIPosition.CENTRE), new UIDimensions(UISet.DEFAULT, 300,250), Color.white);
 		instructions.setBorder(new UIBorder(5, Color.BLACK));
+		instructions.setVisible(false);
 		addChild(instructions);
 	}
 
 	@Override
-	protected void onClick(Clickable c) {
-		if(c == play) {
+	protected void onClick(UIElement e) {
+		if(e == play) {
 			Logger.log(Logger.INFO, "Play");
 			getWindow().setManager(new GameManager());
+		}
+		if(e == inst) {
+			instructions.setVisible(true);
 		}
 	}
 

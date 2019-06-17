@@ -3,13 +3,12 @@ package ca.gkelly.engine.ui;
 import java.awt.Color;
 import java.awt.Font;
 
-import ca.gkelly.engine.collision.RectCollider;
 import ca.gkelly.engine.ui.structs.UIBorder;
 import ca.gkelly.engine.ui.structs.UIDimensions;
 import ca.gkelly.engine.ui.structs.UIPosition;
 
 /** UI element for buttons */
-public class UIButton extends UIText implements Clickable {
+public class UIButton extends UIText {
 
 	/** Normal background colour */
 	Color normalBGColour;
@@ -80,10 +79,6 @@ public class UIButton extends UIText implements Clickable {
 		hoverBGColour = c;
 	}
 
-	@Override
-	public boolean isMouseOver(double x, double y) {
-		return new RectCollider(pos.x, pos.y, dimens.getTotalWidth(), dimens.getTotalHeight()).contains(x, y);
-	}
 
 	@Override
 	public void onHover() {
@@ -91,7 +86,7 @@ public class UIButton extends UIText implements Clickable {
 	}
 
 	@Override
-	public void onExit() {
+	public void onNotHover() {
 		bgColour = normalBGColour;
 	}
 

@@ -14,8 +14,6 @@ public class UIContainer extends UIElement {
 
 	/** List of children {@link UIElement}s */
 	ArrayList<UIElement> children = new ArrayList<>();
-	/** List of children that implement {@link Clickable} */
-	private ArrayList<Clickable> clickables = new ArrayList<>();
 
 	/**
 	 * Create the container
@@ -35,10 +33,6 @@ public class UIContainer extends UIElement {
 	 */
 	public void addChild(UIElement e) {
 		children.add(e);
-		// Add to clickables if applicable
-		if(e instanceof Clickable) {
-			clickables.add((Clickable) e);
-		}
 	}
 
 	/**
@@ -48,11 +42,6 @@ public class UIContainer extends UIElement {
 	 */
 	public void removeChild(UIElement e) {
 		if(children.contains(e)) children.remove(e);
-		// Remove from clickables if applicable
-		if(e instanceof Clickable) {
-			Clickable c = (Clickable) e;
-			if(clickables.contains(c)) clickables.remove(c);
-		}
 	}
 
 	/** Get a list of children {@link UIElement}s */
@@ -85,12 +74,10 @@ public class UIContainer extends UIElement {
 			if(e instanceof UIContainer) {
 				((UIContainer) e).onMouseMove(v);
 			}
-			if(e instanceof Clickable) {
-				if(((Clickable) e).isMouseOver(v))
-					((Clickable) e).onHover();
-				else {
-					((Clickable) e).onExit();
-				}
+			if(e.isMouseOver(v))
+				e.onHover();
+			else {
+				e.onNotHover();
 			}
 		}
 	}
@@ -101,18 +88,18 @@ public class UIContainer extends UIElement {
 	 * @param m The {@link Mouse} object
 	 * @return The element that was clicked
 	 */
-	public Clickable onMouseClick(Mouse m) {
+	public UIElement onMouseClick(Mouse m) {
 		// Iterate backward to start at highest-rendered level
 		for(int i = children.size() - 1;i >= 0;i--) {
 			UIElement e = children.get(i);
 			if(!e.getVisible())// Only check for visible elements
 				continue;
-			if(e instanceof UIContainer) {
-				Clickable c = ((UIContainer) e).onMouseClick(m);
-				if(c != null) return c;
+			if(e instanceof UIContainer) {// Iterate through nested
+				UIElement clicked = ((UIContainer) e).onMouseClick(m);
+				if(clicked != null) return clicked;
 			}
-			if(e instanceof Clickable && ((Clickable) e).isMouseOver(m.pos)) {
-				return (Clickable) e;
+			if(e.isMouseOver(m.pos)) {
+				return e;
 			}
 		}
 		return null;

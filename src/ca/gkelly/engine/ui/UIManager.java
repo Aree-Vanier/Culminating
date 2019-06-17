@@ -97,10 +97,10 @@ public abstract class UIManager extends Manager {
 	}
 
 	@Override
-	protected final void onMouseRelease(MouseEvent e) {
-		Clickable c = ui.onMouseClick(mouse);
-		if (c != null)
-			onClick(c);
+	protected final void onMouseRelease(MouseEvent m) {
+		UIElement e = ui.onMouseClick(mouse);
+		if (e != null)
+			onClick(e);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public abstract class UIManager extends Manager {
 	 * 
 	 * @param c The element that was clicked
 	 */
-	protected abstract void onClick(Clickable c);
+	protected abstract void onClick(UIElement e);
 
 	@Override
 	protected void onResize() {

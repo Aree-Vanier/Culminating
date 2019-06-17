@@ -4,9 +4,11 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import ca.gkelly.engine.collision.RectCollider;
 import ca.gkelly.engine.ui.structs.UIBorder;
 import ca.gkelly.engine.ui.structs.UIDimensions;
 import ca.gkelly.engine.ui.structs.UIPosition;
+import ca.gkelly.engine.util.Vertex;
 
 /** Base-level class for UI elements */
 public abstract class UIElement {
@@ -134,5 +136,38 @@ public abstract class UIElement {
 		border.render(g, pos.x, pos.y, dimens.getTotalWidth(), dimens.getTotalHeight());
 		// Reset the stroke
 		g.setStroke(new BasicStroke(1));
+	}
+	
+
+
+	/**
+	 * Determine if the mouse if over the element
+	 * 
+	 * @param x The x position
+	 * @param y the y position
+	 * @return true if the element contains the mouse
+	 */
+	public boolean isMouseOver(double x, double y) {
+		return new RectCollider(pos.x, pos.y, dimens.getTotalWidth(), dimens.getTotalHeight()).contains(x, y);
+	}
+
+	/**
+	 * Determine if the mouse if over the element
+	 * 
+	 * @param v The {@link Vertex} position of the mouse
+	 * @return true if the element contains the mouse
+	 */
+	public boolean isMouseOver(Vertex v) {
+		return isMouseOver(v.x, v.y);
+	}
+
+	/** Called when the mouse is over the element */
+	public void onHover() {
+		
+	}
+
+	/** Called when the mouse is not over the element */
+	public void onNotHover() {
+		
 	}
 }
