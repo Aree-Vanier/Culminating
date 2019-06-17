@@ -20,6 +20,9 @@ public abstract class UIElement {
 	/** The background colour of the element */
 	Color bgColour;
 
+	/** If false, the element will not be rendered and will ignore clicks */
+	boolean visible = true;
+
 	/**
 	 * Create the element
 	 * 
@@ -61,6 +64,22 @@ public abstract class UIElement {
 	}
 
 	/**
+	 * Changes the visibility of the element
+	 * 
+	 * @param vis The new visibility state
+	 */
+	public void setVisible(Boolean vis) {
+		visible = vis;
+	}
+
+	/**
+	 * Get the visibility of the element
+	 */
+	public boolean getVisible() {
+		return visible;
+	}
+
+	/**
 	 * Set the border
 	 * 
 	 * @param b The new {@link UIBorder}
@@ -98,7 +117,7 @@ public abstract class UIElement {
 
 	/**
 	 * Render the element<br/>
-	 * Draws the background and border
+	 * Draws the background and border Will not work if visible is false
 	 * 
 	 * @param g The graphics to draw to
 	 * @param c The parent container

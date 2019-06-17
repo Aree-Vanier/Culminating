@@ -31,7 +31,8 @@ public class UILayer extends UIContainer {
 		g.fillRect(pos.x, pos.y, dimens.getWidth(), dimens.getHeight());
 		// Render children
 		for (UIElement e : children) {
-			e.render(g, this);
+			if(e.visible) // Only render if visible
+				e.render(g, this);
 		}
 	}
 

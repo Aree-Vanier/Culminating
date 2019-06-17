@@ -36,7 +36,7 @@ public class UIContainer extends UIElement {
 	public void addChild(UIElement e) {
 		children.add(e);
 		// Add to clickables if applicable
-		if (e instanceof Clickable) {
+		if(e instanceof Clickable) {
 			clickables.add((Clickable) e);
 		}
 	}
@@ -47,13 +47,11 @@ public class UIContainer extends UIElement {
 	 * @param e The element to remove
 	 */
 	public void removeChild(UIElement e) {
-		if (children.contains(e))
-			children.remove(e);
+		if(children.contains(e)) children.remove(e);
 		// Remove from clickables if applicable
-		if (e instanceof Clickable) {
+		if(e instanceof Clickable) {
 			Clickable c = (Clickable) e;
-			if (clickables.contains(c))
-				clickables.remove(c);
+			if(clickables.contains(c)) clickables.remove(c);
 		}
 	}
 
@@ -70,8 +68,9 @@ public class UIContainer extends UIElement {
 		// Render self
 		super.render(g, c);
 		// Render children
-		for (UIElement e : children) {
-			e.render(g, this);
+		for(UIElement e: children) {
+			if(e.getVisible()) // Only render if visible
+				e.render(g, this);
 		}
 	}
 
@@ -81,13 +80,13 @@ public class UIContainer extends UIElement {
 	 * @param v The {@link Vertex} of the mouse position
 	 */
 	public void onMouseMove(Vertex v) {
-		for (int i = children.size() - 1; i >= 0; i--) {
+		for(int i = children.size() - 1;i >= 0;i--) {
 			UIElement e = children.get(i);
-			if (e instanceof UIContainer) {
+			if(e instanceof UIContainer) {
 				((UIContainer) e).onMouseMove(v);
 			}
-			if (e instanceof Clickable) {
-				if (((Clickable) e).isMouseOver(v))
+			if(e instanceof Clickable) {
+				if(((Clickable) e).isMouseOver(v))
 					((Clickable) e).onHover();
 				else {
 					((Clickable) e).onExit();
@@ -104,14 +103,15 @@ public class UIContainer extends UIElement {
 	 */
 	public Clickable onMouseClick(Mouse m) {
 		// Iterate backward to start at highest-rendered level
-		for (int i = children.size() - 1; i >= 0; i--) {
+		for(int i = children.size() - 1;i >= 0;i--) {
 			UIElement e = children.get(i);
-			if (e instanceof UIContainer) {
+			if(!e.getVisible())// Only check for visible elements
+				continue;
+			if(e instanceof UIContainer) {
 				Clickable c = ((UIContainer) e).onMouseClick(m);
-				if (c != null)
-					return c;
+				if(c != null) return c;
 			}
-			if (e instanceof Clickable && ((Clickable) e).isMouseOver(m.pos)) {
+			if(e instanceof Clickable && ((Clickable) e).isMouseOver(m.pos)) {
 				return (Clickable) e;
 			}
 		}
