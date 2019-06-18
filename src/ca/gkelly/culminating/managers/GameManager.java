@@ -35,7 +35,8 @@ public class GameManager extends Manager {
 		cam = new Camera(container, map);
 		cam.setPosition(0, 0, 1.25);
 
-		player = new Player((PlayerResource) Loader.resources.get("player").get(0), 100, 900);
+		//Create a player, from the loaded resource
+		player = new Player((PlayerResource) Loader.resources.get("player").get(0), 100, 100);
 	}
 
 	@Override

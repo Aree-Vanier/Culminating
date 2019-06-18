@@ -83,7 +83,7 @@ public abstract class UIManager extends Manager {
 
 	@Override
 	protected void update() {
-
+		ui.update();
 	}
 
 	@Override

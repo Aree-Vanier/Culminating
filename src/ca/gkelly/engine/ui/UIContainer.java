@@ -50,6 +50,13 @@ public class UIContainer extends UIElement {
 	}
 
 	@Override
+	public void update() {
+		for(UIElement e : children) {
+			e.update();
+		}
+	}
+	
+	@Override
 	public void render(Graphics2D g, UIContainer c) {
 		// Set width/height to fit parent, can be prevented by making them fixed
 		dimens.setWidth(c.dimens.getWidth());

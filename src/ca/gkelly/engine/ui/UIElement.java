@@ -117,6 +117,11 @@ public abstract class UIElement {
 		dimens = d;
 	}
 
+	/**Called regularly, can be used for various features*/
+	public void update() {
+		
+	}
+	
 	/**
 	 * Render the element<br/>
 	 * Draws the background and border Will not work if visible is false
