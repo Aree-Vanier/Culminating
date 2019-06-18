@@ -16,7 +16,7 @@ public abstract class UIElement {
 	public UIPosition pos;
 	/** The dimensions of the element */
 	public UIDimensions dimens;
-	/** The border around the element, defaults to {@link UIBorder#NONE} */
+	/** The border around the element, defaults to {@link UIBorder#UIBorder()} */
 	public UIBorder border = new UIBorder();
 
 	/** The background colour of the element */
@@ -49,7 +49,7 @@ public abstract class UIElement {
 	}
 
 	/**
-	 * Create the element, with white background and {@link UIDimensions#DEFAULT}
+	 * Create the element, with white background and {@link UIDimensions#UIDimensions()}
 	 * 
 	 * @param p The position data
 	 */
@@ -58,8 +58,8 @@ public abstract class UIElement {
 	}
 
 	/**
-	 * Create the element, with white background, {@link UIDimensions#DEFAULT}, and
-	 * {@link UIPosition#DEFAULT}
+	 * Create the element, with white background, {@link UIDimensions#UIDimensions()}, and
+	 * {@link UIPosition#UIPosition()}
 	 */
 	public UIElement() {
 		this(new UIPosition());
