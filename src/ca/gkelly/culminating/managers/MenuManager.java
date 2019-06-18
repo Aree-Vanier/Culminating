@@ -61,6 +61,9 @@ public class MenuManager extends UIManager {
 		if(e == showInst) {
 			instructions.setVisible(true);
 		}
+		if(e == hideInst) {
+			instructions.setVisible(false);
+		}
 	}
 
 }

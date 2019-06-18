@@ -53,7 +53,7 @@ public class UIDimensions {
 	}
 
 	/**
-	 * Create the dimension with {@link UISet#DEFAULT} padding
+	 * Create the dimension with {@link UISet#UISet(int) UISet.UISet(5)} padding
 	 */
 	public UIDimensions() {
 		this(new UISet(5));

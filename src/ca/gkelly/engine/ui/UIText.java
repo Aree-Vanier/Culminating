@@ -62,7 +62,7 @@ public class UIText extends UIElement {
 	}
 
 	/**
-	 * Create the element, with {@link UIPosition#UIDimensions()},
+	 * Create the element, with {@link UIPosition#UIPosition()},
 	 * {@link UIDimensions#UIDimensions()}, a white background and black font
 	 * 
 	 * @param text The text to render

@@ -47,7 +47,7 @@ public class UIButton extends UIText {
 	}
 
 	/**
-	 * Create the element, with {@link UIDimensions#DEFAULT}, a white background,
+	 * Create the element, with {@link UIDimensions#UIDimensions()}, a white background,
 	 * light-gray hover and black font
 	 * 
 	 * @param p    The position data
@@ -59,8 +59,8 @@ public class UIButton extends UIText {
 	}
 
 	/**
-	 * Create the element, with {@link UIPosition#DEFAULT},
-	 * {@link UIDimensions#DEFAULT}, a white background, light-gray hover and black
+	 * Create the element, with {@link UIPosition#UIPosition()},
+	 * {@link UIDimensions#UIDimensions()}, a white background, light-gray hover and black
 	 * font
 	 * 
 	 * @param text The text to render
