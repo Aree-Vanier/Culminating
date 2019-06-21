@@ -30,7 +30,7 @@ public class GameManager extends Manager {
 
 	@Override
 	public void init(Container container) {
-		map = Loader.maps.get("rotation");
+		map = Loader.maps.get("map");
 		map.load();
 		cam = new Camera(container, map);
 		cam.setPosition(0, 0, 1.25);

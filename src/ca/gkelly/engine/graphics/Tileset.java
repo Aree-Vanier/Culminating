@@ -15,14 +15,23 @@ import ca.gkelly.engine.util.Logger;
 /** A class used to handle loading and management of a collider layer */
 class Tileset {
 
+	/** Flag used to indicate that tile is flipped horizontally */
+	@SuppressWarnings("unused")
 	private static final long FLIPX = 0x800000000l;
+	/** Flag used to indicate that tile is flipped vertically */
+	@SuppressWarnings("unused")
 	private static final long FLIPY = 0x400000000l;
+	/** Flag used to indicate that tile is flipped diagonally */
+	@SuppressWarnings("unused")
 	private static final long FLIP_DIAG = 0x200000000l;
 
+	/** Flag used to indicate that tile is rotated 90 degrees */
 	private static final long ROT_90 = 0xA0000000l;
+	/** Flag used to indicate that tile is rotated 180 degrees */
 	private static final long ROT_180 = 0xC0000000l;
+	/** Flag used to indicate that tile is rotated 270 degrees */
 	private static final long ROT_270 = 0x60000000l;
-
+	/** Mask used to remove flags from tile IDs */
 	private static final long MASK = 0b00111111;
 
 	/** Width of a tile */
@@ -79,19 +88,20 @@ class Tileset {
 	public BufferedImage getTile(long mapData) {
 		// Remove the headers to get the raw ID
 		BufferedImage tile = getImage((int) (mapData & MASK));
+		// If the tile is null, don't bother
 		if (tile == null) {
 			return tile;
 		}
 
-//		System.out.println(Long.toBinaryString(data));
+		// Bitshift to ensure the flags are in the correct bits
 		mapData = mapData | mapData << 4 | mapData << 8;
 
-		Logger.log("Data:\t" + mapData + " " + (Long.toBinaryString(mapData)) + "\tMASK: "
-				+ (Long.toBinaryString(mapData & (MASK))));
-//		System.out.println("Mask:\t" + getPaddedString(Long.toBinaryString(mask)));
-//		System.out.println("Result:\t" + getPaddedString(Long.toBinaryString(data & (mask))));
-		AffineTransform tx = new AffineTransform();
+//		Logger.log("Data:\t" + mapData + " " + (Long.toBinaryString(mapData)) + "\tMASK: "
+//				+ (Long.toBinaryString(mapData & (MASK))));
 
+		// Create the affine tarnsform
+		AffineTransform tx = new AffineTransform();
+		// Find correct flag, and apply rotation
 		if ((mapData & ROT_180) == ROT_180) {
 			System.out.println("180");
 			tx.rotate(Math.PI * 1, tile.getWidth() / 2, tile.getHeight() / 2);
@@ -101,11 +111,12 @@ class Tileset {
 		} else if ((mapData & ROT_270) == ROT_270) {
 			System.out.println("270");
 			tx.rotate(Math.PI * 1.5, tile.getWidth() / 2, tile.getHeight() / 2);
-		} else {
+		} else { // If the tile is not rotated, don't bother with the transformation
 			return tile;
 		}
+		// Apply the transformation
 		AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
-		
+
 		return op.filter(tile, null);
 	}
 
