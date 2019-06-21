@@ -62,9 +62,4 @@
    <polygon points="-226,-40 -130,56 -66,-8 -66,-40"/>
   </object>
  </objectgroup>
- <objectgroup id="3" name="colliders2">
-  <object id="20" x="448" y="96">
-   <polygon points="-288,0 -192,96 -128,32 -128,0"/>
-  </object>
- </objectgroup>
 </map>

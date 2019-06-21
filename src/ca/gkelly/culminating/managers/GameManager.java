@@ -30,12 +30,12 @@ public class GameManager extends Manager {
 
 	@Override
 	public void init(Container container) {
-		map = Loader.maps.get("map");
+		map = Loader.maps.get("rotation");
 		map.load();
 		cam = new Camera(container, map);
 		cam.setPosition(0, 0, 1.25);
 
-		//Create a player, from the loaded resource
+		// Create a player, from the loaded resource
 		player = new Player((PlayerResource) Loader.resources.get("player").get(0), 100, 100);
 	}
 
@@ -58,15 +58,17 @@ public class GameManager extends Manager {
 			}
 
 			Collider[] colliders = map.getColliders("colliders");
-			for (Collider c : colliders) {
-				Hull raw = player.collider.getCollisionHull(c);
-				Collider p2 = raw != null ? raw.poly : null;
-				if (p2 != null) {
-					raw.render(cam, new Hull(player.collider.getIntersections(c)));
-					Vector offset = new Vector(p2.x - player.x, p2.y - player.y);
-					offset.setMag(-offset.getMagnitude());
-					cam.drawLine((int) player.x, (int) player.y, (int) (player.x + offset.getX()),
-							(int) (player.y + offset.getY()), 5, Color.red);
+			if (colliders != null) {
+				for (Collider c : colliders) {
+					Hull raw = player.collider.getCollisionHull(c);
+					Collider p2 = raw != null ? raw.poly : null;
+					if (p2 != null) {
+						raw.render(cam, new Hull(player.collider.getIntersections(c)));
+						Vector offset = new Vector(p2.x - player.x, p2.y - player.y);
+						offset.setMag(-offset.getMagnitude());
+						cam.drawLine((int) player.x, (int) player.y, (int) (player.x + offset.getX()),
+								(int) (player.y + offset.getY()), 5, Color.red);
+					}
 				}
 			}
 		}

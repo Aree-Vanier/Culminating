@@ -32,11 +32,11 @@ public class TileMap {
 	BufferedImage[] tiles;
 	String src;
 
-	int[][] map;
+	long[][] map;
 
 	public Document doc;
 
-	public Tileset tileset;
+	public Tileset[] tilesets;
 
 	/** Complete render of the map, rendered on load then saved */
 	BufferedImage image;
@@ -90,7 +90,7 @@ public class TileMap {
 		doc.getDocumentElement().normalize();
 
 		// Get important elements from map
-		Element tilesetElement = (Element) doc.getElementsByTagName("tileset").item(0);
+		NodeList tilesetElements = doc.getElementsByTagName("tileset");
 		Element mapData = (Element) doc.getElementsByTagName("data").item(0);
 
 		// Prepare the string that contains the map details
@@ -99,41 +99,54 @@ public class TileMap {
 		String[] rows = mapString.split(",\n");
 		Logger.log(Logger.DEBUG, mapString);
 
-		map = new int[rows[0].split(",").length][rows.length];
+		map = new long[rows[0].split(",").length][rows.length];
+
+		Logger.newLine(Logger.DEBUG);
 
 		// Get integers values for each tile
 		for (int y = 0; y < rows.length; y++) {
 			String[] tiles = rows[y].split(",");
 			for (int x = 0; x < tiles.length; x++) {
-				Logger.log(Logger.DEBUG, tiles[x], "", true);
-				map[x][y] = Integer.parseInt(tiles[x]);
+				map[x][y] = Long.parseLong(tiles[x]);
+				Logger.log(Logger.DEBUG, map[x][y], ",", true);
 			}
 			Logger.newLine(Logger.DEBUG);
 		}
 
-		// Load the tileset
-		try {
-			tileset = new Tileset(tilesetElement, src);
-		} catch (IOException e) {
-			e.printStackTrace();
+		tilesets = new Tileset[tilesetElements.getLength()];
+
+		for (int i = 0; i < tilesets.length; i++) {
+			// Load the tileset
+			try {
+				tilesets[i] = new Tileset((Element) tilesetElements.item(i), src);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		Logger.newLine(Logger.DEBUG);
 		Logger.newLine(Logger.DEBUG);
 
 		// Create full render image
-		image = new BufferedImage(map.length * tileset.tWidth, map[0].length * tileset.tHeight,
+		image = new BufferedImage(map.length * tilesets[0].tWidth, map[0].length * tilesets[0].tHeight,
 				BufferedImage.TYPE_3BYTE_BGR);
 		Graphics g = image.getGraphics();
+		BufferedImage tile;
 		for (int x = 0; x < map.length; x++) {
 			for (int y = 0; y < map[0].length; y++) {
+				tile = null;
+				int i = -1;
+				while (tile == null && (i++) < tilesets.length) {
+					tile = tilesets[i].getTile(map[x][y]);
+				}
 				try {
-					g.drawImage(tileset.getImage(map[x][y]), x * tileset.tWidth, y * tileset.tHeight, null);
+					g.drawImage(tile, x * tilesets[i].tWidth, y * tilesets[i].tHeight, null);
 				} catch (IndexOutOfBoundsException e) {
 
 				}
 			}
 		}
+//		System.exit(0);
 
 		// Get collider elements
 		NodeList layers = (NodeList) doc.getElementsByTagName("objectgroup");
@@ -188,7 +201,12 @@ public class TileMap {
 	 * @return The image associated with the selected tile
 	 */
 	public BufferedImage getTile(int ID) {
-		return (tileset.getImage(ID));
+		BufferedImage tile = null;
+		int i = -1;
+
+		while (tile == null && (i++) > tilesets.length)
+			tile = tilesets[i].getImage(ID);
+		return (tile);
 	}
 
 	/**

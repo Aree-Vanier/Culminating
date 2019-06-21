@@ -23,17 +23,17 @@ public class Window extends JFrame implements Runnable {
 
 	/** Target framerate to be maintained by {@link Window} */
 	public int targetFramerate = 60;
-	/**The active {@link Manager} */
+	/** The active {@link Manager} */
 	Manager manager;
 	Thread update;
 	boolean runThread = true;
-	
-	/**Backbuffer used for rendering*/
+
+	/** Backbuffer used for rendering */
 	BufferedImage buffer;
 
-	/**Deltatime for {@link #update}, can be referenced by any class*/
+	/** Deltatime for {@link #update}, can be referenced by any class */
 	public int deltaTime = 0;
-	/**Used for calculating {@link #deltaTime}*/
+	/** Used for calculating {@link #deltaTime} */
 	private long lastTime = 0;
 
 	/**
@@ -74,7 +74,8 @@ public class Window extends JFrame implements Runnable {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				manager.onClose();
+				if (manager != null)
+					manager.onClose();
 				runThread = false;
 				System.exit(0);
 			}
@@ -87,41 +88,42 @@ public class Window extends JFrame implements Runnable {
 			public void windowActivated(WindowEvent e) {
 			}
 		});
-		
+
 		addComponentListener(new ComponentListener() {
-			
+
 			@Override
 			public void componentShown(ComponentEvent e) {
-				
+
 			}
-			
+
 			@Override
 			public void componentResized(ComponentEvent e) {
-				manager.onResize();
+				if (manager != null)
+					manager.onResize();
 			}
-			
+
 			@Override
 			public void componentMoved(ComponentEvent e) {
-				
+
 			}
-			
+
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				
+
 			}
 		});
-		
-		if(m!=null)
+
+		if (m != null)
 			setManager(m);
 	}
-	
-	/**Called to start the render process, will hang thread*/
+
+	/** Called to start the render process, will hang thread */
 	public void begin() {
-		while(true) {
+		while (true) {
 			repaint();
 		}
 	}
-	
+
 	@Override
 	public void paint(Graphics g) {
 		if (manager == null)
@@ -164,7 +166,7 @@ public class Window extends JFrame implements Runnable {
 		addMouseMotionListener(manager.mouse);
 		addKeyListener(manager.keyboard);
 	}
-	
+
 	/**
 	 * Calculates new {@link #deltaTime} value<br/>
 	 * Called before {@link Manager#update()}
