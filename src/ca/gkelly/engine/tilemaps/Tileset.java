@@ -1,4 +1,4 @@
-package ca.gkelly.engine.graphics;
+package ca.gkelly.engine.tilemaps;
 
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
@@ -127,8 +127,8 @@ class Tileset {
 	 * @return The image associated with the selected tile
 	 */
 	public BufferedImage getImage(int ID) {
-		Logger.log(ID - offsetID);
-		Logger.log(offsetID);
+//		Logger.log(ID - offsetID);
+//		Logger.log(offsetID);
 		if (ID - offsetID < tiles.length && ID - offsetID >= 0)
 			return tiles[ID - offsetID];
 		return null;

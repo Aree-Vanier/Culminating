@@ -11,7 +11,7 @@ import java.util.HashMap;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import ca.gkelly.engine.graphics.TileMap;
+import ca.gkelly.engine.tilemaps.TileMap;
 import ca.gkelly.engine.util.Logger;
 
 /**

@@ -10,6 +10,7 @@ import java.awt.Polygon;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 
+import ca.gkelly.engine.tilemaps.TileMap;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Tools;
 import ca.gkelly.engine.util.Vertex;

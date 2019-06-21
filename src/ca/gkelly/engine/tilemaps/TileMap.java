@@ -1,10 +1,10 @@
-package ca.gkelly.engine.graphics;
+package ca.gkelly.engine.tilemaps;
 
 import java.awt.Graphics;
-import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,7 +16,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import ca.gkelly.engine.collision.Collider;
-import ca.gkelly.engine.collision.ColliderLayer;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Tools;
 import ca.gkelly.engine.util.Vertex;
@@ -51,7 +50,7 @@ public class TileMap {
 	Vertex lastBR = new Vertex(-1, -1);
 
 	/** Polygon collider layers used on map */
-	ColliderLayer[] colliders;
+	HashMap<String, ObjectLayer> layers = new HashMap<>();
 
 	/**
 	 * Prepare a new tiled map
@@ -149,15 +148,14 @@ public class TileMap {
 //		System.exit(0);
 
 		// Get collider elements
-		NodeList layers = (NodeList) doc.getElementsByTagName("objectgroup");
-		colliders = new ColliderLayer[layers.getLength()];
+		NodeList l = (NodeList) doc.getElementsByTagName("objectgroup");
 
-		Logger.log(Logger.DEBUG, layers.getLength());
+		Logger.log(Logger.DEBUG, l.getLength());
 
-		for (int i = 0; i < layers.getLength(); i++) {
-			Element e = (Element) layers.item(i);
+		for (int i = 0; i < l.getLength(); i++) {
+			Element e = (Element) l.item(i);
 			NodeList polyNodes = (NodeList) e.getElementsByTagName("object");
-			colliders[i] = new ColliderLayer(polyNodes, e.getAttribute("name"));
+			layers.put(e.getAttribute("name"), new ObjectLayer(polyNodes, e.getAttribute("name")));
 		}
 
 		return true;
@@ -210,49 +208,47 @@ public class TileMap {
 	}
 
 	/**
-	 * Get the polygon that contains the point, from the selected layer
+	 * Get the {@link Collider} that contains the point, from the selected {@link ObjectLayer}
 	 * 
 	 * @param x     The x value of the point
 	 * @param y     The y value of the point
 	 * @param layer The layer to search
-	 * @return The polygon that contains the point<br/>
-	 *         <strong>null</strong> if no polygon contains the point
+	 * @return The collider that contains the point<br/>
+	 *         <strong>null</strong> if no collider contains the point<br/>
 	 *         <strong>null</strong> if the layer doesn't exist
 	 */
-	public Polygon getPoly(double x, double y, String layer) {
-		for (ColliderLayer c : colliders) {
-			if (c.name.equals(layer)) {
-				return (c.getPoly(x, y));
-			}
-		}
+	public Collider getCollider(double x, double y, String layer) {
+		ObjectLayer l;
+		if ((l = layers.get(layer)) != null)
+			return (l.getCollider(x, y));
 		return null;
 	}
 
 	/**
-	 * Get the polygon that contains the {@link Vertex}, from the selected layer
+	 * Get the polygon that contains the {@link Vertex}, from the selected {@link ObjectLayer}
 	 * 
 	 * @param v     The {@link Vertex} to check
 	 * @param layer The layer to search
-	 * @return The polygon that contains the point<br/>
-	 *         <strong>null</strong> if no polygon contains the point
+	 * @return The {@link Collider} that contains the point<br/>
+	 *         <strong>null</strong> if no collider contains the point<br/>
 	 *         <strong>null</strong> if the layer doesn't exist
 	 */
-	public Polygon getPoly(Vertex v, String layer) {
-		for (ColliderLayer c : colliders) {
-			if (c.name.equals(layer)) {
-				return (c.getPoly(v.x, v.y));
-			}
-		}
-		return null;
+	public Collider getCollider(Vertex v, String layer) {
+		return getCollider(v.x, v.y, layer);
 	}
 
+	/**Get the colliders from the selected {@link ObjectLayer}
+	 * @oaram layer The name of the layer*/
 	public Collider[] getColliders(String layer) {
-		for (ColliderLayer c : colliders) {
-			if (c.name.equals(layer)) {
-				return c.polygons;
-			}
-		}
+		ObjectLayer l;
+		if ((l = layers.get(layer)) != null)
+			return l.getColliders();
 		return null;
 	}
 
+	/**Get the selected object {@link ObjectLayer}
+	 * @param layer The name of the layer*/
+	public ObjectLayer getLayer(String layer) {
+		return layers.get(layer);
+	}
 }

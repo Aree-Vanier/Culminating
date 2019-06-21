@@ -15,8 +15,8 @@ import ca.gkelly.engine.Manager;
 import ca.gkelly.engine.collision.Collider;
 import ca.gkelly.engine.collision.Hull;
 import ca.gkelly.engine.graphics.Camera;
-import ca.gkelly.engine.graphics.TileMap;
 import ca.gkelly.engine.loader.Loader;
+import ca.gkelly.engine.tilemaps.TileMap;
 import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vector;
 import ca.gkelly.engine.util.Vertex;
@@ -51,10 +51,11 @@ public class GameManager extends Manager {
 		// This code is used to demonstrate collision detection polygons, it does not
 		// affect positions
 		{
+			map.getLayer("colliders").render(cam, Color.RED);
 			Vertex pos = cam.worldSpace(mouse.pos);
-			Polygon p = map.getPoly(pos.x, pos.y, "colliders");
+			Collider p = map.getCollider(pos.x, pos.y, "colliders");
 			if (p != null) {
-				cam.drawPoly(p, Color.black);
+				cam.drawPoly(p.getPoly(), Color.black);
 			}
 
 			Collider[] colliders = map.getColliders("colliders");
@@ -82,7 +83,7 @@ public class GameManager extends Manager {
 		player.update();
 		for (Bullet b : new ArrayList<Bullet>(bullets)) {
 			b.update();
-			Polygon p = map.getPoly(b.getX(), b.getY(), "colliders");
+			Polygon p = map.getCollider(b.getX(), b.getY(), "colliders").getPoly();
 			if (p != null) {
 				bullets.remove(b);
 			}
