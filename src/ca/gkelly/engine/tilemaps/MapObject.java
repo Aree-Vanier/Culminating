@@ -8,17 +8,28 @@ import org.w3c.dom.NodeList;
 
 import ca.gkelly.engine.collision.Collider;
 import ca.gkelly.engine.collision.RectCollider;
-import ca.gkelly.engine.util.Logger;
 import ca.gkelly.engine.util.Vertex;
 
+/** Used to represent {@link TileMap} objects */
 public class MapObject {
+	/** The object properties */
 	HashMap<String, String> properties = new HashMap<>();
+	/** The name property of the object */
 	public String name;
+	/** The type property of the object */
 	public String type;
+	/** The collider that represents the object */
 	Collider collider;
+	/** The position of the object */
 	public Vertex position;
+	/** Flag to indicate if the object is a point, as opposed to shape */
 	boolean isPoint = false;
 
+	/**
+	 * Create the object
+	 * 
+	 * @param root The XML containing the information about the object
+	 */
 	public MapObject(Element root) {
 		position = new Vertex(Double.parseDouble(root.getAttribute("x")), Double.parseDouble(root.getAttribute("y")));
 		name = root.getAttribute("name");
@@ -33,7 +44,7 @@ public class MapObject {
 
 		NodeList n = root.getChildNodes();
 		for (int i = 0; i < n.getLength(); i++) {
-			if(n.item(i).getNodeType() != Node.ELEMENT_NODE)
+			if (n.item(i).getNodeType() != Node.ELEMENT_NODE)
 				continue;
 			Element e = (Element) n.item(i);
 			// Handle collider creation
@@ -60,7 +71,7 @@ public class MapObject {
 			if (e.getTagName().equals("properties")) {
 				NodeList props = root.getChildNodes();
 				for (int j = 0; j < props.getLength(); j++) {
-					if(props.item(j).getNodeType() != Node.ELEMENT_NODE)
+					if (props.item(j).getNodeType() != Node.ELEMENT_NODE)
 						continue;
 					Element p = (Element) props.item(j);
 					properties.put(p.getAttribute("name"), p.getAttribute("value"));
@@ -70,23 +81,72 @@ public class MapObject {
 
 	}
 
+	/**
+	 * Get the properties
+	 * 
+	 * @return The HashMap containing the properties
+	 */
 	public HashMap<String, String> getProperties() {
 		return properties;
 	}
 
+	/**
+	 * Get specified property
+	 * 
+	 * @param key The name of the property
+	 */
 	public String getProperty(String key) {
 		return properties.get(key);
 	}
 
-	public void putProperty(String key, String value) {
+	/**
+	 * Check against property value
+	 * 
+	 * @param key   The name of the property
+	 * @param value The value to check for
+	 * @return true if the property value is equal to passed value
+	 */
+	public boolean isProperty(String key, String value) {
+		if (hasProperty(key))
+			return getProperty(key).equals(value);
+		return false;
+	}
+
+	/**
+	 * Check if specified property exists
+	 * 
+	 * @param key The name of the property
+	 */
+	public boolean hasProperty(String key) {
+		return properties.containsKey(key);
+	}
+
+	/**
+	 * Add a property
+	 * 
+	 * @param key   The name of the property
+	 * @param value The property value
+	 */
+	public void addProperty(String key, String value) {
 		properties.put(key, value);
 	}
 
+	/**
+	 * Edit an existing property
+	 * 
+	 * @param key   The name of the property
+	 * @param value The new value
+	 */
 	public void editProperty(String key, String value) {
 		properties.remove(key);
 		properties.put(key, value);
 	}
 
+	/**
+	 * Remove specified property
+	 * 
+	 * @param key The name of the property
+	 */
 	public void removeProperty(String key) {
 		properties.remove(key);
 	}

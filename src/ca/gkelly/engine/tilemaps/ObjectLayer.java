@@ -2,6 +2,7 @@ package ca.gkelly.engine.tilemaps;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -9,9 +10,16 @@ import org.w3c.dom.NodeList;
 import ca.gkelly.engine.collision.Collider;
 import ca.gkelly.engine.graphics.Camera;
 
-/** A class used to handle the colliders on a map */
+/** A class used to handle the {@link MapObjects} on a {@link TileMap} */
 public class ObjectLayer {
+	/** A list of all {@link MapObjects} on this layer */
 	public MapObject[] objects;
+	/**
+	 * A list of {@link MapObject}s, sorted by type<br/>
+	 * Used to optimise {@link #findByType(String) findByType()}
+	 */
+	private HashMap<String, ArrayList<MapObject>> types = new HashMap<>();
+	/** The name of the layer */
 	public String name;
 
 	/**
@@ -26,7 +34,16 @@ public class ObjectLayer {
 		for (int i = 0; i < objects.length; i++) {
 			Element e = (Element) children.item(i);
 
-			objects[i] = new MapObject(e);
+			MapObject o = new MapObject(e);
+			objects[i] = o;
+
+			// Populate the types map
+			if (types.containsKey(o.type)) {
+				types.get(o.type).add(o);
+			} else {
+				types.put(o.type, new ArrayList<MapObject>());
+				types.get(o.type).add(o);
+			}
 		}
 	}
 
@@ -73,5 +90,31 @@ public class ObjectLayer {
 				c.add(o.collider);
 		}
 		return c.toArray(new Collider[c.size()]);
+	}
+
+	/**
+	 * Find a {@link MapObject} using it's name
+	 * 
+	 * @param name The name of the object
+	 * @return The first object with the specified name
+	 */
+	public MapObject findByName(String name) {
+		for (MapObject o : objects)
+			if (o.name.equals(name))
+				return o;
+
+		return null;
+	}
+
+	/**
+	 * Find {@link MapObject}s by type
+	 * 
+	 * @param name The tag to search for
+	 * @return All objects with the specified type
+	 */
+	public MapObject[] findByType(String type) {
+		if (types.containsKey(type))
+			return types.get(type).toArray(new MapObject[types.get(type).size()]);
+		return null;
 	}
 }
