@@ -16,9 +16,12 @@ public class ObjectLayer {
 	public MapObject[] objects;
 	/**
 	 * A list of {@link MapObject}s, sorted by type<br/>
-	 * Used to optimise {@link #findByType(String) findByType()}
+	 * Used to optimize {@link #findByType(String) findByType()}
 	 */
 	private HashMap<String, ArrayList<MapObject>> types = new HashMap<>();
+	/**A list of all {@link MapObject}s that are points
+	 * Used to optimize {@link getPoints()}*/
+	private MapObject[] points;
 	/** The name of the layer */
 	public String name;
 
@@ -31,6 +34,7 @@ public class ObjectLayer {
 	public ObjectLayer(NodeList children, String name) {
 		this.name = name;
 		objects = new MapObject[children.getLength()];
+		ArrayList<MapObject> points = new ArrayList<MapObject>();
 		for (int i = 0; i < objects.length; i++) {
 			Element e = (Element) children.item(i);
 
@@ -44,7 +48,12 @@ public class ObjectLayer {
 				types.put(o.type, new ArrayList<MapObject>());
 				types.get(o.type).add(o);
 			}
+			
+			//Add it to points
+			if(o.isPoint)
+				points.add(o);
 		}
+		this.points = points.toArray(new MapObject[points.size()]);
 	}
 
 	/**
@@ -116,5 +125,14 @@ public class ObjectLayer {
 		if (types.containsKey(type))
 			return types.get(type).toArray(new MapObject[types.get(type).size()]);
 		return null;
+	}
+	
+	/**
+	 * Find {@link MapObject}s that are points
+	 * 
+	 * @return All {@link MapObjects} that are points
+	 */
+	public MapObject[] getPoints() {
+		return points;
 	}
 }
