@@ -53,7 +53,8 @@ public class GameManager extends Manager {
 		// This code is used to demonstrate collision detection polygons, it does not
 		// affect positions
 		{
-			map.getLayer("colliders").render(cam, Color.RED);
+//			map.getLayer("colliders").render(cam, Color.RED);
+			cam.drawPoly(map.getLayer("colliders").findByType("trigger")[0].getCollider().getPoly(), Color.blue);
 			Vertex pos = cam.worldSpace(mouse.pos);
 			Collider p = map.getCollider(pos.x, pos.y, "colliders");
 			if (p != null) {

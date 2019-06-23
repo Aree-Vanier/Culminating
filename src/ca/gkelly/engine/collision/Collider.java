@@ -16,6 +16,11 @@ public class Collider extends Poly {
 	double radius;
 	/** The maximum number of times to attempt full collision removal */
 	final int MAX_COLLISION_TRIES = 5;
+	/**
+	 * Indicates that the collider is not physical <br/>
+	 * Will cause getPushback to return a 0 vector
+	 */
+	public boolean isTrigger = false;
 
 	/**
 	 * Create the collider with passed vertices
@@ -183,6 +188,11 @@ public class Collider extends Poly {
 	 * @return Pushback vector, null if no collision with c
 	 */
 	public Vector getPushback(Collider c) {
+		//Triggers don't apply pushback
+		if(isTrigger || c.isTrigger) {
+			return new Vector(0,0);
+		}
+		
 		int tries = 0;
 		Hull raw;
 		Vector out = new Vector(0, 0);
